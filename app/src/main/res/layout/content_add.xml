@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".AddFragment"
+    tools:showIn="@layout/fragment_add">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:layout_margin="@dimen/base_margin">
+
+        <android.support.v7.widget.AppCompatCheckedTextView
+            android:id="@+id/ctv_as_task"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checkMark="?android:attr/listChoiceIndicatorMultiple"
+            android:gravity="center"
+            android:text="@string/action_as_task" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/prompt_start_time" />
+
+            <EditText
+                android:id="@+id/et_start_date"
+                android:inputType="none"
+                android:gravity="center"
+                android:textIsSelectable="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                tools:ignore="TextFields" />
+
+            <EditText
+                android:id="@+id/et_start_time"
+                android:inputType="none"
+                android:gravity="center"
+                android:textIsSelectable="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/prompt_end_time" />
+
+            <EditText
+                android:id="@+id/et_end_date"
+                android:inputType="none"
+                android:gravity="center"
+                android:textIsSelectable="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                tools:ignore="TextFields" />
+
+            <EditText
+                android:id="@+id/et_end_time"
+                android:inputType="none"
+                android:gravity="center"
+                android:textIsSelectable="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2" />
+        </LinearLayout>
+
+    </LinearLayout>
+</android.support.v4.widget.NestedScrollView>
