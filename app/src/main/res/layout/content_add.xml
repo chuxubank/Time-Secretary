@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".AddFragment"
-    tools:showIn="@layout/fragment_add">
+    tools:context=".NewEventFragment"
+    tools:showIn="@layout/fragment_new_event">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,14 +14,6 @@
         android:gravity="center_horizontal"
         android:orientation="vertical"
         android:layout_margin="@dimen/base_margin">
-
-        <android.support.v7.widget.AppCompatCheckedTextView
-            android:id="@+id/ctv_as_task"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:checkMark="?android:attr/listChoiceIndicatorMultiple"
-            android:gravity="center"
-            android:text="@string/action_as_task" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -31,7 +23,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/prompt_start_time" />
+                android:text="@string/prompt_starts" />
 
             <EditText
                 android:id="@+id/et_start_date"
@@ -44,6 +36,11 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
                 tools:ignore="TextFields" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/prompt_at" />
 
             <EditText
                 android:id="@+id/et_start_time"
@@ -65,7 +62,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/prompt_end_time" />
+                android:text="@string/prompt_ends" />
 
             <EditText
                 android:id="@+id/et_end_date"
@@ -78,6 +75,11 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
                 tools:ignore="TextFields" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/prompt_at" />
 
             <EditText
                 android:id="@+id/et_end_time"

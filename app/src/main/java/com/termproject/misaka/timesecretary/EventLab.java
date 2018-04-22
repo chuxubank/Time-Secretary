@@ -9,16 +9,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * @author misaka
+ */
 public class EventLab {
     private static EventLab sEventLab;
     private List<Event> mEvents;
     private Context mContext;
     private SQLiteDatabase mDatabase;
+    private int mSize = 3;
 
     private EventLab(Context context) {
         mContext = context.getApplicationContext();
         mDatabase = new EventBaseHelper(mContext).getWritableDatabase();
         mEvents = new ArrayList<>();
+        for (int i = 0; i < mSize; i++) {
+            Event event = new Event();
+            event.setTitle("Event #" + i);
+            mEvents.add(event);
+        }
+
     }
 
     public static EventLab get(Context context) {

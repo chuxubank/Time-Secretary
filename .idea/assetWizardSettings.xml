@@ -23,7 +23,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/private/var/folders/yb/071g6bcs0hx_7ff6_443cmfh0000gn/T/AppTranslocation/4E7DC3BF-E805-47EB-B79B-4E0990B20EBC/d/Android%20Studio.app/Contents/plugins/android/lib/android.jar!/images/material_design_icons/navigation/ic_check_black_24dp.xml" />
+                                      <entry key="url" value="jar:file:/private/var/folders/yb/071g6bcs0hx_7ff6_443cmfh0000gn/T/AppTranslocation/831B2AD6-F41C-468C-8F89-E5F2D5D02757/d/Android%20Studio.app/Contents/plugins/android/lib/android.jar!/images/material_design_icons/action/ic_today_black_24dp.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -33,8 +33,7 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="color" value="ffffff" />
-                            <entry key="outputName" value="ic_confirm" />
+                            <entry key="outputName" value="ic_today" />
                             <entry key="sourceFile" value="$USER_HOME$" />
                           </map>
                         </option>

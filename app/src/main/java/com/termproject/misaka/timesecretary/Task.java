@@ -6,19 +6,20 @@ import java.util.UUID;
 /**
  * @author misaka
  */
-public class Event {
+public class Task {
     private UUID mId;
     private String mTitle;
     private String mNotes;
     private Calendar mStartTime;
     private Calendar mEndTime;
+    private Calendar mDeadline;
     private String mCategory;
+    private boolean mAccomplished;
 
-    public Event() {
+    public Task() {
         mId = UUID.randomUUID();
         mStartTime = Calendar.getInstance();
-        mEndTime = Calendar.getInstance();
-        mEndTime.add(Calendar.HOUR, 1);
+
     }
 
     public UUID getId() {
@@ -31,6 +32,14 @@ public class Event {
 
     public void setTitle(String title) {
         mTitle = title;
+    }
+
+    public String getNotes() {
+        return mNotes;
+    }
+
+    public void setNotes(String notes) {
+        mNotes = notes;
     }
 
     public Calendar getStartTime() {
@@ -49,12 +58,12 @@ public class Event {
         mEndTime = endTime;
     }
 
-    public String getNotes() {
-        return mNotes;
+    public Calendar getDeadline() {
+        return mDeadline;
     }
 
-    public void setNotes(String notes) {
-        mNotes = notes;
+    public void setDeadline(Calendar deadline) {
+        mDeadline = deadline;
     }
 
     public String getCategory() {
@@ -63,5 +72,13 @@ public class Event {
 
     public void setCategory(String category) {
         mCategory = category;
+    }
+
+    public boolean isAccomplished() {
+        return mAccomplished;
+    }
+
+    public void setAccomplished(boolean accomplished) {
+        mAccomplished = accomplished;
     }
 }
