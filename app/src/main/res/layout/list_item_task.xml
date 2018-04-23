@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="1dp"
+    android:background="?android:attr/selectableItemBackground"
     android:orientation="horizontal">
 
     <LinearLayout
@@ -11,13 +12,17 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_weight="1"
+        android:layout_margin="8dp"
         android:gravity="center">
 
         <CheckBox
+            android:id="@+id/task_checked"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:button="@drawable/radio_button_style"
-            android:text="" />
+            android:backgroundTint="@color/test_color"
+            android:buttonTint="@color/test_color"
+            android:text=""
+            tools:targetApi="lollipop" />
 
     </LinearLayout>
 
@@ -25,20 +30,23 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="5"
-        android:orientation="vertical">
+        android:layout_margin="8dp"
+        android:orientation="vertical"
+        tools:targetApi="o">
 
         <TextView
             android:id="@+id/task_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="3dp"
+            android:textColor="@color/primary_text"
+            android:textSize="@dimen/item_primary_text_size"
             tools:text="Task Title" />
 
         <TextView
             android:id="@+id/task_notes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="3dp"
+            android:textColor="@color/secondary_text"
             tools:text="Task Notes" />
 
     </LinearLayout>

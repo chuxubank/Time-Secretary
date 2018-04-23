@@ -1,15 +1,18 @@
-package com.termproject.misaka.timesecretary;
+package com.termproject.misaka.timesecretary.base;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 
+import com.termproject.misaka.timesecretary.R;
+
 /**
  * @author misaka
  */
 public abstract class BaseSingleFragmentActivity extends AppCompatActivity {
-    protected abstract Fragment createFragment();
+
+    public abstract Fragment createFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

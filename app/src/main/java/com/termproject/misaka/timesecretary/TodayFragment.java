@@ -4,14 +4,18 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
+import com.termproject.misaka.timesecretary.module.Event;
+import com.termproject.misaka.timesecretary.module.EventLab;
+import com.termproject.misaka.timesecretary.module.Task;
+import com.termproject.misaka.timesecretary.module.TaskLab;
 import com.termproject.misaka.timesecretary.utils.TimeUtils;
 
 import java.util.List;
@@ -21,8 +25,6 @@ import java.util.List;
  */
 public class TodayFragment extends Fragment {
 
-
-    private View view;
     private RecyclerView mEventRecyclerView;
     private RecyclerView mTaskRecyclerView;
     private EventAdapter mEventAdapter;
@@ -40,10 +42,8 @@ public class TodayFragment extends Fragment {
     private void initView(View v) {
         mEventRecyclerView = v.findViewById(R.id.event_recycler_view);
         mEventRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mEventRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
         mTaskRecyclerView = v.findViewById(R.id.task_recycler_view);
         mTaskRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mTaskRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
     }
 
     private void updateUI() {
@@ -60,6 +60,7 @@ public class TodayFragment extends Fragment {
     private class EventHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private Event mEvent;
         private TextView mEventTitle;
+        private TextView mEventNotes;
         private TextView mEventStartTime;
         private TextView mEventEndTime;
 
@@ -67,6 +68,7 @@ public class TodayFragment extends Fragment {
             super(inflater.inflate(R.layout.list_item_event, parent, false));
             itemView.setOnClickListener(this);
             mEventTitle = itemView.findViewById(R.id.event_title);
+            mEventNotes = itemView.findViewById(R.id.event_notes);
             mEventStartTime = itemView.findViewById(R.id.event_start_time);
             mEventEndTime = itemView.findViewById(R.id.event_end_time);
         }
@@ -74,6 +76,7 @@ public class TodayFragment extends Fragment {
         public void bind(Event event) {
             mEvent = event;
             mEventTitle.setText(mEvent.getTitle());
+            mEventNotes.setText(mEvent.getNotes());
             mEventStartTime.setText(TimeUtils.cal2timeString(mEvent.getStartTime()));
             mEventEndTime.setText(TimeUtils.cal2timeString(mEvent.getEndTime()));
         }
@@ -88,12 +91,14 @@ public class TodayFragment extends Fragment {
         private Task mTask;
         private TextView mTaskTitle;
         private TextView mTaskNotes;
+        private CheckBox mTaskChecked;
 
         public TaskHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.list_item_task, parent, false));
             itemView.setOnClickListener(this);
             mTaskTitle = itemView.findViewById(R.id.task_title);
             mTaskNotes = itemView.findViewById(R.id.task_notes);
+            mTaskChecked = itemView.findViewById(R.id.task_checked);
         }
 
         public void bind(Task task) {

@@ -13,6 +13,8 @@
 
     <!-- Strings related to main -->
     <string name="item_title_today">Today</string>
+    <string name="prompt_events">Events</string>
+    <string name="prompt_tasks">Tasks</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>

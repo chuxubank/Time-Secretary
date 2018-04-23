@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".NewEventFragment"
-    tools:showIn="@layout/fragment_new_event">
+    tools:context=".add.NewEventFragment"
+    tools:showIn="@layout/fragment_add">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,6 +14,12 @@
         android:gravity="center_horizontal"
         android:orientation="vertical"
         android:layout_margin="@dimen/base_margin">
+
+        <Spinner
+            android:id="@+id/spn_category"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:listitem="@layout/list_item_category" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -23,6 +29,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textColor="@color/secondary_text"
+                android:textSize="@dimen/item_primary_text_size"
                 android:text="@string/prompt_starts" />
 
             <EditText
@@ -30,6 +38,7 @@
                 android:inputType="none"
                 android:gravity="center"
                 android:textIsSelectable="false"
+                android:textSize="@dimen/item_primary_text_size"
                 android:focusable="false"
                 android:focusableInTouchMode="false"
                 android:layout_width="0dp"
@@ -40,6 +49,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/accent"
                 android:text="@string/prompt_at" />
 
             <EditText
@@ -47,6 +57,7 @@
                 android:inputType="none"
                 android:gravity="center"
                 android:textIsSelectable="false"
+                android:textSize="@dimen/item_primary_text_size"
                 android:focusable="false"
                 android:focusableInTouchMode="false"
                 android:layout_width="0dp"
@@ -62,6 +73,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textColor="@color/secondary_text"
+                android:textSize="@dimen/item_primary_text_size"
                 android:text="@string/prompt_ends" />
 
             <EditText
@@ -69,6 +82,7 @@
                 android:inputType="none"
                 android:gravity="center"
                 android:textIsSelectable="false"
+                android:textSize="@dimen/item_primary_text_size"
                 android:focusable="false"
                 android:focusableInTouchMode="false"
                 android:layout_width="0dp"
@@ -79,6 +93,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/accent"
                 android:text="@string/prompt_at" />
 
             <EditText
@@ -86,6 +101,7 @@
                 android:inputType="none"
                 android:gravity="center"
                 android:textIsSelectable="false"
+                android:textSize="@dimen/item_primary_text_size"
                 android:focusable="false"
                 android:focusableInTouchMode="false"
                 android:layout_width="0dp"

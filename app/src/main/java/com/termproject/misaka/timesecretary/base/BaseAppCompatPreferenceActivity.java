@@ -1,4 +1,4 @@
-package com.termproject.misaka.timesecretary;
+package com.termproject.misaka.timesecretary.base;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 /**
  * A {@link android.preference.PreferenceActivity} which implements and proxies the necessary calls
  * to be used with AppCompat.
+ * @author misaka
  */
 public abstract class BaseAppCompatPreferenceActivity extends PreferenceActivity {
 

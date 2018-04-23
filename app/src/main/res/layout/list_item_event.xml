@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="1dp"
+    android:background="?android:attr/selectableItemBackground"
     android:orientation="horizontal">
 
     <LinearLayout
@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_weight="1"
+        android:layout_margin="8dp"
         android:gravity="center"
         android:orientation="vertical">
 
@@ -19,8 +20,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="3dp"
-            android:textColor="@color/primary_text"
-            android:textSize="12sp"
+            android:textColor="@color/test_color"
+            android:textSize="14sp"
             tools:text="1:00 PM" />
 
         <TextView
@@ -28,36 +29,40 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="3dp"
-            android:textSize="12sp"
+            android:textColor="@color/secondary_text"
+            android:textSize="14sp"
             tools:text="2:00 PM" />
 
     </LinearLayout>
 
     <View
-        android:id="@+id/category_color"
+        android:id="@+id/event_divider"
         android:layout_width="2dp"
         android:layout_height="match_parent"
         android:layout_gravity="center_horizontal"
-        android:background="#66CCFF" />
+        android:background="@color/test_color" />
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="5"
-        android:orientation="vertical">
+        android:layout_margin="8dp"
+        android:orientation="vertical"
+        tools:targetApi="o">
 
         <TextView
             android:id="@+id/event_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="3dp"
+            android:textColor="@color/primary_text"
+            android:textSize="@dimen/item_primary_text_size"
             tools:text="Event Title" />
 
         <TextView
             android:id="@+id/event_notes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="3dp"
+            android:textColor="@color/secondary_text"
             tools:text="Event Notes" />
 
     </LinearLayout>
