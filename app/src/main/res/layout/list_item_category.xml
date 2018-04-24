@@ -10,7 +10,7 @@
         android:layout_width="@dimen/circle_size"
         android:layout_height="@dimen/circle_size"
         android:layout_gravity="center_vertical"
-        android:layout_margin="8dp"
+        android:layout_margin="@dimen/text_margin"
         android:background="@drawable/ic_circle"
         android:backgroundTint="@color/test_color"
         tools:targetApi="lollipop" />

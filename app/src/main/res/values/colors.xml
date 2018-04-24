@@ -9,4 +9,17 @@
     <color name="icons">#FFFFFF</color>
     <color name="divider">#BDBDBD</color>
     <color name="test_color">#66CCFF</color>
+
+    <!--FAM-->
+    <color name="black">#000000</color>
+    <color name="fam_text_background">#B2000000</color>
+    <color name="background">#e5e5e5</color>
+    <color name="half_black">#808080</color>
+    <color name="white">#fafafa</color>
+    <color name="white_pressed">#f1f1f1</color>
+    <color name="button">#e91e63</color>
+    <color name="button_pressed">#ec407a</color>
+    <color name="blue_semi_transparent">#805677fc</color>
+    <color name="blue_semi_transparent_pressed">#80738ffe</color>
+
 </resources>

@@ -21,8 +21,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="3dp"
             android:textColor="@color/test_color"
-            android:textSize="14sp"
-            tools:text="1:00 PM" />
+            android:textSize="12sp"
+            tools:text="11:00 PM" />
 
         <TextView
             android:id="@+id/event_end_time"
@@ -30,8 +30,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="3dp"
             android:textColor="@color/secondary_text"
-            android:textSize="14sp"
-            tools:text="2:00 PM" />
+            android:textSize="12sp"
+            tools:text="12:00 PM" />
 
     </LinearLayout>
 

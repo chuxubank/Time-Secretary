@@ -15,6 +15,9 @@
     <string name="item_title_today">Today</string>
     <string name="prompt_events">Events</string>
     <string name="prompt_tasks">Tasks</string>
+    <string name="prompt_add_event">Add Event</string>
+    <string name="prompt_add_task">Add Task</string>
+    <string name="prompt_add_category">Add Category</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
@@ -36,6 +39,7 @@
     <string name="prompt_ends">Ends:</string>
     <string name="error_invalid_endTime">The end time should be after the start time!</string>
     <string name="prompt_at">\@</string>
+    <string name="prompt_category">Category:</string>
 
     <string name="large_text">
         "Material is the metaphor.\n\n"

@@ -11,6 +11,8 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,6 +52,7 @@ public class NewEventFragment extends Fragment implements View.OnClickListener {
     private TextInputEditText mEtNotes;
     private Spinner mSpnCategory;
     private CategoryAdapter mCategoryAdapter;
+    private Toolbar mToolbar;
 
 
     @Override
@@ -96,6 +99,15 @@ public class NewEventFragment extends Fragment implements View.OnClickListener {
         mEtTitle = v.findViewById(R.id.et_title);
         mEtNotes = v.findViewById(R.id.et_notes);
         mSpnCategory = v.findViewById(R.id.spn_category);
+        CategoryLab categoryLab = CategoryLab.get(getActivity());
+        List<Category> categories = categoryLab.getCategories();
+        mCategoryAdapter = new CategoryAdapter(categories, getActivity());
+        mSpnCategory.setAdapter(mCategoryAdapter);
+        mToolbar = v.findViewById(R.id.toolbar);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
+        if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     @Override
@@ -142,11 +154,6 @@ public class NewEventFragment extends Fragment implements View.OnClickListener {
         mEtStartTime.setText(TimeUtils.cal2timeString(mEvent.getStartTime()));
         mEtEndDate.setText(TimeUtils.cal2dateString(mEvent.getEndTime()));
         mEtEndTime.setText(TimeUtils.cal2timeString(mEvent.getEndTime()));
-        CategoryLab categoryLab = CategoryLab.get(getActivity());
-        List<Category> categories = categoryLab.getCategories();
-        mCategoryAdapter = new CategoryAdapter(categories, getActivity());
-        mSpnCategory.setAdapter(mCategoryAdapter);
-
     }
 
     private static class CategoryAdapter extends BaseAdapter {
