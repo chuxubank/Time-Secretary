@@ -1,4 +1,4 @@
-package com.termproject.misaka.timesecretary;
+package com.termproject.misaka.timesecretary.controller;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,7 +16,9 @@ import android.view.View;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
-import com.termproject.misaka.timesecretary.add.AddActivity;
+import com.termproject.misaka.timesecretary.R;
+import com.termproject.misaka.timesecretary.module.Event;
+import com.termproject.misaka.timesecretary.module.EventLab;
 
 /**
  * @author misaka
@@ -120,9 +122,11 @@ public class MainActivity extends AppCompatActivity
         mAddEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mFamAdd.collapse();
-                Intent intent = new Intent(MainActivity.this, AddActivity.class);
+                Event event = new Event();
+                EventLab.get(MainActivity.this).addEvent(event);
+                Intent intent = EventActivity.newIntent(MainActivity.this, event.getId());
                 startActivity(intent);
+                mFamAdd.collapse();
             }
         });
         mAddTask = findViewById(R.id.add_task);

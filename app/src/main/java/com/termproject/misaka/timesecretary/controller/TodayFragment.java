@@ -1,4 +1,4 @@
-package com.termproject.misaka.timesecretary;
+package com.termproject.misaka.timesecretary.controller;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import com.termproject.misaka.timesecretary.R;
 import com.termproject.misaka.timesecretary.module.Event;
 import com.termproject.misaka.timesecretary.module.EventLab;
 import com.termproject.misaka.timesecretary.module.Task;
@@ -49,13 +50,28 @@ public class TodayFragment extends Fragment {
     private void updateUI() {
         EventLab eventLab = EventLab.get(getActivity());
         List<Event> events = eventLab.getEvents();
-        mEventAdapter = new EventAdapter(events);
-        mEventRecyclerView.setAdapter(mEventAdapter);
+        if (mEventAdapter == null) {
+            mEventAdapter = new EventAdapter(events);
+            mEventRecyclerView.setAdapter(mEventAdapter);
+        } else {
+            mEventAdapter.notifyDataSetChanged();
+        }
         TaskLab taskLab = TaskLab.get(getActivity());
         List<Task> tasks = taskLab.getTasks();
-        mTaskAdapter = new TaskAdapter(tasks);
-        mTaskRecyclerView.setAdapter(mTaskAdapter);
+        if (mTaskAdapter == null) {
+            mTaskAdapter = new TaskAdapter(tasks);
+            mTaskRecyclerView.setAdapter(mTaskAdapter);
+        } else {
+            mTaskAdapter.notifyDataSetChanged();
+        }
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateUI();
+    }
+
 
     private class EventHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private Event mEvent;

@@ -17,19 +17,23 @@ public class EventLab {
     private List<Event> mEvents;
     private Context mContext;
     private SQLiteDatabase mDatabase;
-    private int mSize = 3;
 
     private EventLab(Context context) {
         mContext = context.getApplicationContext();
         mDatabase = new EventBaseHelper(mContext).getWritableDatabase();
         mEvents = new ArrayList<>();
-        for (int i = 1; i <= mSize; i++) {
-            Event event = new Event();
-            event.setTitle("Event #" + i);
-            event.setNotes("Event #" + i + " Notes");
-            mEvents.add(event);
-        }
+    }
 
+    public void addEvent(Event e) {
+        mEvents.add(e);
+    }
+
+    public void deleteEvent(Event e) {
+        for (Event event : mEvents) {
+            if (event.getId().equals(e.getId())) {
+                mEvents.remove(event);
+            }
+        }
     }
 
     public static EventLab get(Context context) {

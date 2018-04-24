@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".controller.EventFragment"
-    tools:showIn="@layout/fragment_add_event">
+    tools:context=".controller.TaskFragment"
+    tools:showIn="@layout/fragment_add_task">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -44,7 +44,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/prompt_starts"
+                android:text="@string/prompt_defer"
                 android:textColor="@color/secondary_text"
                 android:textSize="@dimen/item_primary_text_size" />
 
@@ -60,24 +60,6 @@
                 android:textIsSelectable="false"
                 android:textSize="@dimen/item_primary_text_size"
                 tools:ignore="TextFields" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/prompt_at"
-                android:textColor="@color/accent" />
-
-            <EditText
-                android:id="@+id/et_start_time"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
-                android:gravity="center"
-                android:inputType="none"
-                android:textIsSelectable="false"
-                android:textSize="@dimen/item_primary_text_size" />
         </LinearLayout>
 
         <LinearLayout
@@ -88,7 +70,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/prompt_ends"
+                android:text="@string/prompt_deadline"
                 android:textColor="@color/secondary_text"
                 android:textSize="@dimen/item_primary_text_size" />
 
@@ -105,23 +87,6 @@
                 android:textSize="@dimen/item_primary_text_size"
                 tools:ignore="TextFields" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/prompt_at"
-                android:textColor="@color/accent" />
-
-            <EditText
-                android:id="@+id/et_end_time"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
-                android:gravity="center"
-                android:inputType="none"
-                android:textIsSelectable="false"
-                android:textSize="@dimen/item_primary_text_size" />
         </LinearLayout>
 
     </LinearLayout>

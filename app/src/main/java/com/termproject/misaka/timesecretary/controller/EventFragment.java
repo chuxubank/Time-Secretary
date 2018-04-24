@@ -1,6 +1,5 @@
-package com.termproject.misaka.timesecretary.add;
+package com.termproject.misaka.timesecretary.controller;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -25,17 +24,21 @@ import com.termproject.misaka.timesecretary.R;
 import com.termproject.misaka.timesecretary.module.Category;
 import com.termproject.misaka.timesecretary.module.CategoryLab;
 import com.termproject.misaka.timesecretary.module.Event;
+import com.termproject.misaka.timesecretary.module.EventLab;
 import com.termproject.misaka.timesecretary.part.DatePickerFragment;
 import com.termproject.misaka.timesecretary.part.TimePickerFragment;
 import com.termproject.misaka.timesecretary.utils.TimeUtils;
 
 import java.util.Calendar;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author misaka
  */
-public class NewEventFragment extends Fragment implements View.OnClickListener {
+public class EventFragment extends Fragment implements View.OnClickListener {
+
+    private static final String ARG_EVENT_ID = "event_id";
 
     private static final String DIALOG_DATE = "DialogDate";
     private static final String DIALOG_TIME = "DialogTime";
@@ -46,7 +49,6 @@ public class NewEventFragment extends Fragment implements View.OnClickListener {
     private EditText mEtStartTime;
     private EditText mEtEndDate;
     private EditText mEtEndTime;
-    private View view;
     private FloatingActionButton mFabConfirm;
     private TextInputEditText mEtTitle;
     private TextInputEditText mEtNotes;
@@ -54,16 +56,24 @@ public class NewEventFragment extends Fragment implements View.OnClickListener {
     private CategoryAdapter mCategoryAdapter;
     private Toolbar mToolbar;
 
+    public static EventFragment newInstance(UUID eventId) {
+        Bundle args = new Bundle();
+        args.putSerializable(ARG_EVENT_ID, eventId);
+        EventFragment fragment = new EventFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mEvent = new Event();
+        UUID eventId = (UUID) getArguments().getSerializable(ARG_EVENT_ID);
+        mEvent = EventLab.get(getActivity()).getEvent(eventId);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_add, container, false);
+        View v = inflater.inflate(R.layout.fragment_add_event, container, false);
         initView(v);
         updateUI();
         return v;
@@ -104,10 +114,17 @@ public class NewEventFragment extends Fragment implements View.OnClickListener {
         mCategoryAdapter = new CategoryAdapter(categories, getActivity());
         mSpnCategory.setAdapter(mCategoryAdapter);
         mToolbar = v.findViewById(R.id.toolbar);
-        ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
-        if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+        mToolbar.setNavigationIcon(R.drawable.ic_close);
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        activity.setSupportActionBar(mToolbar);
+        activity.getSupportActionBar().setDisplayShowTitleEnabled(false);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EventLab.get(getActivity()).deleteEvent(mEvent);
+                getActivity().finish();
+            }
+        });
     }
 
     @Override
@@ -117,35 +134,43 @@ public class NewEventFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.et_start_date:
                 DatePickerFragment startDate = DatePickerFragment.newInstance(mEvent.getStartTime());
-                startDate.setTargetFragment(NewEventFragment.this, REQUEST_START_DATETIME);
+                startDate.setTargetFragment(EventFragment.this, REQUEST_START_DATETIME);
                 startDate.show(getFragmentManager(), DIALOG_DATE);
                 break;
             case R.id.et_start_time:
                 TimePickerFragment startTime = TimePickerFragment.newInstance(mEvent.getStartTime());
-                startTime.setTargetFragment(NewEventFragment.this, REQUEST_START_DATETIME);
+                startTime.setTargetFragment(EventFragment.this, REQUEST_START_DATETIME);
                 startTime.show(getFragmentManager(), DIALOG_TIME);
                 break;
             case R.id.et_end_date:
                 DatePickerFragment endDate = DatePickerFragment.newInstance(mEvent.getEndTime());
-                endDate.setTargetFragment(NewEventFragment.this, REQUEST_END_DATETIME);
+                endDate.setTargetFragment(EventFragment.this, REQUEST_END_DATETIME);
                 endDate.show(getFragmentManager(), DIALOG_DATE);
                 break;
             case R.id.et_end_time:
                 TimePickerFragment endTime = TimePickerFragment.newInstance(mEvent.getEndTime());
-                endTime.setTargetFragment(NewEventFragment.this, REQUEST_END_DATETIME);
+                endTime.setTargetFragment(EventFragment.this, REQUEST_END_DATETIME);
                 endTime.show(getFragmentManager(), DIALOG_TIME);
                 break;
             case R.id.fab_confirm:
-
+                mEvent.setTitle(mEtTitle.getText().toString());
+                mEvent.setNotes(mEtNotes.getText().toString());
+                if (mEtTitle.getText().toString().isEmpty()) {
+                    Snackbar.make(getView(), R.string.error_field_required, Snackbar.LENGTH_SHORT).show();
+                } else {
+                    getActivity().finish();
+                }
+                checkDateTime();
                 break;
         }
     }
 
-    private void checkDateTime() {
+    private boolean checkDateTime() {
         if (mEvent.getEndTime().before(mEvent.getStartTime())) {
             Snackbar.make(getView(), this.getString(R.string.error_invalid_endTime), Snackbar.LENGTH_SHORT).show();
-            mEvent.setEndTime(mEvent.getStartTime());
+            return false;
         }
+        return true;
     }
 
     private void updateUI() {
@@ -181,7 +206,6 @@ public class NewEventFragment extends Fragment implements View.OnClickListener {
         }
 
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-        @SuppressLint("ResourceAsColor")
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             ViewHolder holder;
@@ -198,8 +222,8 @@ public class NewEventFragment extends Fragment implements View.OnClickListener {
         }
 
         static class ViewHolder {
-            Category mCategory;
             View view;
+            Category mCategory;
             View mCategoryColor;
             TextView mCategoryName;
 

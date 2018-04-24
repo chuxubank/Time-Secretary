@@ -15,19 +15,14 @@ public class TaskLab {
     private List<Task> mTasks;
     private Context mContext;
     private SQLiteDatabase mDatabase;
-    private int mSize = 4;
 
     private TaskLab(Context context) {
         mContext = context.getApplicationContext();
-
         mTasks = new ArrayList<>();
-        for (int i = 1; i <= mSize; i++) {
-            Task task = new Task();
-            task.setTitle("Task #" + i);
-            task.setNotes("Task #" + i + " Notes");
-            mTasks.add(task);
-        }
+    }
 
+    public void addTask(Task t) {
+        mTasks.add(t);
     }
 
     public static TaskLab get(Context context) {

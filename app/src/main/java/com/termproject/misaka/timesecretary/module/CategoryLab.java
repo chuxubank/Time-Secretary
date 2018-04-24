@@ -2,9 +2,6 @@ package com.termproject.misaka.timesecretary.module;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.v4.content.ContextCompat;
-
-import com.termproject.misaka.timesecretary.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,13 +20,12 @@ public class CategoryLab {
     private CategoryLab(Context context) {
         mContext = context.getApplicationContext();
         mCategories = new ArrayList<>();
-        for (int i = 1; i <= mSize; i++) {
-            Category category = new Category();
-            category.setName("Category #" + i);
-            category.setColor(ContextCompat.getColor(mContext, R.color.test_color));
-            mCategories.add(category);
-        }
     }
+
+    public void addCategory(Category c) {
+        mCategories.add(c);
+    }
+
 
     public static CategoryLab get(Context context) {
         if (sCategoryLab == null) {

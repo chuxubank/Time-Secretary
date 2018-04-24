@@ -1,17 +1,13 @@
-package com.termproject.misaka.timesecretary.add;
+package com.termproject.misaka.timesecretary.controller;
 
 import android.support.v4.app.Fragment;
 
 import com.termproject.misaka.timesecretary.base.BaseSingleFragmentActivity;
 
-/**
- * @author misaka
- */
-public class AddActivity extends BaseSingleFragmentActivity {
+public class TaskActivity extends BaseSingleFragmentActivity {
 
     @Override
     public Fragment createFragment() {
-        return new NewEventFragment();
+        return null;
     }
-
 }
