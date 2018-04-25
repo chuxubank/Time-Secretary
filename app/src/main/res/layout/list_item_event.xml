@@ -36,7 +36,7 @@
     </LinearLayout>
 
     <View
-        android:id="@+id/event_divider"
+        android:id="@+id/divider"
         android:layout_width="2dp"
         android:layout_height="match_parent"
         android:layout_gravity="center_horizontal"
@@ -62,8 +62,8 @@
             android:id="@+id/event_notes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="1"
+            android:ellipsize="marquee"
+            android:singleLine="true"
             android:textColor="@color/secondary_text"
             tools:text="Event Notes" />
 

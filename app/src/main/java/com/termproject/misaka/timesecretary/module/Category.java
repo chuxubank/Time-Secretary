@@ -7,7 +7,7 @@ import java.util.UUID;
  */
 public class Category {
     private UUID mId;
-    private String mName;
+    private String mTitle;
     private int mColor;
 
     public Category() {
@@ -18,12 +18,12 @@ public class Category {
         return mId;
     }
 
-    public String getName() {
-        return mName;
+    public String getTitle() {
+        return mTitle;
     }
 
-    public void setName(String name) {
-        mName = name;
+    public void setTitle(String title) {
+        mTitle = title;
     }
 
     public int getColor() {

@@ -2,6 +2,7 @@ package com.termproject.misaka.timesecretary.module;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.text.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,18 @@ public class TaskLab {
         mTasks.add(t);
     }
 
+    public void deleteTask(Task t) {
+        mTasks.remove(t);
+    }
+
+    public void clearNoTitle() {
+        for (Task t : mTasks) {
+            if (TextUtils.isEmpty(t.getTitle())) {
+                mTasks.remove(t);
+            }
+        }
+    }
+    
     public static TaskLab get(Context context) {
         if (sTaskLab == null) {
             sTaskLab = new TaskLab(context);

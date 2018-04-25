@@ -12,14 +12,15 @@ public class Task {
     private String mNotes;
     private Calendar mStartTime;
     private Calendar mEndTime;
+    private Calendar mDeferUntil;
     private Calendar mDeadline;
     private UUID mCategory;
     private boolean mChecked;
 
     public Task() {
         mId = UUID.randomUUID();
-        mStartTime = Calendar.getInstance();
-
+        mDeferUntil = Calendar.getInstance();
+        mDeadline = Calendar.getInstance();
     }
 
     public UUID getId() {
@@ -56,6 +57,14 @@ public class Task {
 
     public void setEndTime(Calendar endTime) {
         mEndTime = endTime;
+    }
+
+    public Calendar getDeferUntil() {
+        return mDeferUntil;
+    }
+
+    public void setDeferUntil(Calendar deferUntil) {
+        mDeferUntil = deferUntil;
     }
 
     public Calendar getDeadline() {

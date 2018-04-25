@@ -49,6 +49,7 @@ public class TodayFragment extends Fragment {
 
     private void updateUI() {
         EventLab eventLab = EventLab.get(getActivity());
+        eventLab.clearNoTitle();
         List<Event> events = eventLab.getEvents();
         if (mEventAdapter == null) {
             mEventAdapter = new EventAdapter(events);
@@ -57,6 +58,7 @@ public class TodayFragment extends Fragment {
             mEventAdapter.notifyDataSetChanged();
         }
         TaskLab taskLab = TaskLab.get(getActivity());
+        taskLab.clearNoTitle();
         List<Task> tasks = taskLab.getTasks();
         if (mTaskAdapter == null) {
             mTaskAdapter = new TaskAdapter(tasks);
@@ -75,6 +77,7 @@ public class TodayFragment extends Fragment {
 
     private class EventHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private Event mEvent;
+        private View mDivider;
         private TextView mEventTitle;
         private TextView mEventNotes;
         private TextView mEventStartTime;
@@ -85,6 +88,7 @@ public class TodayFragment extends Fragment {
             itemView.setOnClickListener(this);
             mEventTitle = itemView.findViewById(R.id.event_title);
             mEventNotes = itemView.findViewById(R.id.event_notes);
+            mDivider = itemView.findViewById(R.id.divider);
             mEventStartTime = itemView.findViewById(R.id.event_start_time);
             mEventEndTime = itemView.findViewById(R.id.event_end_time);
         }

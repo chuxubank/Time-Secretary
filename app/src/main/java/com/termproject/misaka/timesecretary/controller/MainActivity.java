@@ -19,6 +19,8 @@ import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.termproject.misaka.timesecretary.R;
 import com.termproject.misaka.timesecretary.module.Event;
 import com.termproject.misaka.timesecretary.module.EventLab;
+import com.termproject.misaka.timesecretary.module.Task;
+import com.termproject.misaka.timesecretary.module.TaskLab;
 
 /**
  * @author misaka
@@ -133,6 +135,10 @@ public class MainActivity extends AppCompatActivity
         mAddTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Task task = new Task();
+                TaskLab.get(MainActivity.this).addTask(task);
+                Intent intent = TaskActivity.newIntent(MainActivity.this, task.getId());
+                startActivity(intent);
                 mFamAdd.collapse();
             }
         });

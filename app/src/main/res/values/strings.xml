@@ -33,13 +33,13 @@
     </string>
 
     <!-- Strings related to add -->
-    <string name="prompt_header">Title</string>
+    <string name="prompt_title">Title</string>
     <string name="prompt_notes">Notes</string>
+    <string name="prompt_category">Category:</string>
     <string name="prompt_starts">Starts:</string>
     <string name="prompt_ends">Ends:</string>
     <string name="error_invalid_endTime">The end time should be after the start time!</string>
     <string name="prompt_at">\@</string>
-    <string name="prompt_category">Category:</string>
 
     <string name="large_text">
         "Material is the metaphor.\n\n"
@@ -141,7 +141,7 @@
         based on your message history
     </string>
 
-    <string name="pref_title_display_name">Display name</string>
+    <string name="pref_title_display_name">Display title</string>
     <string name="pref_default_display_name">John Smith</string>
 
     <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
@@ -204,4 +204,5 @@
     <string name="pref_title_vibrate">Vibrate</string>
     <string name="prompt_defer">Defer Until:</string>
     <string name="prompt_deadline">Deadline:</string>
+    <string name="alert_delete">Are you sure you want to delete this?</string>
 </resources>

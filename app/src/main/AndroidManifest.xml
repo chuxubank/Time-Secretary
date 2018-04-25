@@ -35,6 +35,10 @@
             android:parentActivityName=".controller.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name=".controller.TaskActivity"
+            android:parentActivityName=".controller.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".controller.SettingsActivityBase"
             android:label="@string/title_activity_settings"
             android:parentActivityName=".controller.MainActivity" />

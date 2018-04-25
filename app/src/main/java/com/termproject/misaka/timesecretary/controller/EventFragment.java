@@ -2,16 +2,21 @@ package com.termproject.misaka.timesecretary.controller;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,11 +55,11 @@ public class EventFragment extends Fragment implements View.OnClickListener {
     private EditText mEtEndDate;
     private EditText mEtEndTime;
     private FloatingActionButton mFabConfirm;
-    private TextInputEditText mEtTitle;
-    private TextInputEditText mEtNotes;
     private Spinner mSpnCategory;
     private CategoryAdapter mCategoryAdapter;
     private Toolbar mToolbar;
+    private TextInputLayout mEtTitle;
+    private TextInputLayout mEtNotes;
 
     public static EventFragment newInstance(UUID eventId) {
         Bundle args = new Bundle();
@@ -73,7 +78,7 @@ public class EventFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_add_event, container, false);
+        View v = inflater.inflate(R.layout.fragment_event, container, false);
         initView(v);
         updateUI();
         return v;
@@ -121,11 +126,45 @@ public class EventFragment extends Fragment implements View.OnClickListener {
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EventLab.get(getActivity()).deleteEvent(mEvent);
-                getActivity().finish();
+                if (!TextUtils.isEmpty(mEtTitle.getEditText().getText().toString())) {
+                    new AlertDialog.Builder(getActivity())
+                            .setTitle(android.R.string.dialog_alert_title)
+                            .setMessage(R.string.alert_delete)
+                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    EventLab.get(getActivity()).deleteEvent(mEvent);
+                                    getActivity().finish();
+                                }
+                            })
+                            .setNegativeButton(android.R.string.cancel, null)
+                            .create().show();
+                } else {
+                    getActivity().finish();
+                }
             }
         });
+        mEtTitle = v.findViewById(R.id.et_title);
+        EditText editText = mEtTitle.getEditText();
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!TextUtils.isEmpty(s)) {
+                    mEtTitle.setErrorEnabled(false);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+        mEtNotes = v.findViewById(R.id.et_notes);
     }
+
 
     @Override
     public void onClick(View v) {
@@ -153,15 +192,35 @@ public class EventFragment extends Fragment implements View.OnClickListener {
                 endTime.show(getFragmentManager(), DIALOG_TIME);
                 break;
             case R.id.fab_confirm:
-                mEvent.setTitle(mEtTitle.getText().toString());
-                mEvent.setNotes(mEtNotes.getText().toString());
-                if (mEtTitle.getText().toString().isEmpty()) {
-                    Snackbar.make(getView(), R.string.error_field_required, Snackbar.LENGTH_SHORT).show();
-                } else {
-                    getActivity().finish();
-                }
-                checkDateTime();
+                attemptAdd();
                 break;
+        }
+    }
+
+    private void attemptAdd() {
+        mEtTitle.setError(null);
+        String title = mEtTitle.getEditText().getText().toString();
+
+        boolean cancel = false;
+        View focusView = null;
+
+        if (TextUtils.isEmpty(title)) {
+            mEtTitle.setError(getString(R.string.error_field_required));
+            focusView = mEtTitle;
+            cancel = true;
+        }
+
+        if (!checkDateTime()) {
+            focusView = mEtEndTime;
+            cancel = true;
+        }
+
+        if (cancel) {
+            focusView.requestFocus();
+        } else {
+            mEvent.setTitle(mEtTitle.getEditText().getText().toString());
+            mEvent.setNotes(mEtNotes.getEditText().getText().toString());
+            getActivity().finish();
         }
     }
 
@@ -217,7 +276,7 @@ public class EventFragment extends Fragment implements View.OnClickListener {
                 holder = (ViewHolder) convertView.getTag();
             }
             holder.mCategoryColor.getBackground().setTint(mCategories.get(position).getColor());
-            holder.mCategoryName.setText(mCategories.get(position).getName());
+            holder.mCategoryName.setText(mCategories.get(position).getTitle());
             return convertView;
         }
 

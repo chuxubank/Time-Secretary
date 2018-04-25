@@ -2,6 +2,7 @@ package com.termproject.misaka.timesecretary.module;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.text.TextUtils;
 
 import com.termproject.misaka.timesecretary.database.EventBaseHelper;
 
@@ -29,9 +30,13 @@ public class EventLab {
     }
 
     public void deleteEvent(Event e) {
-        for (Event event : mEvents) {
-            if (event.getId().equals(e.getId())) {
-                mEvents.remove(event);
+        mEvents.remove(e);
+    }
+
+    public void clearNoTitle() {
+        for (Event e : mEvents) {
+            if (TextUtils.isEmpty(e.getTitle())) {
+                mEvents.remove(e);
             }
         }
     }

@@ -5,17 +5,17 @@
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/base_margin"
     android:orientation="vertical"
-    tools:showIn="@layout/fragment_add_event">
+    tools:showIn="@layout/fragment_event">
 
     <android.support.design.widget.TextInputLayout
+        android:id="@+id/et_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <android.support.design.widget.TextInputEditText
-            android:id="@+id/et_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/prompt_header"
+            android:hint="@string/prompt_title"
             android:maxLines="1"
             android:singleLine="true"
             android:textSize="25sp" />
@@ -23,11 +23,11 @@
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
+        android:id="@+id/et_notes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <android.support.design.widget.TextInputEditText
-            android:id="@+id/et_notes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/prompt_notes"
