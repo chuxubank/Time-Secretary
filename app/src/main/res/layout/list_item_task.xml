@@ -16,11 +16,10 @@
         android:gravity="center">
 
         <CheckBox
-            android:id="@+id/task_checked"
+            android:id="@+id/cb_task_checked"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/test_color"
-            android:buttonTint="@color/test_color"
+            tools:buttonTint="@color/test_color"
             android:text=""
             tools:targetApi="lollipop" />
 
@@ -35,7 +34,7 @@
         tools:targetApi="o">
 
         <TextView
-            android:id="@+id/task_title"
+            android:id="@+id/tv_task_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/primary_text"
@@ -43,7 +42,7 @@
             tools:text="Task Title" />
 
         <TextView
-            android:id="@+id/task_notes"
+            android:id="@+id/tv_task_notes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/secondary_text"

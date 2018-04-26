@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -199,6 +200,8 @@ public class TaskFragment extends Fragment implements View.OnClickListener {
         if (cancel) {
             focusView.requestFocus();
         } else {
+            Category category = (Category) mSpnCategory.getSelectedItem();
+            mTask.setCategory(category.getId());
             mTask.setTitle(mEtTitle.getEditText().getText().toString());
             mTask.setNotes(mEtNotes.getEditText().getText().toString());
             getActivity().finish();
@@ -254,7 +257,7 @@ public class TaskFragment extends Fragment implements View.OnClickListener {
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
-            holder.mCategoryColor.getBackground().setTint(mCategories.get(position).getColor());
+            holder.mCategoryColor.getBackground().setTint(Color.parseColor(mCategories.get(position).getColor()));
             holder.mCategoryName.setText(mCategories.get(position).getTitle());
             return convertView;
         }
@@ -267,8 +270,8 @@ public class TaskFragment extends Fragment implements View.OnClickListener {
 
             ViewHolder(View view) {
                 this.view = view;
-                this.mCategoryColor = view.findViewById(R.id.category_color);
-                this.mCategoryName = view.findViewById(R.id.category_name);
+                this.mCategoryColor = view.findViewById(R.id.v_color);
+                this.mCategoryName = view.findViewById(R.id.tv_title);
             }
         }
     }

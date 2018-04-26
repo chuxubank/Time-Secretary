@@ -20,15 +20,12 @@
             android:textStyle="bold" />
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/event_recycler_view"
+            android:id="@+id/rv_event"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:layoutManager="LinearLayoutManager"
             tools:layout_height="200dp"
-            tools:listitem="@layout/list_item_event">
-
-        </android.support.v7.widget.RecyclerView>
-
+            tools:listitem="@layout/list_item_event" />
 
         <View
             android:layout_width="match_parent"
@@ -49,7 +46,7 @@
             tools:targetApi="o" />
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/task_recycler_view"
+            android:id="@+id/rv_task"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:layoutManager="LinearLayoutManager"

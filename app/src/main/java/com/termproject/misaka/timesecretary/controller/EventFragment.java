@@ -4,9 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Build;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
@@ -218,6 +217,8 @@ public class EventFragment extends Fragment implements View.OnClickListener {
         if (cancel) {
             focusView.requestFocus();
         } else {
+            Category category = (Category) mSpnCategory.getSelectedItem();
+            mEvent.setCategory(category.getId());
             mEvent.setTitle(mEtTitle.getEditText().getText().toString());
             mEvent.setNotes(mEtNotes.getEditText().getText().toString());
             getActivity().finish();
@@ -264,7 +265,6 @@ public class EventFragment extends Fragment implements View.OnClickListener {
             return position;
         }
 
-        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             ViewHolder holder;
@@ -275,7 +275,7 @@ public class EventFragment extends Fragment implements View.OnClickListener {
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
-            holder.mCategoryColor.getBackground().setTint(mCategories.get(position).getColor());
+            holder.mCategoryColor.getBackground().setTint(Color.parseColor(mCategories.get(position).getColor()));
             holder.mCategoryName.setText(mCategories.get(position).getTitle());
             return convertView;
         }
@@ -288,8 +288,8 @@ public class EventFragment extends Fragment implements View.OnClickListener {
 
             ViewHolder(View view) {
                 this.view = view;
-                this.mCategoryColor = view.findViewById(R.id.category_color);
-                this.mCategoryName = view.findViewById(R.id.category_name);
+                this.mCategoryColor = view.findViewById(R.id.v_color);
+                this.mCategoryName = view.findViewById(R.id.tv_title);
             }
         }
 

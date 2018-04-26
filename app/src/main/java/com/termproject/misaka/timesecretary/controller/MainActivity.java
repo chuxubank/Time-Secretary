@@ -17,6 +17,8 @@ import android.view.View;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.termproject.misaka.timesecretary.R;
+import com.termproject.misaka.timesecretary.module.Category;
+import com.termproject.misaka.timesecretary.module.CategoryLab;
 import com.termproject.misaka.timesecretary.module.Event;
 import com.termproject.misaka.timesecretary.module.EventLab;
 import com.termproject.misaka.timesecretary.module.Task;
@@ -146,6 +148,10 @@ public class MainActivity extends AppCompatActivity
         mAddCategory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Category category = new Category();
+                CategoryLab.get(MainActivity.this).addCategory(category);
+                Intent intent = CategoryActivity.newIntent(MainActivity.this, category.getId());
+                startActivity(intent);
                 mFamAdd.collapse();
             }
         });

@@ -8,4 +8,5 @@
     android:layout_height="wrap_content"
     android:fitsSystemWindows="true"
     android:minHeight="?android:attr/actionBarSize"
+    android:background="?android:attr/colorPrimary"
     app:popupTheme="@style/AppTheme.PopupOverlay" />

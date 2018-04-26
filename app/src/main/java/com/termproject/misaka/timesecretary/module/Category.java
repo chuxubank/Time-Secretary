@@ -8,10 +8,11 @@ import java.util.UUID;
 public class Category {
     private UUID mId;
     private String mTitle;
-    private int mColor;
+    private String mColor;
 
     public Category() {
         mId = UUID.randomUUID();
+        mColor = "#66CCFF";
     }
 
     public UUID getId() {
@@ -26,11 +27,11 @@ public class Category {
         mTitle = title;
     }
 
-    public int getColor() {
+    public String getColor() {
         return mColor;
     }
 
-    public void setColor(int color) {
+    public void setColor(String color) {
         mColor = color;
     }
 }

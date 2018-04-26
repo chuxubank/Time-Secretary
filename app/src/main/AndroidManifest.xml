@@ -31,11 +31,14 @@
             android:parentActivityName=".controller.MainActivity" />
         <activity
             android:name=".controller.EventActivity"
-            android:label="@string/title_activity_add"
             android:parentActivityName=".controller.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".controller.TaskActivity"
+            android:parentActivityName=".controller.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".controller.CategoryActivity"
             android:parentActivityName=".controller.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity

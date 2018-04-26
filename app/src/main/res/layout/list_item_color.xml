@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground"
     android:orientation="horizontal">
 
     <View
@@ -16,14 +17,12 @@
         tools:targetApi="lollipop" />
 
     <TextView
-        android:id="@+id/tv_title"
+        android:id="@+id/tv_color_code"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/text_margin"
-        android:ellipsize="marquee"
-        android:singleLine="true"
         android:textColor="@color/primary_text"
         android:textSize="@dimen/item_primary_text_size"
-        tools:text="Category" />
+        tools:text="#66CCFF" />
 
 </LinearLayout>
