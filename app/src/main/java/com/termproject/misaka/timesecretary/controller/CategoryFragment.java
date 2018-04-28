@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -52,8 +53,8 @@ public class CategoryFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        UUID category_id = (UUID) getArguments().getSerializable(ARG_CATEGORY_ID);
-        mCategory = CategoryLab.get(getActivity()).getCategory(category_id);
+        UUID categoryId = (UUID) getArguments().getSerializable(ARG_CATEGORY_ID);
+        mCategory = CategoryLab.get(getActivity()).getCategory(categoryId);
     }
 
     @Override
@@ -65,7 +66,6 @@ public class CategoryFragment extends Fragment {
     }
 
     private void initView(View v) {
-        mToolbar = v.findViewById(R.id.toolbar);
         mToolbar = v.findViewById(R.id.toolbar);
         mToolbar.setNavigationIcon(R.drawable.ic_close);
         AppCompatActivity activity = (AppCompatActivity) getActivity();
@@ -124,12 +124,13 @@ public class CategoryFragment extends Fragment {
                 if (isColorValid(s.toString())) {
                     mEtColor.setErrorEnabled(false);
                     mEtColorEditText.setTextColor(Color.parseColor(mEtColorEditText.getText().toString()));
+                } else {
+                    mEtColorEditText.setTextColor(Color.WHITE);
                 }
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-
             }
         });
         mRvColor = v.findViewById(R.id.rv_color);
