@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -94,6 +93,7 @@ public class CategoryFragment extends Fragment {
         });
         mEtTitle = v.findViewById(R.id.et_title);
         EditText mEtTitleEditText = mEtTitle.getEditText();
+        mEtTitleEditText.setText(mCategory.getTitle());
         mEtTitleEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -113,6 +113,7 @@ public class CategoryFragment extends Fragment {
         mEtColor = v.findViewById(R.id.et_notes);
         mEtColor.setHint(getString(R.string.prompt_color));
         final EditText mEtColorEditText = mEtColor.getEditText();
+        mEtColorEditText.setText(mCategory.getColor());
         mEtColorEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {

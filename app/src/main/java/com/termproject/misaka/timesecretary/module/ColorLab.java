@@ -31,7 +31,9 @@ public class ColorLab {
     public void updateColor() {
         mCategories = mCategoryLab.getCategories();
         for (Category c : mCategories) {
-            mColors.add(c.getColor());
+            if (c.getColor() != null) {
+                mColors.add(c.getColor());
+            }
         }
     }
 

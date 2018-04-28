@@ -46,8 +46,8 @@ public class TaskFragment extends Fragment implements View.OnClickListener {
     private static final String ARG_TASK_ID = "task_id";
 
     private static final String DIALOG_DATE = "DialogDate";
-    private static final int REQUEST_DEFER_UNTIL = 1;
-    private static final int REQUEST_DEADLINE = 2;
+    private static final int REQUEST_DEFER_UNTIL = 2;
+    private static final int REQUEST_DEADLINE = 3;
     private Task mTask;
     private FloatingActionButton mFabConfirm;
     private Spinner mSpnCategory;
@@ -81,33 +81,7 @@ public class TaskFragment extends Fragment implements View.OnClickListener {
         return v;
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode != Activity.RESULT_OK) {
-            return;
-        }
-        if (requestCode == REQUEST_DEFER_UNTIL) {
-            Calendar calendar = (Calendar) data.getSerializableExtra(DatePickerFragment.EXTRA_DATETIME);
-            mTask.setDeferUntil(calendar);
-            updateUI();
-        } else if (requestCode == REQUEST_DEADLINE) {
-            Calendar calendar = (Calendar) data.getSerializableExtra(DatePickerFragment.EXTRA_DATETIME);
-            mTask.setDeadline(calendar);
-            updateUI();
-        }
-    }
-
     private void initView(View v) {
-
-        mFabConfirm = v.findViewById(R.id.fab_confirm);
-        mFabConfirm.setOnClickListener(this);
-        mEtTitle = v.findViewById(R.id.et_title);
-        mEtNotes = v.findViewById(R.id.et_notes);
-        mSpnCategory = v.findViewById(R.id.spn_category);
-        CategoryLab categoryLab = CategoryLab.get(getActivity());
-        List<Category> categories = categoryLab.getCategories();
-        mCategoryAdapter = new CategoryAdapter(categories, getActivity());
-        mSpnCategory.setAdapter(mCategoryAdapter);
         mToolbar = v.findViewById(R.id.toolbar);
         mToolbar.setNavigationIcon(R.drawable.ic_close);
         AppCompatActivity activity = (AppCompatActivity) getActivity();
@@ -135,8 +109,9 @@ public class TaskFragment extends Fragment implements View.OnClickListener {
             }
         });
         mEtTitle = v.findViewById(R.id.et_title);
-        EditText editText = mEtTitle.getEditText();
-        editText.addTextChangedListener(new TextWatcher() {
+        EditText mEtTitleEditText = mEtTitle.getEditText();
+        mEtTitleEditText.setText(mTask.getTitle());
+        mEtTitleEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
@@ -153,8 +128,19 @@ public class TaskFragment extends Fragment implements View.OnClickListener {
             }
         });
         mEtNotes = v.findViewById(R.id.et_notes);
+        EditText mEtNotesEditText = mEtNotes.getEditText();
+        mEtNotesEditText.setText(mTask.getNotes());
+        mSpnCategory = v.findViewById(R.id.spn_category);
+        CategoryLab categoryLab = CategoryLab.get(getActivity());
+        mCategoryAdapter = new CategoryAdapter(categoryLab.getCategories(), getActivity());
+        mSpnCategory.setAdapter(mCategoryAdapter);
+        mSpnCategory.setSelection(categoryLab.getPosition(mTask.getCategory()), true);
+        mFabConfirm = v.findViewById(R.id.fab_confirm);
+        mFabConfirm.setOnClickListener(this);
         mEtDeferUntil = v.findViewById(R.id.et_defer_until);
+        mEtDeferUntil.setOnClickListener(this);
         mEtDeadline = v.findViewById(R.id.et_deadline);
+        mEtDeadline.setOnClickListener(this);
     }
 
 
@@ -164,18 +150,34 @@ public class TaskFragment extends Fragment implements View.OnClickListener {
             default:
                 break;
             case R.id.et_defer_until:
-                DatePickerFragment startDate = DatePickerFragment.newInstance(mTask.getStartTime());
+                DatePickerFragment startDate = DatePickerFragment.newInstance(mTask.getDeferUntil());
                 startDate.setTargetFragment(TaskFragment.this, REQUEST_DEFER_UNTIL);
                 startDate.show(getFragmentManager(), DIALOG_DATE);
                 break;
             case R.id.et_deadline:
-                DatePickerFragment endDate = DatePickerFragment.newInstance(mTask.getEndTime());
+                DatePickerFragment endDate = DatePickerFragment.newInstance(mTask.getDeadline());
                 endDate.setTargetFragment(TaskFragment.this, REQUEST_DEADLINE);
                 endDate.show(getFragmentManager(), DIALOG_DATE);
                 break;
             case R.id.fab_confirm:
                 attemptAdd();
                 break;
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+        if (requestCode == REQUEST_DEFER_UNTIL) {
+            Calendar calendar = (Calendar) data.getSerializableExtra(DatePickerFragment.EXTRA_DATETIME);
+            mTask.setDeferUntil(calendar);
+            updateUI();
+        } else if (requestCode == REQUEST_DEADLINE) {
+            Calendar calendar = (Calendar) data.getSerializableExtra(DatePickerFragment.EXTRA_DATETIME);
+            mTask.setDeadline(calendar);
+            updateUI();
         }
     }
 

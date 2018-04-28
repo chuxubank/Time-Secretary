@@ -20,10 +20,9 @@ public class CategoryLab {
     private CategoryLab(Context context) {
         mContext = context.getApplicationContext();
         mCategories = new ArrayList<>();
-        Category category = new Category();
-        category.setTitle("Default");
-        category.setColor("#66CCFF");
-        mCategories.add(category);
+        mCategories.add(new Category("Life", "#FF5722"));
+        mCategories.add(new Category("Work", "#9C27B0"));
+        mCategories.add(new Category("Study", "#4CAF50"));
     }
 
     public void addCategory(Category c) {
@@ -40,6 +39,10 @@ public class CategoryLab {
                 mCategories.remove(c);
             }
         }
+    }
+
+    public int getPosition(UUID id) {
+        return mCategories.indexOf(getCategory(id));
     }
 
     public static CategoryLab get(Context context) {

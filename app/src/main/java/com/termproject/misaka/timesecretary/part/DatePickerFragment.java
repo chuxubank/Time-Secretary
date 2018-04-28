@@ -17,7 +17,6 @@ import com.termproject.misaka.timesecretary.R;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-
 public class DatePickerFragment extends AppCompatDialogFragment {
 
     public static final String EXTRA_DATETIME = "com.termproject.misaka.timesecretary.datetime";
@@ -40,8 +39,7 @@ public class DatePickerFragment extends AppCompatDialogFragment {
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-        View v = LayoutInflater.from(getActivity())
-                .inflate(R.layout.dialog_date, null);
+        View v = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_date, null);
 
         mDatePicker = v.findViewById(R.id.dialog_date_picker);
         mDatePicker.init(year, month, day, null);
@@ -68,7 +66,6 @@ public class DatePickerFragment extends AppCompatDialogFragment {
         }
         Intent intent = new Intent();
         intent.putExtra(EXTRA_DATETIME, calendar);
-        getTargetFragment()
-                .onActivityResult(getTargetRequestCode(), resultCode, intent);
+        getTargetFragment().onActivityResult(getTargetRequestCode(), resultCode, intent);
     }
 }

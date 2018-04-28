@@ -100,23 +100,6 @@ public class EventFragment extends Fragment implements View.OnClickListener {
     }
 
     private void initView(View v) {
-        mEtStartDate = v.findViewById(R.id.et_start_date);
-        mEtStartDate.setOnClickListener(this);
-        mEtStartTime = v.findViewById(R.id.et_start_time);
-        mEtStartTime.setOnClickListener(this);
-        mEtEndDate = v.findViewById(R.id.et_end_date);
-        mEtEndDate.setOnClickListener(this);
-        mEtEndTime = v.findViewById(R.id.et_end_time);
-        mEtEndTime.setOnClickListener(this);
-        mFabConfirm = v.findViewById(R.id.fab_confirm);
-        mFabConfirm.setOnClickListener(this);
-        mEtTitle = v.findViewById(R.id.et_title);
-        mEtNotes = v.findViewById(R.id.et_notes);
-        mSpnCategory = v.findViewById(R.id.spn_category);
-        CategoryLab categoryLab = CategoryLab.get(getActivity());
-        List<Category> categories = categoryLab.getCategories();
-        mCategoryAdapter = new CategoryAdapter(categories, getActivity());
-        mSpnCategory.setAdapter(mCategoryAdapter);
         mToolbar = v.findViewById(R.id.toolbar);
         mToolbar.setNavigationIcon(R.drawable.ic_close);
         AppCompatActivity activity = (AppCompatActivity) getActivity();
@@ -144,8 +127,9 @@ public class EventFragment extends Fragment implements View.OnClickListener {
             }
         });
         mEtTitle = v.findViewById(R.id.et_title);
-        EditText editText = mEtTitle.getEditText();
-        editText.addTextChangedListener(new TextWatcher() {
+        EditText mEtTitleEditText = mEtTitle.getEditText();
+        mEtTitleEditText.setText(mEvent.getTitle());
+        mEtTitleEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
@@ -162,6 +146,23 @@ public class EventFragment extends Fragment implements View.OnClickListener {
             }
         });
         mEtNotes = v.findViewById(R.id.et_notes);
+        EditText mEtNotesEditText = mEtNotes.getEditText();
+        mEtNotesEditText.setText(mEvent.getNotes());
+        mSpnCategory = v.findViewById(R.id.spn_category);
+        CategoryLab categoryLab = CategoryLab.get(getActivity());
+        mCategoryAdapter = new CategoryAdapter(categoryLab.getCategories(), getActivity());
+        mSpnCategory.setAdapter(mCategoryAdapter);
+        mSpnCategory.setSelection(categoryLab.getPosition(mEvent.getCategory()), true);
+        mEtStartDate = v.findViewById(R.id.et_start_date);
+        mEtStartDate.setOnClickListener(this);
+        mEtStartTime = v.findViewById(R.id.et_start_time);
+        mEtStartTime.setOnClickListener(this);
+        mEtEndDate = v.findViewById(R.id.et_end_date);
+        mEtEndDate.setOnClickListener(this);
+        mEtEndTime = v.findViewById(R.id.et_end_time);
+        mEtEndTime.setOnClickListener(this);
+        mFabConfirm = v.findViewById(R.id.fab_confirm);
+        mFabConfirm.setOnClickListener(this);
     }
 
 

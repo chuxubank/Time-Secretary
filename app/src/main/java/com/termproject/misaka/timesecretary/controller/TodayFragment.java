@@ -1,10 +1,10 @@
 package com.termproject.misaka.timesecretary.controller;
 
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -114,7 +114,8 @@ public class TodayFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-            Snackbar.make(getView(), mEvent.getTitle(), Snackbar.LENGTH_SHORT).show();
+            Intent intent = EventActivity.newIntent(getActivity(), mEvent.getId());
+            startActivity(intent);
         }
     }
 
@@ -176,7 +177,8 @@ public class TodayFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-            Snackbar.make(getView(), mTask.getTitle(), Snackbar.LENGTH_SHORT).show();
+            Intent intent = TaskActivity.newIntent(getActivity(), mTask.getId());
+            startActivity(intent);
         }
     }
 

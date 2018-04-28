@@ -12,7 +12,12 @@ public class Category {
 
     public Category() {
         mId = UUID.randomUUID();
-        mColor = "#66CCFF";
+    }
+
+    public Category(String title, String color) {
+        mId = UUID.randomUUID();
+        mTitle = title;
+        mColor = color;
     }
 
     public UUID getId() {
