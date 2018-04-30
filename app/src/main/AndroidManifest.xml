@@ -27,12 +27,15 @@
         </activity>
         <activity
             android:name=".controller.EventActivity"
+            android:label="@string/title_event"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".controller.TaskActivity"
+            android:label="@string/title_task"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".controller.CategoryActivity"
+            android:label="@string/title_category"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".controller.LoginActivity"

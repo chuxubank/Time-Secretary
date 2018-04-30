@@ -19,6 +19,9 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -71,6 +74,7 @@ public class TaskFragment extends Fragment implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         UUID taskId = (UUID) getArguments().getSerializable(ARG_TASK_ID);
         mTask = TaskLab.get(getActivity()).getTask(taskId);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -81,15 +85,16 @@ public class TaskFragment extends Fragment implements View.OnClickListener {
         return v;
     }
 
-    private void initView(View v) {
-        mToolbar = v.findViewById(R.id.toolbar);
-        mToolbar.setNavigationIcon(R.drawable.ic_close);
-        AppCompatActivity activity = (AppCompatActivity) getActivity();
-        activity.setSupportActionBar(mToolbar);
-        activity.getSupportActionBar().setDisplayShowTitleEnabled(false);
-        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.common_single_fragment, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_delete:
                 if (!TextUtils.isEmpty(mEtTitle.getEditText().getText().toString())) {
                     new AlertDialog.Builder(getActivity())
                             .setTitle(android.R.string.dialog_alert_title)
@@ -106,6 +111,20 @@ public class TaskFragment extends Fragment implements View.OnClickListener {
                 } else {
                     getActivity().finish();
                 }
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void initView(View v) {
+        mToolbar = v.findViewById(R.id.toolbar);
+        mToolbar.setNavigationIcon(R.drawable.ic_close);
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        activity.setSupportActionBar(mToolbar);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().finish();
             }
         });
         mEtTitle = v.findViewById(R.id.et_title);
@@ -212,7 +231,7 @@ public class TaskFragment extends Fragment implements View.OnClickListener {
 
     private boolean checkDateTime() {
         if (mTask.getDeadline().before(mTask.getDeferUntil())) {
-            Snackbar.make(getView(), this.getString(R.string.error_invalid_endTime), Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(getView(), this.getString(R.string.error_invalid_deadline), Snackbar.LENGTH_SHORT).show();
             return false;
         }
         return true;
@@ -273,7 +292,7 @@ public class TaskFragment extends Fragment implements View.OnClickListener {
             ViewHolder(View view) {
                 this.view = view;
                 this.mCategoryColor = view.findViewById(R.id.v_color);
-                this.mCategoryName = view.findViewById(R.id.tv_title);
+                this.mCategoryName = view.findViewById(R.id.tv_category_title);
             }
         }
     }

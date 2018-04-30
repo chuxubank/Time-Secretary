@@ -16,6 +16,9 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -54,6 +57,7 @@ public class CategoryFragment extends Fragment {
         super.onCreate(savedInstanceState);
         UUID categoryId = (UUID) getArguments().getSerializable(ARG_CATEGORY_ID);
         mCategory = CategoryLab.get(getActivity()).getCategory(categoryId);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -64,15 +68,16 @@ public class CategoryFragment extends Fragment {
         return v;
     }
 
-    private void initView(View v) {
-        mToolbar = v.findViewById(R.id.toolbar);
-        mToolbar.setNavigationIcon(R.drawable.ic_close);
-        AppCompatActivity activity = (AppCompatActivity) getActivity();
-        activity.setSupportActionBar(mToolbar);
-        activity.getSupportActionBar().setDisplayShowTitleEnabled(false);
-        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.common_single_fragment, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_delete:
                 if (!TextUtils.isEmpty(mEtTitle.getEditText().getText().toString())) {
                     new AlertDialog.Builder(getActivity())
                             .setTitle(android.R.string.dialog_alert_title)
@@ -89,6 +94,21 @@ public class CategoryFragment extends Fragment {
                 } else {
                     getActivity().finish();
                 }
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void initView(View v) {
+        mToolbar = v.findViewById(R.id.toolbar);
+        mToolbar.setNavigationIcon(R.drawable.ic_close);
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        activity.setSupportActionBar(mToolbar);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().finish();
             }
         });
         mEtTitle = v.findViewById(R.id.et_title);
@@ -114,6 +134,7 @@ public class CategoryFragment extends Fragment {
         mEtColor.setHint(getString(R.string.prompt_color));
         final EditText mEtColorEditText = mEtColor.getEditText();
         mEtColorEditText.setText(mCategory.getColor());
+        mEtColorEditText.setTextColor(Color.parseColor(mCategory.getColor()));
         mEtColorEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
