@@ -1,8 +1,13 @@
 package com.termproject.misaka.timesecretary.module;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.text.TextUtils;
+
+import com.termproject.misaka.timesecretary.database.CategoryCursorWrapper;
+import com.termproject.misaka.timesecretary.database.CategoryDbSchema.CategoryTable;
+import com.termproject.misaka.timesecretary.database.SQLiteDBHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,37 +18,8 @@ import java.util.UUID;
  */
 public class CategoryLab {
     private static CategoryLab sCategoryLab;
-    private List<Category> mCategories;
     private Context mContext;
     private SQLiteDatabase mDatabase;
-
-    private CategoryLab(Context context) {
-        mContext = context.getApplicationContext();
-        mCategories = new ArrayList<>();
-        mCategories.add(new Category("Life", "#FF5722"));
-        mCategories.add(new Category("Work", "#9C27B0"));
-        mCategories.add(new Category("Study", "#4CAF50"));
-    }
-
-    public void addCategory(Category c) {
-        mCategories.add(c);
-    }
-
-    public void deleteCategory(Category c) {
-        mCategories.remove(c);
-    }
-
-    public void clearNoTitle() {
-        for (Category c : mCategories) {
-            if (TextUtils.isEmpty(c.getTitle())) {
-                mCategories.remove(c);
-            }
-        }
-    }
-
-    public int getPosition(UUID id) {
-        return mCategories.indexOf(getCategory(id));
-    }
 
     public static CategoryLab get(Context context) {
         if (sCategoryLab == null) {
@@ -52,16 +28,86 @@ public class CategoryLab {
         return sCategoryLab;
     }
 
+    private CategoryLab(Context context) {
+        mContext = context.getApplicationContext();
+        mDatabase = new SQLiteDBHelper(mContext).getWritableDatabase();
+    }
+
+    private static ContentValues getContentValues(Category category) {
+        ContentValues values = new ContentValues();
+        values.put(CategoryTable.Cols.UUID, category.getId().toString());
+        values.put(CategoryTable.Cols.TITLE, category.getTitle());
+        values.put(CategoryTable.Cols.COLOR, category.getColor());
+        return values;
+    }
+
+    public void addCategory(Category e) {
+        ContentValues values = getContentValues(e);
+        mDatabase.insert(CategoryTable.NAME, null, values);
+    }
+
     public List<Category> getCategories() {
-        return mCategories;
+        List<Category> categories = new ArrayList<>();
+        CategoryCursorWrapper cursor = queryCategories(null, null);
+        try {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                categories.add(cursor.getCategory());
+                cursor.moveToNext();
+            }
+        } finally {
+            cursor.close();
+        }
+        return categories;
     }
 
     public Category getCategory(UUID id) {
-        for (Category category : mCategories) {
-            if (category.getId().equals(id)) {
-                return category;
+        CategoryCursorWrapper cursor = queryCategories(
+                CategoryTable.Cols.UUID + " = ?",
+                new String[]{id.toString()}
+        );
+        try {
+            if (cursor.getCount() == 0) {
+                return null;
             }
+            cursor.moveToFirst();
+            return cursor.getCategory();
+        } finally {
+            cursor.close();
         }
-        return null;
+    }
+
+    public void updateCategory(Category category) {
+        String uuidString = category.getId().toString();
+        ContentValues values = getContentValues(category);
+        mDatabase.update(CategoryTable.NAME, values,
+                CategoryTable.Cols.UUID + " = ?",
+                new String[]{uuidString});
+    }
+
+    public void deleteCategory(Category category) {
+        String uuidString = category.getId().toString();
+        mDatabase.delete(CategoryTable.NAME,
+                CategoryTable.Cols.UUID + " = ?",
+                new String[]{uuidString});
+    }
+
+    public void clearNoTitle() {
+        mDatabase.delete(CategoryTable.NAME,
+                CategoryTable.Cols.TITLE + " is ?",
+                null);
+    }
+
+    private CategoryCursorWrapper queryCategories(String whereClause, String[] whereArgs) {
+        Cursor cursor = mDatabase.query(
+                CategoryTable.NAME,
+                null,
+                whereClause,
+                whereArgs,
+                null,
+                null,
+                null
+        );
+        return new CategoryCursorWrapper(cursor);
     }
 }

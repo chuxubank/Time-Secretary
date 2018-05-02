@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -36,6 +37,7 @@ import java.util.regex.Pattern;
 public class CategoryFragment extends Fragment {
 
     private static final String ARG_CATEGORY_ID = "category_id";
+    private static final String TAG = "CategoryFragment";
     private Category mCategory;
     private Toolbar mToolbar;
     private TextInputLayout mEtTitle;
@@ -85,8 +87,12 @@ public class CategoryFragment extends Fragment {
                             .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    CategoryLab.get(getActivity()).deleteCategory(mCategory);
-                                    getActivity().finish();
+                                    if (CategoryLab.get(getActivity()).getCategories().size() == 1) {
+                                        Snackbar.make(getView(), R.string.error_delete_category, Snackbar.LENGTH_SHORT).show();
+                                    } else {
+                                        CategoryLab.get(getActivity()).deleteCategory(mCategory);
+                                        getActivity().finish();
+                                    }
                                 }
                             })
                             .setNegativeButton(android.R.string.cancel, null)
@@ -134,7 +140,9 @@ public class CategoryFragment extends Fragment {
         mEtColor.setHint(getString(R.string.prompt_color));
         final EditText mEtColorEditText = mEtColor.getEditText();
         mEtColorEditText.setText(mCategory.getColor());
-        mEtColorEditText.setTextColor(Color.parseColor(mCategory.getColor()));
+        if (mCategory.getColor() != null && isColorValid(mCategory.getColor())) {
+            mEtColorEditText.setTextColor(Color.parseColor(mCategory.getColor()));
+        }
         mEtColorEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -195,6 +203,7 @@ public class CategoryFragment extends Fragment {
         } else {
             mCategory.setTitle(title);
             mCategory.setColor(color.toUpperCase());
+            CategoryLab.get(getActivity()).updateCategory(mCategory);
             getActivity().finish();
         }
     }

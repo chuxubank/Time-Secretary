@@ -1,8 +1,13 @@
 package com.termproject.misaka.timesecretary.module;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.text.TextUtils;
+
+import com.termproject.misaka.timesecretary.database.SQLiteDBHelper;
+import com.termproject.misaka.timesecretary.database.TaskCursorWrapper;
+import com.termproject.misaka.timesecretary.database.TaskDbSchema.TaskTable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,31 +18,11 @@ import java.util.UUID;
  */
 public class TaskLab {
     private static TaskLab sTaskLab;
-    private List<Task> mTasks;
     private Context mContext;
     private SQLiteDatabase mDatabase;
 
-    private TaskLab(Context context) {
-        mContext = context.getApplicationContext();
-        mTasks = new ArrayList<>();
-    }
+    private static final String TAG = "TaskLab";
 
-    public void addTask(Task t) {
-        mTasks.add(t);
-    }
-
-    public void deleteTask(Task t) {
-        mTasks.remove(t);
-    }
-
-    public void clearNoTitle() {
-        for (Task t : mTasks) {
-            if (TextUtils.isEmpty(t.getTitle())) {
-                mTasks.remove(t);
-            }
-        }
-    }
-    
     public static TaskLab get(Context context) {
         if (sTaskLab == null) {
             sTaskLab = new TaskLab(context);
@@ -45,16 +30,93 @@ public class TaskLab {
         return sTaskLab;
     }
 
+    private TaskLab(Context context) {
+        mContext = context.getApplicationContext();
+        mDatabase = new SQLiteDBHelper(mContext).getWritableDatabase();
+    }
+
+    private static ContentValues getContentValues(Task task) {
+        ContentValues values = new ContentValues();
+        values.put(TaskTable.Cols.UUID, task.getId().toString());
+        values.put(TaskTable.Cols.CATEGORY, task.getCategory().toString());
+        values.put(TaskTable.Cols.TITLE, task.getTitle());
+        values.put(TaskTable.Cols.NOTES, task.getNotes());
+        values.put(TaskTable.Cols.START_TIME, task.getStartTime().getTime().getTime());
+        values.put(TaskTable.Cols.END_TIME, task.getEndTime().getTime().getTime());
+        values.put(TaskTable.Cols.DEFER_UNTIL, task.getDeferUntil().getTime().getTime());
+        values.put(TaskTable.Cols.DEADLINE, task.getDeadline().getTime().getTime());
+        values.put(TaskTable.Cols.CHECKED, task.isChecked());
+        return values;
+    }
+
+    public void addTask(Task t) {
+        ContentValues values = getContentValues(t);
+        mDatabase.insert(TaskTable.NAME, null, values);
+
+    }
+
     public List<Task> getTasks() {
-        return mTasks;
+        List<Task> tasks = new ArrayList<>();
+        TaskCursorWrapper cursor = queryTasks(null, null);
+        try {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                tasks.add(cursor.getTask());
+                cursor.moveToNext();
+            }
+        } finally {
+            cursor.close();
+        }
+        return tasks;
     }
 
     public Task getTask(UUID id) {
-        for (Task task : mTasks) {
-            if (task.getId().equals(id)) {
-                return task;
+        TaskCursorWrapper cursor = queryTasks(
+                TaskTable.Cols.UUID + " = ?",
+                new String[]{id.toString()}
+        );
+        try {
+            if (cursor.getCount() == 0) {
+                return null;
             }
+            cursor.moveToFirst();
+            return cursor.getTask();
+        } finally {
+            cursor.close();
         }
-        return null;
+    }
+
+    public void updateTask(Task task) {
+        String uuidString = task.getId().toString();
+        ContentValues values = getContentValues(task);
+        mDatabase.update(TaskTable.NAME, values,
+                TaskTable.Cols.UUID + " = ?",
+                new String[]{uuidString});
+    }
+
+    public void deleteTask(Task task) {
+        String uuidString = task.getId().toString();
+        mDatabase.delete(TaskTable.NAME,
+                TaskTable.Cols.UUID + " = ?",
+                new String[]{uuidString});
+    }
+
+    public void clearNoTitle() {
+        mDatabase.delete(TaskTable.NAME,
+                TaskTable.Cols.TITLE + " is ?",
+                null);
+    }
+
+    private TaskCursorWrapper queryTasks(String whereClause, String[] whereArgs) {
+        Cursor cursor = mDatabase.query(
+                TaskTable.NAME,
+                null,
+                whereClause,
+                whereArgs,
+                null,
+                null,
+                null
+        );
+        return new TaskCursorWrapper(cursor);
     }
 }

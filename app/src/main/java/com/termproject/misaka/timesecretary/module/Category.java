@@ -11,13 +11,17 @@ public class Category {
     private String mColor;
 
     public Category() {
-        mId = UUID.randomUUID();
+        this(UUID.randomUUID());
     }
 
     public Category(String title, String color) {
         mId = UUID.randomUUID();
         mTitle = title;
         mColor = color;
+    }
+
+    public Category(UUID id) {
+        mId = id;
     }
 
     public UUID getId() {

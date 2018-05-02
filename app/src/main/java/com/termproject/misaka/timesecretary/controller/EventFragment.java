@@ -172,7 +172,13 @@ public class EventFragment extends Fragment implements View.OnClickListener {
         CategoryLab categoryLab = CategoryLab.get(getActivity());
         mCategoryAdapter = new CategoryAdapter(categoryLab.getCategories(), getActivity());
         mSpnCategory.setAdapter(mCategoryAdapter);
-        mSpnCategory.setSelection(categoryLab.getPosition(mEvent.getCategory()), true);
+        for (int i = 0; i < mCategoryAdapter.getCount(); i++) {
+            Category category = (Category) mCategoryAdapter.getItem(i);
+            if (category.getId() == mEvent.getCategory()) {
+                mSpnCategory.setSelection(i, true);
+                break;
+            }
+        }
         mEtStartDate = v.findViewById(R.id.et_start_date);
         mEtStartDate.setOnClickListener(this);
         mEtStartTime = v.findViewById(R.id.et_start_time);
@@ -242,6 +248,7 @@ public class EventFragment extends Fragment implements View.OnClickListener {
             mEvent.setCategory(category.getId());
             mEvent.setTitle(mEtTitle.getEditText().getText().toString());
             mEvent.setNotes(mEtNotes.getEditText().getText().toString());
+            EventLab.get(getActivity()).updateEvent(mEvent);
             getActivity().finish();
         }
     }

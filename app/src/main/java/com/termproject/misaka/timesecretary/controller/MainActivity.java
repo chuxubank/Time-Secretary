@@ -33,6 +33,7 @@ import java.util.List;
  */
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
+    private static final String TAG = "MainActivity";
     private FloatingActionsMenu mFamAdd;
     private FloatingActionButton mAddEvent;
     private FloatingActionButton mAddTask;
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private NoScrollViewPager mViewPager;
     private FragmentPagerAdapter mFragmentPagerAdapter;
     private List<Fragment> mFragments;
+    private View mVCover;
 
     @Override
 
@@ -67,11 +69,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
         mFamAdd = findViewById(R.id.fam_add);
+        mFamAdd.setOnFloatingActionsMenuUpdateListener(new FloatingActionsMenu.OnFloatingActionsMenuUpdateListener() {
+            @Override
+            public void onMenuExpanded() {
+                mVCover.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onMenuCollapsed() {
+                mVCover.setVisibility(View.GONE);
+            }
+        });
         mAddEvent = findViewById(R.id.add_event);
         mAddEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Event event = new Event();
+                event.setCategory(CategoryLab.get(MainActivity.this).getCategories().get(0).getId());
                 EventLab.get(MainActivity.this).addEvent(event);
                 Intent intent = EventActivity.newIntent(MainActivity.this, event.getId());
                 startActivity(intent);
@@ -83,6 +97,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onClick(View v) {
                 Task task = new Task();
+                task.setCategory(CategoryLab.get(MainActivity.this).getCategories().get(0).getId());
                 TaskLab.get(MainActivity.this).addTask(task);
                 Intent intent = TaskActivity.newIntent(MainActivity.this, task.getId());
                 startActivity(intent);
@@ -133,6 +148,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onPageScrollStateChanged(int state) {
 
+            }
+        });
+        mVCover = findViewById(R.id.v_cover);
+
+        mVCover.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mVCover.setVisibility(View.INVISIBLE);
+                mFamAdd.collapse();
             }
         });
     }
@@ -200,5 +224,4 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
 }

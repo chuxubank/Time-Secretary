@@ -18,10 +18,17 @@ public class Task {
     private boolean mChecked;
 
     public Task() {
-        mId = UUID.randomUUID();
+        this(UUID.randomUUID());
+    }
+
+    public Task(UUID id) {
+        mId = id;
+        mStartTime = Calendar.getInstance();
+        mEndTime = Calendar.getInstance();
         mDeferUntil = Calendar.getInstance();
         mDeadline = Calendar.getInstance();
     }
+
 
     public UUID getId() {
         return mId;

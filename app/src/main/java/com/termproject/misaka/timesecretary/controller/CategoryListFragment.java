@@ -51,6 +51,7 @@ public class CategoryListFragment extends Fragment {
             mCategoryAdapter = new CategoryListFragment.CategoryAdapter(categories);
             mRvCategory.setAdapter(mCategoryAdapter);
         } else {
+            mCategoryAdapter.setCategories(categories);
             mCategoryAdapter.notifyDataSetChanged();
         }
 
@@ -104,6 +105,10 @@ public class CategoryListFragment extends Fragment {
         @Override
         public int getItemCount() {
             return mCategories.size();
+        }
+
+        public void setCategories(List<Category> categories) {
+            mCategories = categories;
         }
     }
 }

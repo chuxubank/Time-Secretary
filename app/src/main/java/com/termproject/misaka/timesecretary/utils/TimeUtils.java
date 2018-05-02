@@ -18,4 +18,10 @@ public final class TimeUtils {
         return DEFAULT_TIME_FORMAT.format(cal.getTime());
     }
 
+    public static Calendar long2Calendar(final long time) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(time);
+        return calendar;
+    }
+
 }

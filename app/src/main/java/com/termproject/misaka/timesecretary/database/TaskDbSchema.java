@@ -1,8 +1,8 @@
 package com.termproject.misaka.timesecretary.database;
 
-public class EventDbSchema {
-    public static final class EventTable {
-        public static final String NAME = "events";
+public class TaskDbSchema {
+    public static final class TaskTable {
+        public static final String NAME = "tasks";
 
         public static final class Cols {
             public static final String UUID = "uuid";
@@ -11,6 +11,10 @@ public class EventDbSchema {
             public static final String NOTES = "notes";
             public static final String START_TIME = "start_time";
             public static final String END_TIME = "end_time";
+            public static final String DEFER_UNTIL = "defer_until";
+            public static final String DEADLINE = "deadline";
+            public static final String CHECKED = "checked";
+
         }
     }
 }

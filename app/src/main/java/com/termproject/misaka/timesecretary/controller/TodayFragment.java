@@ -61,6 +61,7 @@ public class TodayFragment extends Fragment {
             mEventAdapter = new EventAdapter(events);
             mRvEvent.setAdapter(mEventAdapter);
         } else {
+            mEventAdapter.setEvents(events);
             mEventAdapter.notifyDataSetChanged();
         }
         TaskLab taskLab = TaskLab.get(getActivity());
@@ -70,6 +71,7 @@ public class TodayFragment extends Fragment {
             mTaskAdapter = new TaskAdapter(tasks);
             mRvTask.setAdapter(mTaskAdapter);
         } else {
+            mTaskAdapter.setTasks(tasks);
             mTaskAdapter.notifyDataSetChanged();
         }
         CategoryLab categoryLab = CategoryLab.get(getActivity());
@@ -143,6 +145,10 @@ public class TodayFragment extends Fragment {
         public int getItemCount() {
             return mEvents.size();
         }
+
+        public void setEvents(List<Event> events) {
+            mEvents = events;
+        }
     }
 
     private class TaskHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -205,6 +211,10 @@ public class TodayFragment extends Fragment {
         @Override
         public int getItemCount() {
             return mTasks.size();
+        }
+
+        public void setTasks(List<Task> tasks) {
+            mTasks = tasks;
         }
     }
 

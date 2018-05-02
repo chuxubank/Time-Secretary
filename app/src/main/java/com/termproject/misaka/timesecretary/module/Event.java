@@ -15,10 +15,19 @@ public class Event {
     private UUID mCategory;
 
     public Event() {
-        mId = UUID.randomUUID();
+        this(UUID.randomUUID());
+    }
+
+    public Event(UUID id) {
+        mId = id;
         mStartTime = Calendar.getInstance();
+        mStartTime.set(Calendar.MINUTE, 0);
+        mStartTime.set(Calendar.SECOND, 0);
+        mStartTime.add(Calendar.HOUR, 1);
         mEndTime = Calendar.getInstance();
-        mEndTime.add(Calendar.HOUR, 1);
+        mEndTime.set(Calendar.MINUTE, 0);
+        mEndTime.set(Calendar.SECOND, 0);
+        mEndTime.add(Calendar.HOUR, 2);
     }
 
     public UUID getId() {

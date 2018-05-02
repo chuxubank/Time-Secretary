@@ -153,7 +153,13 @@ public class TaskFragment extends Fragment implements View.OnClickListener {
         CategoryLab categoryLab = CategoryLab.get(getActivity());
         mCategoryAdapter = new CategoryAdapter(categoryLab.getCategories(), getActivity());
         mSpnCategory.setAdapter(mCategoryAdapter);
-        mSpnCategory.setSelection(categoryLab.getPosition(mTask.getCategory()), true);
+        for (int i = 0; i < mCategoryAdapter.getCount(); i++) {
+            Category category = (Category) mCategoryAdapter.getItem(i);
+            if (category.getId() == mTask.getCategory()) {
+                mSpnCategory.setSelection(i, true);
+                break;
+            }
+        }
         mFabConfirm = v.findViewById(R.id.fab_confirm);
         mFabConfirm.setOnClickListener(this);
         mEtDeferUntil = v.findViewById(R.id.et_defer_until);
@@ -225,6 +231,7 @@ public class TaskFragment extends Fragment implements View.OnClickListener {
             mTask.setCategory(category.getId());
             mTask.setTitle(mEtTitle.getEditText().getText().toString());
             mTask.setNotes(mEtNotes.getEditText().getText().toString());
+            TaskLab.get(getActivity()).updateTask(mTask);
             getActivity().finish();
         }
     }

@@ -1,10 +1,13 @@
 package com.termproject.misaka.timesecretary.module;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.text.TextUtils;
 
-import com.termproject.misaka.timesecretary.database.EventBaseHelper;
+import com.termproject.misaka.timesecretary.database.EventCursorWrapper;
+import com.termproject.misaka.timesecretary.database.EventDbSchema.EventTable;
+import com.termproject.misaka.timesecretary.database.SQLiteDBHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,31 +18,8 @@ import java.util.UUID;
  */
 public class EventLab {
     private static EventLab sEventLab;
-    private List<Event> mEvents;
     private Context mContext;
     private SQLiteDatabase mDatabase;
-
-    private EventLab(Context context) {
-        mContext = context.getApplicationContext();
-        mDatabase = new EventBaseHelper(mContext).getWritableDatabase();
-        mEvents = new ArrayList<>();
-    }
-
-    public void addEvent(Event e) {
-        mEvents.add(e);
-    }
-
-    public void deleteEvent(Event e) {
-        mEvents.remove(e);
-    }
-
-    public void clearNoTitle() {
-        for (Event e : mEvents) {
-            if (TextUtils.isEmpty(e.getTitle())) {
-                mEvents.remove(e);
-            }
-        }
-    }
 
     public static EventLab get(Context context) {
         if (sEventLab == null) {
@@ -48,16 +28,89 @@ public class EventLab {
         return sEventLab;
     }
 
+    private EventLab(Context context) {
+        mContext = context.getApplicationContext();
+        mDatabase = new SQLiteDBHelper(mContext).getWritableDatabase();
+    }
+
+    private static ContentValues getContentValues(Event event) {
+        ContentValues values = new ContentValues();
+        values.put(EventTable.Cols.UUID, event.getId().toString());
+        values.put(EventTable.Cols.CATEGORY, event.getCategory().toString());
+        values.put(EventTable.Cols.TITLE, event.getTitle());
+        values.put(EventTable.Cols.NOTES, event.getNotes());
+        values.put(EventTable.Cols.START_TIME, event.getStartTime().getTime().getTime());
+        values.put(EventTable.Cols.END_TIME, event.getEndTime().getTime().getTime());
+        return values;
+    }
+
+    public void addEvent(Event e) {
+        ContentValues values = getContentValues(e);
+        mDatabase.insert(EventTable.NAME, null, values);
+    }
+
     public List<Event> getEvents() {
-        return mEvents;
+        List<Event> events = new ArrayList<>();
+        EventCursorWrapper cursor = queryEvents(null, null);
+        try {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                events.add(cursor.getEvent());
+                cursor.moveToNext();
+            }
+        } finally {
+            cursor.close();
+        }
+        return events;
     }
 
     public Event getEvent(UUID id) {
-        for (Event event : mEvents) {
-            if (event.getId().equals(id)) {
-                return event;
+        EventCursorWrapper cursor = queryEvents(
+                EventTable.Cols.UUID + " = ?",
+                new String[]{id.toString()}
+        );
+        try {
+            if (cursor.getCount() == 0) {
+                return null;
             }
+            cursor.moveToFirst();
+            return cursor.getEvent();
+        } finally {
+            cursor.close();
         }
-        return null;
+    }
+
+    public void updateEvent(Event event) {
+        String uuidString = event.getId().toString();
+        ContentValues values = getContentValues(event);
+        mDatabase.update(EventTable.NAME, values,
+                EventTable.Cols.UUID + " = ?",
+                new String[]{uuidString});
+    }
+
+    public void deleteEvent(Event event) {
+        String uuidString = event.getId().toString();
+        mDatabase.delete(EventTable.NAME,
+                EventTable.Cols.UUID + " = ?",
+                new String[]{uuidString});
+    }
+
+    public void clearNoTitle() {
+        mDatabase.delete(EventTable.NAME,
+                EventTable.Cols.TITLE + " is ?",
+                null);
+    }
+
+    private EventCursorWrapper queryEvents(String whereClause, String[] whereArgs) {
+        Cursor cursor = mDatabase.query(
+                EventTable.NAME,
+                null,
+                whereClause,
+                whereArgs,
+                null,
+                null,
+                null
+        );
+        return new EventCursorWrapper(cursor);
     }
 }
