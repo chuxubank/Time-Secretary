@@ -1,8 +1,12 @@
 package com.termproject.misaka.timesecretary.database;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
-public class DBHelper {
+public class RemoteDbHelper {
 
     private static String driver = "com.mysql.jdbc.Driver";
     private static String url = "jdbc:mysql://106.2.23.8/chuxu";

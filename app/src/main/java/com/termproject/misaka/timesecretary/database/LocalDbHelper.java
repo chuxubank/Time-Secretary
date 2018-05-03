@@ -10,12 +10,12 @@ import com.termproject.misaka.timesecretary.database.TaskDbSchema.TaskTable;
 
 import java.util.UUID;
 
-public class SQLiteDBHelper extends SQLiteOpenHelper {
+public class LocalDbHelper extends SQLiteOpenHelper {
     private static final int VERSION = 1;
     private static final String DATABASE_NAME = "timeSecretary.db";
     private Context mContext;
 
-    public SQLiteDBHelper(Context context) {
+    public LocalDbHelper(Context context) {
         super(context, DATABASE_NAME, null, VERSION);
         mContext = context;
     }

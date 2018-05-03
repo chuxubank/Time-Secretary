@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.termproject.misaka.timesecretary.database.CategoryCursorWrapper;
 import com.termproject.misaka.timesecretary.database.CategoryDbSchema.CategoryTable;
-import com.termproject.misaka.timesecretary.database.SQLiteDBHelper;
+import com.termproject.misaka.timesecretary.database.LocalDbHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +30,7 @@ public class CategoryLab {
 
     private CategoryLab(Context context) {
         mContext = context.getApplicationContext();
-        mDatabase = new SQLiteDBHelper(mContext).getWritableDatabase();
+        mDatabase = new LocalDbHelper(mContext).getWritableDatabase();
     }
 
     private static ContentValues getContentValues(Category category) {

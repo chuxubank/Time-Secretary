@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.termproject.misaka.timesecretary.database.EventCursorWrapper;
 import com.termproject.misaka.timesecretary.database.EventDbSchema.EventTable;
-import com.termproject.misaka.timesecretary.database.SQLiteDBHelper;
+import com.termproject.misaka.timesecretary.database.LocalDbHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +30,7 @@ public class EventLab {
 
     private EventLab(Context context) {
         mContext = context.getApplicationContext();
-        mDatabase = new SQLiteDBHelper(mContext).getWritableDatabase();
+        mDatabase = new LocalDbHelper(mContext).getWritableDatabase();
     }
 
     private static ContentValues getContentValues(Event event) {

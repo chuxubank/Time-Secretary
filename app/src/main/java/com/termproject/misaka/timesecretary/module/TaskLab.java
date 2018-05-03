@@ -5,7 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.termproject.misaka.timesecretary.database.SQLiteDBHelper;
+import com.termproject.misaka.timesecretary.database.LocalDbHelper;
 import com.termproject.misaka.timesecretary.database.TaskCursorWrapper;
 import com.termproject.misaka.timesecretary.database.TaskDbSchema.TaskTable;
 
@@ -32,7 +32,7 @@ public class TaskLab {
 
     private TaskLab(Context context) {
         mContext = context.getApplicationContext();
-        mDatabase = new SQLiteDBHelper(mContext).getWritableDatabase();
+        mDatabase = new LocalDbHelper(mContext).getWritableDatabase();
     }
 
     private static ContentValues getContentValues(Task task) {

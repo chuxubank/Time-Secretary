@@ -28,7 +28,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.termproject.misaka.timesecretary.R;
-import com.termproject.misaka.timesecretary.database.DBHelper;
+import com.termproject.misaka.timesecretary.database.RemoteDbHelper;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -297,7 +297,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            DBHelper db = new DBHelper();
+            RemoteDbHelper db = new RemoteDbHelper();
             try {
                 long result = (Long) db.Select2Object("select count(*) from user where email = ?", mEmail);
                 if (result > 0) {
