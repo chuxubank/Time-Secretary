@@ -20,6 +20,7 @@ import java.util.List;
 
 public class CategoryListFragment extends Fragment {
 
+    private static final String TAG = "CategoryListFragment";
     private RecyclerView mRvCategory;
     private CategoryAdapter mCategoryAdapter;
 

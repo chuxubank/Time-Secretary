@@ -151,11 +151,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
         mVCover = findViewById(R.id.v_cover);
-
         mVCover.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mVCover.setVisibility(View.INVISIBLE);
+                mVCover.setVisibility(View.GONE);
                 mFamAdd.collapse();
             }
         });
