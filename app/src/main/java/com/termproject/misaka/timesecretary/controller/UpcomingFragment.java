@@ -24,24 +24,24 @@ import com.termproject.misaka.timesecretary.module.Task;
 import com.termproject.misaka.timesecretary.module.TaskLab;
 import com.termproject.misaka.timesecretary.utils.TimeUtils;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
-/**
- * @author misaka
- */
-public class TodayFragment extends Fragment {
+public class UpcomingFragment extends Fragment {
 
-    private static final String TAG = "TodayFragment";
-    private RecyclerView mRvEvent;
-    private RecyclerView mRvTask;
-    private EventAdapter mEventAdapter;
-    private TaskAdapter mTaskAdapter;
+    private static final String TAG = "UpcomingFragment";
+    private EventTaskAdapter mAdapter;
+    private RecyclerView mRvUpcoming;
     private CategoryLab mCategoryLab;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_today, container, false);
+        View v = inflater.inflate(R.layout.fragment_upcoming, container, false);
         Log.i(TAG, "onCreateView");
         initView(v);
         updateUI();
@@ -56,10 +56,8 @@ public class TodayFragment extends Fragment {
     }
 
     private void initView(View v) {
-        mRvEvent = v.findViewById(R.id.rv_event);
-        mRvEvent.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRvTask = v.findViewById(R.id.rv_task);
-        mRvTask.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mRvUpcoming = v.findViewById(R.id.rv_upcoming);
+        mRvUpcoming.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
     private void updateUI() {
@@ -68,23 +66,30 @@ public class TodayFragment extends Fragment {
         EventLab eventLab = EventLab.get(getActivity());
         eventLab.clearNoTitle();
         List<Event> events = eventLab.getEvents();
-        if (mEventAdapter == null) {
-            mEventAdapter = new EventAdapter(events);
-        } else {
-            mEventAdapter.setEvents(events);
-            mEventAdapter.notifyDataSetChanged();
-        }
-        mRvEvent.setAdapter(mEventAdapter);
         TaskLab taskLab = TaskLab.get(getActivity());
         taskLab.clearNoTitle();
         List<Task> tasks = taskLab.getTasks();
-        if (mTaskAdapter == null) {
-            mTaskAdapter = new TaskAdapter(tasks);
-        } else {
-            mTaskAdapter.setTasks(tasks);
-            mTaskAdapter.notifyDataSetChanged();
+        Collections.sort(events);
+        Collections.sort(tasks);
+        Set<Integer> days = new TreeSet<>();
+        for (Event e : events) {
+            days.add(e.getStartTime().get(Calendar.DAY_OF_YEAR));
         }
-        mRvTask.setAdapter(mTaskAdapter);
+        for (Task t : tasks) {
+            days.add(t.getDeferUntil().get(Calendar.DAY_OF_YEAR));
+        }
+        List<Object> objects = new ArrayList<>();
+        for (Integer day : days) {
+            objects.addAll(eventLab.getEventsByDayOfYear(day));
+            objects.addAll(taskLab.getTasksByDayOfYear(day));
+        }
+        if (mAdapter == null) {
+            mAdapter = new EventTaskAdapter(objects);
+        } else {
+            mAdapter.setObjects(objects);
+            mAdapter.notifyDataSetChanged();
+        }
+        mRvUpcoming.setAdapter(mAdapter);
     }
 
     private class EventHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -120,36 +125,6 @@ public class TodayFragment extends Fragment {
         public void onClick(View v) {
             Intent intent = EventActivity.newIntent(getActivity(), mEvent.getId());
             startActivity(intent);
-        }
-    }
-
-    private class EventAdapter extends RecyclerView.Adapter<EventHolder> {
-        private List<Event> mEvents;
-
-        private EventAdapter(List<Event> events) {
-            mEvents = events;
-        }
-
-        @NonNull
-        @Override
-        public EventHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
-            return new EventHolder(layoutInflater, parent);
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull EventHolder holder, int position) {
-            Event event = mEvents.get(position);
-            holder.bind(event);
-        }
-
-        @Override
-        public int getItemCount() {
-            return mEvents.size();
-        }
-
-        private void setEvents(List<Event> events) {
-            mEvents = events;
         }
     }
 
@@ -190,34 +165,60 @@ public class TodayFragment extends Fragment {
         }
     }
 
-    private class TaskAdapter extends RecyclerView.Adapter<TaskHolder> {
-        private List<Task> mTasks;
+    private class EventTaskAdapter extends RecyclerView.Adapter {
 
-        private TaskAdapter(List<Task> tasks) {
-            mTasks = tasks;
+        private static final int VIEW_TYPE_EVENT = 0;
+        private static final int VIEW_TYPE_TASK = 1;
+        private List<Object> mObjects;
+
+        private EventTaskAdapter(List<Object> objects) {
+            mObjects = objects;
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            Object object = mObjects.get(position);
+            if (object instanceof Event) {
+                return VIEW_TYPE_EVENT;
+            } else {
+                return VIEW_TYPE_TASK;
+            }
         }
 
         @NonNull
         @Override
-        public TaskHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            RecyclerView.ViewHolder viewHolder = null;
             LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
-            return new TaskHolder(layoutInflater, parent);
+            switch (viewType) {
+                case VIEW_TYPE_EVENT:
+                    viewHolder = new UpcomingFragment.EventHolder(layoutInflater, parent);
+                    break;
+                case VIEW_TYPE_TASK:
+                    viewHolder = new UpcomingFragment.TaskHolder(layoutInflater, parent);
+                    break;
+                default:
+                    break;
+            }
+            return viewHolder;
         }
 
         @Override
-        public void onBindViewHolder(@NonNull TaskHolder holder, int position) {
-            Task task = mTasks.get(position);
-            holder.bind(task);
+        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+            if (holder instanceof EventHolder) {
+                ((UpcomingFragment.EventHolder) holder).bind((Event) mObjects.get(position));
+            } else {
+                ((UpcomingFragment.TaskHolder) holder).bind((Task) mObjects.get(position));
+            }
         }
 
         @Override
         public int getItemCount() {
-            return mTasks.size();
+            return mObjects.size();
         }
 
-        private void setTasks(List<Task> tasks) {
-            mTasks = tasks;
+        private void setObjects(List<Object> objects) {
+            mObjects = objects;
         }
     }
-
 }

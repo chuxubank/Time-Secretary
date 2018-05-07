@@ -50,7 +50,7 @@
             android:name=".DatabaseProvider"
             android:authorities="com.termproject.misaka.timesecretary.provider"
             android:enabled="true"
-            android:exported="true"></provider>
+            android:exported="true" />
     </application>
 
 </manifest>

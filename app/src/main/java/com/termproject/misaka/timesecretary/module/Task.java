@@ -1,12 +1,14 @@
 package com.termproject.misaka.timesecretary.module;
 
+import android.support.annotation.NonNull;
+
 import java.util.Calendar;
 import java.util.UUID;
 
 /**
  * @author misaka
  */
-public class Task {
+public class Task implements Comparable<Task> {
     private UUID mId;
     private String mTitle;
     private String mNotes;
@@ -96,5 +98,14 @@ public class Task {
 
     public void setChecked(boolean checked) {
         mChecked = checked;
+    }
+
+    @Override
+    public int compareTo(@NonNull Task o) {
+        if (mDeferUntil.equals(o.mDeferUntil)) {
+            return mDeadline.before(o.mDeadline) ? -1 : 1;
+        } else {
+            return mDeferUntil.before(o.mDeferUntil) ? -1 : 1;
+        }
     }
 }

@@ -119,6 +119,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mFragments = new ArrayList<>();
         mFragments.add(new TodayFragment());
         mFragments.add(new CategoryListFragment());
+        mFragments.add(new UpcomingFragment());
 
         mFragmentPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
@@ -209,6 +210,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             mViewPager.setCurrentItem(1);
         } else if (id == R.id.nav_slideshow) {
             getSupportActionBar().setTitle(item.getTitle());
+            mViewPager.setCurrentItem(2);
         } else if (id == R.id.nav_manage) {
             getSupportActionBar().setTitle(item.getTitle());
         } else if (id == R.id.nav_login) {

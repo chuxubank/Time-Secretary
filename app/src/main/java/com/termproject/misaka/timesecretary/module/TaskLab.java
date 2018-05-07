@@ -10,6 +10,7 @@ import com.termproject.misaka.timesecretary.database.TaskCursorWrapper;
 import com.termproject.misaka.timesecretary.database.TaskDbSchema.TaskTable;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 
@@ -53,6 +54,17 @@ public class TaskLab {
         ContentValues values = getContentValues(t);
         mDatabase.insert(TaskTable.NAME, null, values);
 
+    }
+
+    public List<Task> getTasksByDayOfYear(int dayOfYear) {
+        List<Task> tasks = getTasks();
+        List<Task> ans = new ArrayList<>();
+        for (Task e : tasks) {
+            if (e.getDeferUntil().get(Calendar.DAY_OF_YEAR) == dayOfYear) {
+                ans.add(e);
+            }
+        }
+        return ans;
     }
 
     public List<Task> getTasks() {

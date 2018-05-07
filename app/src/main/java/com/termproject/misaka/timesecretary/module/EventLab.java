@@ -10,6 +10,7 @@ import com.termproject.misaka.timesecretary.database.EventDbSchema.EventTable;
 import com.termproject.misaka.timesecretary.database.LocalDbHelper;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 
@@ -47,6 +48,17 @@ public class EventLab {
     public void addEvent(Event e) {
         ContentValues values = getContentValues(e);
         mDatabase.insert(EventTable.NAME, null, values);
+    }
+
+    public List<Event> getEventsByDayOfYear(int dayOfYear) {
+        List<Event> events = getEvents();
+        List<Event> ans = new ArrayList<>();
+        for (Event e : events) {
+            if (e.getStartTime().get(Calendar.DAY_OF_YEAR) == dayOfYear) {
+                ans.add(e);
+            }
+        }
+        return ans;
     }
 
     public List<Event> getEvents() {

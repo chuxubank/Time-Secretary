@@ -24,7 +24,6 @@ public class CategoryListFragment extends Fragment {
     private RecyclerView mRvCategory;
     private CategoryAdapter mCategoryAdapter;
 
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -49,13 +48,12 @@ public class CategoryListFragment extends Fragment {
         CategoryLab categoryLab = CategoryLab.get(getActivity());
         List<Category> categories = categoryLab.getCategories();
         if (mCategoryAdapter == null) {
-            mCategoryAdapter = new CategoryListFragment.CategoryAdapter(categories);
-            mRvCategory.setAdapter(mCategoryAdapter);
+            mCategoryAdapter = new CategoryAdapter(categories);
         } else {
             mCategoryAdapter.setCategories(categories);
             mCategoryAdapter.notifyDataSetChanged();
         }
-
+        mRvCategory.setAdapter(mCategoryAdapter);
     }
 
     private class CategoryHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -83,7 +81,7 @@ public class CategoryListFragment extends Fragment {
         }
     }
 
-    private class CategoryAdapter extends RecyclerView.Adapter<CategoryListFragment.CategoryHolder> {
+    private class CategoryAdapter extends RecyclerView.Adapter<CategoryHolder> {
         private List<Category> mCategories;
 
         public CategoryAdapter(List<Category> categories) {
@@ -92,13 +90,13 @@ public class CategoryListFragment extends Fragment {
 
         @NonNull
         @Override
-        public CategoryListFragment.CategoryHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        public CategoryHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
-            return new CategoryListFragment.CategoryHolder(layoutInflater, parent);
+            return new CategoryHolder(layoutInflater, parent);
         }
 
         @Override
-        public void onBindViewHolder(@NonNull CategoryListFragment.CategoryHolder holder, int position) {
+        public void onBindViewHolder(@NonNull CategoryHolder holder, int position) {
             Category category = mCategories.get(position);
             holder.bind(category);
         }

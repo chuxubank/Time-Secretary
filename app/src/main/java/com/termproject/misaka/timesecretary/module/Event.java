@@ -1,12 +1,14 @@
 package com.termproject.misaka.timesecretary.module;
 
+import android.support.annotation.NonNull;
+
 import java.util.Calendar;
 import java.util.UUID;
 
 /**
  * @author misaka
  */
-public class Event {
+public class Event implements Comparable<Event> {
     private UUID mId;
     private String mTitle;
     private String mNotes;
@@ -72,5 +74,14 @@ public class Event {
 
     public void setCategory(UUID category) {
         mCategory = category;
+    }
+
+    @Override
+    public int compareTo(@NonNull Event o) {
+        if (mStartTime.equals(o.mStartTime)) {
+            return mEndTime.before(o.mEndTime) ? -1 : 1;
+        } else {
+            return mStartTime.before(o.mStartTime) ? -1 : 1;
+        }
     }
 }
