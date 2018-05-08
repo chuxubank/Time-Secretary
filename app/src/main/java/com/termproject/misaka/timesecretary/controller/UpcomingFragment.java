@@ -1,29 +1,29 @@
 package com.termproject.misaka.timesecretary.controller;
 
+import android.app.Activity;
 import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.TextView;
 
 import com.termproject.misaka.timesecretary.R;
-import com.termproject.misaka.timesecretary.module.Category;
 import com.termproject.misaka.timesecretary.module.CategoryLab;
 import com.termproject.misaka.timesecretary.module.Event;
 import com.termproject.misaka.timesecretary.module.EventLab;
 import com.termproject.misaka.timesecretary.module.Task;
 import com.termproject.misaka.timesecretary.module.TaskLab;
 import com.termproject.misaka.timesecretary.part.DateDividerItemDecoration;
-import com.termproject.misaka.timesecretary.utils.TimeUtils;
+import com.termproject.misaka.timesecretary.part.DatePickerFragment;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -33,15 +33,89 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import static com.termproject.misaka.timesecretary.utils.TimeUtils.cal2dateString;
+import static com.termproject.misaka.timesecretary.utils.TimeUtils.cal2day;
 
 public class UpcomingFragment extends Fragment {
 
     private static final String TAG = "UpcomingFragment";
+    private static final String DIALOG_DATE = "DialogDate";
+    private static final int REQUEST_SELECTED_DATE = 0;
     private EventTaskAdapter mAdapter;
     private RecyclerView mRvUpcoming;
     private CategoryLab mCategoryLab;
     private List<Object> mObjects;
-    private MainActivity mActivity;
+    private int mSelectedDay;
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.fragment_upcoming_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_select_date:
+                DatePickerFragment startDate = DatePickerFragment.newInstance(Calendar.getInstance());
+                startDate.setTargetFragment(UpcomingFragment.this, REQUEST_SELECTED_DATE);
+                startDate.show(getFragmentManager(), DIALOG_DATE);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+        if (requestCode == REQUEST_SELECTED_DATE) {
+            Calendar calendar = (Calendar) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
+            mSelectedDay = cal2day(calendar);
+            List<Integer> days = new ArrayList<>();
+            for (Object o : mObjects) {
+                Calendar cal;
+                if (o instanceof Event) {
+                    cal = ((Event) o).getStartTime();
+                } else {
+                    cal = ((Task) o).getDeferUntil();
+                }
+                days.add(cal2day(cal));
+            }
+            Collections.sort(days);
+            int pos = bound(days, mSelectedDay, true);
+            Log.d(TAG, "pos:" + pos);
+            if (pos < 0) {
+                Snackbar.make(getView(), getString(R.string.error_no_event_task), Snackbar.LENGTH_SHORT).show();
+            }
+            ((LinearLayoutManager) mRvUpcoming.getLayoutManager()).scrollToPositionWithOffset(pos, 0);
+        }
+    }
+
+    private Integer bound(final List<Integer> integers, int key, boolean searchFirst) {
+        int n = integers.size();
+        int low = 0;
+        int high = n - 1;
+        int res = -1;
+        int mid;
+        while (low <= high) {
+            mid = low + (high - low) / 2;
+            if (integers.get(mid) == key) {
+                res = mid;
+                if (searchFirst) {
+                    high = mid - 1;
+                } else {
+                    low = mid + 1;
+                }
+            } else if (key > integers.get(mid)) {
+                low = mid + 1;
+            } else {
+                high = mid - 1;
+            }
+        }
+        return res;
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -54,12 +128,6 @@ public class UpcomingFragment extends Fragment {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        Log.i(TAG, "onStart");
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         Log.i(TAG, "onResume");
@@ -67,7 +135,7 @@ public class UpcomingFragment extends Fragment {
     }
 
     private void initView(View v) {
-        mActivity = (MainActivity) getActivity();
+        setHasOptionsMenu(true);
         mRvUpcoming = v.findViewById(R.id.rv_upcoming);
         mRvUpcoming.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRvUpcoming.addItemDecoration(new DateDividerItemDecoration(getActivity(), new DateDividerItemDecoration.ItemDecorationCallback() {
@@ -98,16 +166,16 @@ public class UpcomingFragment extends Fragment {
         Collections.sort(tasks);
         Set<Integer> days = new TreeSet<>();
         for (Event e : events) {
-            days.add(e.getStartTime().get(Calendar.DAY_OF_YEAR));
+            days.add(cal2day(e.getStartTime()));
         }
         for (Task t : tasks) {
-            days.add(t.getDeferUntil().get(Calendar.DAY_OF_YEAR));
+            days.add(cal2day(t.getDeferUntil()));
         }
         mObjects = new ArrayList<>();
         for (Integer day : days) {
-            List<Event> dayEvents = eventLab.getEventsByDayOfYear(day);
+            List<Event> dayEvents = eventLab.getEventsByDay(day);
+            List<Task> dayTasks = taskLab.getTasksByDay(day);
             Collections.sort(dayEvents);
-            List<Task> dayTasks = taskLab.getTasksByDayOfYear(day);
             Collections.sort(dayTasks);
             mObjects.addAll(dayEvents);
             mObjects.addAll(dayTasks);
@@ -119,79 +187,6 @@ public class UpcomingFragment extends Fragment {
             mAdapter.notifyDataSetChanged();
         }
         mRvUpcoming.setAdapter(mAdapter);
-    }
-
-    private class EventHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private Event mEvent;
-        private Category mCategory;
-        private View mVDivider;
-        private TextView mTvEventStartTime;
-        private TextView mTvEventEndTime;
-        private TextView mTvEventTitle;
-        private TextView mTvEventNotes;
-
-        private EventHolder(LayoutInflater inflater, ViewGroup parent) {
-            super(inflater.inflate(R.layout.list_item_event, parent, false));
-            itemView.setOnClickListener(this);
-            mTvEventStartTime = itemView.findViewById(R.id.tv_event_start_time);
-            mTvEventEndTime = itemView.findViewById(R.id.tv_event_end_time);
-            mVDivider = itemView.findViewById(R.id.divider);
-            mTvEventTitle = itemView.findViewById(R.id.tv_event_title);
-            mTvEventNotes = itemView.findViewById(R.id.tv_event_notes);
-        }
-
-        public void bind(Event event) {
-            mEvent = event;
-            mCategory = mCategoryLab.getCategory(mEvent.getCategory());
-            mTvEventStartTime.setText(TimeUtils.cal2timeString(mEvent.getStartTime()));
-            mTvEventEndTime.setText(TimeUtils.cal2timeString(mEvent.getEndTime()));
-            mVDivider.getBackground().setTint(Color.parseColor(mCategory.getColor()));
-            mTvEventTitle.setText(mEvent.getTitle());
-            mTvEventNotes.setText(mEvent.getNotes());
-        }
-
-        @Override
-        public void onClick(View v) {
-            Intent intent = EventActivity.newIntent(getActivity(), mEvent.getId());
-            startActivity(intent);
-        }
-    }
-
-    private class TaskHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private Task mTask;
-        private Category mCategory;
-        private TextView mTvTaskTitle;
-        private TextView mTvTaskNotes;
-        private CheckBox mCbTaskChecked;
-
-        private TaskHolder(LayoutInflater inflater, ViewGroup parent) {
-            super(inflater.inflate(R.layout.list_item_task, parent, false));
-            itemView.setOnClickListener(this);
-            mTvTaskTitle = itemView.findViewById(R.id.tv_task_title);
-            mTvTaskNotes = itemView.findViewById(R.id.tv_task_notes);
-            mCbTaskChecked = itemView.findViewById(R.id.cb_task_checked);
-        }
-
-        public void bind(Task task) {
-            mTask = task;
-            mCategory = mCategoryLab.getCategory(mTask.getCategory());
-            mCbTaskChecked.setButtonTintList(new ColorStateList(
-                    new int[][]{
-                            new int[]{}
-                    },
-                    new int[]{
-                            Color.parseColor(mCategory.getColor()),
-                    }
-            ));
-            mTvTaskTitle.setText(mTask.getTitle());
-            mTvTaskNotes.setText(mTask.getNotes());
-        }
-
-        @Override
-        public void onClick(View v) {
-            Intent intent = TaskActivity.newIntent(getActivity(), mTask.getId());
-            startActivity(intent);
-        }
     }
 
     private class EventTaskAdapter extends RecyclerView.Adapter {
@@ -221,10 +216,10 @@ public class UpcomingFragment extends Fragment {
             LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
             switch (viewType) {
                 case VIEW_TYPE_EVENT:
-                    viewHolder = new UpcomingFragment.EventHolder(layoutInflater, parent);
+                    viewHolder = new EventHolder(layoutInflater, parent, getActivity());
                     break;
                 case VIEW_TYPE_TASK:
-                    viewHolder = new UpcomingFragment.TaskHolder(layoutInflater, parent);
+                    viewHolder = new TaskHolder(layoutInflater, parent, getActivity());
                     break;
                 default:
                     break;
@@ -235,9 +230,9 @@ public class UpcomingFragment extends Fragment {
         @Override
         public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
             if (holder instanceof EventHolder) {
-                ((UpcomingFragment.EventHolder) holder).bind((Event) mObjects.get(position));
+                ((EventHolder) holder).bind((Event) mObjects.get(position));
             } else {
-                ((UpcomingFragment.TaskHolder) holder).bind((Task) mObjects.get(position));
+                ((TaskHolder) holder).bind((Task) mObjects.get(position));
             }
         }
 

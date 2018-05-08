@@ -19,14 +19,14 @@ import java.util.Calendar;
 
 public class TimePickerFragment extends AppCompatDialogFragment {
 
-    public static final String EXTRA_DATETIME = "com.termproject.misaka.timesecretary.datetime";
-    private static final String ARG_DATETIME = "datetime";
+    public static final String EXTRA_TIME = "com.termproject.misaka.timesecretary.time";
+    private static final String ARG_TIME = "time";
     private TimePicker mTimePicker;
     private Calendar mCalendar;
 
     public static TimePickerFragment newInstance(Calendar calendar) {
         Bundle args = new Bundle();
-        args.putSerializable(ARG_DATETIME, calendar);
+        args.putSerializable(ARG_TIME, calendar);
         TimePickerFragment fragment = new TimePickerFragment();
         fragment.setArguments(args);
         return fragment;
@@ -35,7 +35,7 @@ public class TimePickerFragment extends AppCompatDialogFragment {
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        mCalendar = (Calendar) getArguments().getSerializable(ARG_DATETIME);
+        mCalendar = (Calendar) getArguments().getSerializable(ARG_TIME);
         int hour = mCalendar.get(Calendar.HOUR);
         int minute = mCalendar.get(Calendar.MINUTE);
 
@@ -69,7 +69,7 @@ public class TimePickerFragment extends AppCompatDialogFragment {
             return;
         }
         Intent intent = new Intent();
-        intent.putExtra(EXTRA_DATETIME, calendar);
+        intent.putExtra(EXTRA_TIME, calendar);
         getTargetFragment().onActivityResult(getTargetRequestCode(), resultCode, intent);
     }
 }

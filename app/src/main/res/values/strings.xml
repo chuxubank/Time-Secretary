@@ -214,5 +214,7 @@
     <string name="error_delete_category">At least one category is needed!</string>
     <string name="item_title_categories">Categories</string>
     <string name="item_title_upcoming">Upcomming</string>
+    <string name="prompt_select_date">Select Date</string>
+    <string name="error_no_event_task">There is no event and no task on this day!</string>
 
 </resources>

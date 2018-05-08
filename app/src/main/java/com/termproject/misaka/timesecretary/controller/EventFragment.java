@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -49,8 +48,10 @@ public class EventFragment extends Fragment implements View.OnClickListener {
 
     private static final String DIALOG_DATE = "DialogDate";
     private static final String DIALOG_TIME = "DialogTime";
-    private static final int REQUEST_START_DATETIME = 0;
-    private static final int REQUEST_END_DATETIME = 1;
+    private static final int REQUEST_START_DATE = 0;
+    private static final int REQUEST_START_TIME = 1;
+    private static final int REQUEST_END_DATE = 2;
+    private static final int REQUEST_END_TIME = 3;
     private Event mEvent;
     private EditText mEtStartDate;
     private EditText mEtStartTime;
@@ -85,22 +86,6 @@ public class EventFragment extends Fragment implements View.OnClickListener {
         initView(v);
         updateUI();
         return v;
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode != Activity.RESULT_OK) {
-            return;
-        }
-        if (requestCode == REQUEST_START_DATETIME) {
-            Calendar calendar = (Calendar) data.getSerializableExtra(DatePickerFragment.EXTRA_DATETIME);
-            mEvent.setStartTime(calendar);
-            updateUI();
-        } else if (requestCode == REQUEST_END_DATETIME) {
-            Calendar calendar = (Calendar) data.getSerializableExtra(DatePickerFragment.EXTRA_DATETIME);
-            mEvent.setEndTime(calendar);
-            updateUI();
-        }
     }
 
     @Override
@@ -199,28 +184,77 @@ public class EventFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.et_start_date:
                 DatePickerFragment startDate = DatePickerFragment.newInstance(mEvent.getStartTime());
-                startDate.setTargetFragment(EventFragment.this, REQUEST_START_DATETIME);
+                startDate.setTargetFragment(EventFragment.this, REQUEST_START_DATE);
                 startDate.show(getFragmentManager(), DIALOG_DATE);
                 break;
             case R.id.et_start_time:
                 TimePickerFragment startTime = TimePickerFragment.newInstance(mEvent.getStartTime());
-                startTime.setTargetFragment(EventFragment.this, REQUEST_START_DATETIME);
+                startTime.setTargetFragment(EventFragment.this, REQUEST_START_TIME);
                 startTime.show(getFragmentManager(), DIALOG_TIME);
                 break;
             case R.id.et_end_date:
                 DatePickerFragment endDate = DatePickerFragment.newInstance(mEvent.getEndTime());
-                endDate.setTargetFragment(EventFragment.this, REQUEST_END_DATETIME);
+                endDate.setTargetFragment(EventFragment.this, REQUEST_END_DATE);
                 endDate.show(getFragmentManager(), DIALOG_DATE);
                 break;
             case R.id.et_end_time:
                 TimePickerFragment endTime = TimePickerFragment.newInstance(mEvent.getEndTime());
-                endTime.setTargetFragment(EventFragment.this, REQUEST_END_DATETIME);
+                endTime.setTargetFragment(EventFragment.this, REQUEST_END_TIME);
                 endTime.show(getFragmentManager(), DIALOG_TIME);
                 break;
             case R.id.fab_confirm:
                 attemptAdd();
                 break;
         }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+        Calendar calendar;
+        switch (requestCode) {
+            case REQUEST_START_DATE:
+                calendar = (Calendar) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
+                mEvent.getStartTime().set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
+                if (!isValidDateTime()) {
+                    mEvent.getEndTime().setTime(mEvent.getStartTime().getTime());
+                    mEvent.getEndTime().add(Calendar.HOUR, 1);
+                }
+                break;
+
+            case REQUEST_START_TIME:
+                calendar = (Calendar) data.getSerializableExtra(TimePickerFragment.EXTRA_TIME);
+                mEvent.setStartTime(calendar);
+                if (!isValidDateTime()) {
+                    mEvent.getEndTime().setTime(mEvent.getStartTime().getTime());
+                    mEvent.getEndTime().add(Calendar.HOUR, 1);
+                }
+                break;
+
+            case REQUEST_END_DATE:
+                calendar = (Calendar) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
+                mEvent.getEndTime().set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
+                if (!isValidDateTime()) {
+                    mEvent.getStartTime().setTime(mEvent.getEndTime().getTime());
+                    mEvent.getStartTime().add(Calendar.HOUR, -1);
+                }
+                break;
+
+            case REQUEST_END_TIME:
+                calendar = (Calendar) data.getSerializableExtra(TimePickerFragment.EXTRA_TIME);
+                mEvent.setEndTime(calendar);
+                if (!isValidDateTime()) {
+                    mEvent.getStartTime().setTime(mEvent.getEndTime().getTime());
+                    mEvent.getStartTime().add(Calendar.HOUR, -1);
+                }
+                break;
+
+            default:
+                break;
+        }
+        updateUI();
     }
 
     private void attemptAdd() {
@@ -236,7 +270,7 @@ public class EventFragment extends Fragment implements View.OnClickListener {
             cancel = true;
         }
 
-        if (!checkDateTime()) {
+        if (!isValidDateTime()) {
             focusView = mEtEndTime;
             cancel = true;
         }
@@ -253,16 +287,11 @@ public class EventFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private boolean checkDateTime() {
-        if (mEvent.getEndTime().before(mEvent.getStartTime())) {
-            Snackbar.make(getView(), this.getString(R.string.error_invalid_endTime), Snackbar.LENGTH_SHORT).show();
-            return false;
-        }
-        return true;
+    private boolean isValidDateTime() {
+        return !mEvent.getEndTime().before(mEvent.getStartTime());
     }
 
     private void updateUI() {
-        checkDateTime();
         mEtStartDate.setText(TimeUtils.cal2dateString(mEvent.getStartTime()));
         mEtStartTime.setText(TimeUtils.cal2timeString(mEvent.getStartTime()));
         mEtEndDate.setText(TimeUtils.cal2dateString(mEvent.getEndTime()));

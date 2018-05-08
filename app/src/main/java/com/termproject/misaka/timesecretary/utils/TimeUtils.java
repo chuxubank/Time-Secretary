@@ -24,4 +24,7 @@ public final class TimeUtils {
         return calendar;
     }
 
+    public static int cal2day(final Calendar cal) {
+        return cal.get(Calendar.YEAR) * 1000 + cal.get(Calendar.DAY_OF_YEAR);
+    }
 }

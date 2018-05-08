@@ -10,9 +10,10 @@ import com.termproject.misaka.timesecretary.database.TaskCursorWrapper;
 import com.termproject.misaka.timesecretary.database.TaskDbSchema.TaskTable;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
+
+import static com.termproject.misaka.timesecretary.utils.TimeUtils.cal2day;
 
 /**
  * @author misaka
@@ -56,12 +57,12 @@ public class TaskLab {
 
     }
 
-    public List<Task> getTasksByDayOfYear(int dayOfYear) {
+    public List<Task> getTasksByDay(int dayOfYear) {
         List<Task> tasks = getTasks();
         List<Task> ans = new ArrayList<>();
-        for (Task e : tasks) {
-            if (e.getDeferUntil().get(Calendar.DAY_OF_YEAR) == dayOfYear) {
-                ans.add(e);
+        for (Task t : tasks) {
+            if (cal2day(t.getDeferUntil()) == dayOfYear) {
+                ans.add(t);
             }
         }
         return ans;

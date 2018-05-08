@@ -10,9 +10,10 @@ import com.termproject.misaka.timesecretary.database.EventDbSchema.EventTable;
 import com.termproject.misaka.timesecretary.database.LocalDbHelper;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
+
+import static com.termproject.misaka.timesecretary.utils.TimeUtils.cal2day;
 
 /**
  * @author misaka
@@ -50,11 +51,11 @@ public class EventLab {
         mDatabase.insert(EventTable.NAME, null, values);
     }
 
-    public List<Event> getEventsByDayOfYear(int dayOfYear) {
+    public List<Event> getEventsByDay(int day) {
         List<Event> events = getEvents();
         List<Event> ans = new ArrayList<>();
         for (Event e : events) {
-            if (e.getStartTime().get(Calendar.DAY_OF_YEAR) == dayOfYear) {
+            if (cal2day(e.getStartTime()) == day) {
                 ans.add(e);
             }
         }

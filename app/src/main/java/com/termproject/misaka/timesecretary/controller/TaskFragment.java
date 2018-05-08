@@ -9,7 +9,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -49,8 +48,8 @@ public class TaskFragment extends Fragment implements View.OnClickListener {
     private static final String ARG_TASK_ID = "task_id";
 
     private static final String DIALOG_DATE = "DialogDate";
-    private static final int REQUEST_DEFER_UNTIL = 2;
-    private static final int REQUEST_DEADLINE = 3;
+    private static final int REQUEST_DEFER_UNTIL = 0;
+    private static final int REQUEST_DEADLINE = 1;
     private Task mTask;
     private FloatingActionButton mFabConfirm;
     private Spinner mSpnCategory;
@@ -196,14 +195,13 @@ public class TaskFragment extends Fragment implements View.OnClickListener {
             return;
         }
         if (requestCode == REQUEST_DEFER_UNTIL) {
-            Calendar calendar = (Calendar) data.getSerializableExtra(DatePickerFragment.EXTRA_DATETIME);
+            Calendar calendar = (Calendar) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
             mTask.setDeferUntil(calendar);
-            updateUI();
         } else if (requestCode == REQUEST_DEADLINE) {
-            Calendar calendar = (Calendar) data.getSerializableExtra(DatePickerFragment.EXTRA_DATETIME);
+            Calendar calendar = (Calendar) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
             mTask.setDeadline(calendar);
-            updateUI();
         }
+        updateUI();
     }
 
     private void attemptAdd() {
@@ -238,7 +236,7 @@ public class TaskFragment extends Fragment implements View.OnClickListener {
 
     private boolean checkDateTime() {
         if (mTask.getDeadline().before(mTask.getDeferUntil())) {
-            Snackbar.make(getView(), this.getString(R.string.error_invalid_deadline), Snackbar.LENGTH_SHORT).show();
+            mTask.getDeadline().setTime(mTask.getDeferUntil().getTime());
             return false;
         }
         return true;

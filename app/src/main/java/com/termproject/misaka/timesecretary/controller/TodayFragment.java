@@ -1,8 +1,5 @@
 package com.termproject.misaka.timesecretary.controller;
 
-import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -12,17 +9,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.TextView;
 
 import com.termproject.misaka.timesecretary.R;
-import com.termproject.misaka.timesecretary.module.Category;
 import com.termproject.misaka.timesecretary.module.CategoryLab;
 import com.termproject.misaka.timesecretary.module.Event;
 import com.termproject.misaka.timesecretary.module.EventLab;
 import com.termproject.misaka.timesecretary.module.Task;
 import com.termproject.misaka.timesecretary.module.TaskLab;
-import com.termproject.misaka.timesecretary.utils.TimeUtils;
 
 import java.util.List;
 
@@ -95,42 +88,6 @@ public class TodayFragment extends Fragment {
         mRvTask.setAdapter(mTaskAdapter);
     }
 
-    private class EventHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private Event mEvent;
-        private Category mCategory;
-        private View mVDivider;
-        private TextView mTvEventStartTime;
-        private TextView mTvEventEndTime;
-        private TextView mTvEventTitle;
-        private TextView mTvEventNotes;
-
-        private EventHolder(LayoutInflater inflater, ViewGroup parent) {
-            super(inflater.inflate(R.layout.list_item_event, parent, false));
-            itemView.setOnClickListener(this);
-            mTvEventStartTime = itemView.findViewById(R.id.tv_event_start_time);
-            mTvEventEndTime = itemView.findViewById(R.id.tv_event_end_time);
-            mVDivider = itemView.findViewById(R.id.divider);
-            mTvEventTitle = itemView.findViewById(R.id.tv_event_title);
-            mTvEventNotes = itemView.findViewById(R.id.tv_event_notes);
-        }
-
-        public void bind(Event event) {
-            mEvent = event;
-            mCategory = mCategoryLab.getCategory(mEvent.getCategory());
-            mTvEventStartTime.setText(TimeUtils.cal2timeString(mEvent.getStartTime()));
-            mTvEventEndTime.setText(TimeUtils.cal2timeString(mEvent.getEndTime()));
-            mVDivider.getBackground().setTint(Color.parseColor(mCategory.getColor()));
-            mTvEventTitle.setText(mEvent.getTitle());
-            mTvEventNotes.setText(mEvent.getNotes());
-        }
-
-        @Override
-        public void onClick(View v) {
-            Intent intent = EventActivity.newIntent(getActivity(), mEvent.getId());
-            startActivity(intent);
-        }
-    }
-
     private class EventAdapter extends RecyclerView.Adapter<EventHolder> {
         private List<Event> mEvents;
 
@@ -142,7 +99,7 @@ public class TodayFragment extends Fragment {
         @Override
         public EventHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
-            return new EventHolder(layoutInflater, parent);
+            return new EventHolder(layoutInflater, parent, getActivity());
         }
 
         @Override
@@ -161,43 +118,6 @@ public class TodayFragment extends Fragment {
         }
     }
 
-    private class TaskHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private Task mTask;
-        private Category mCategory;
-        private TextView mTvTaskTitle;
-        private TextView mTvTaskNotes;
-        private CheckBox mCbTaskChecked;
-
-        private TaskHolder(LayoutInflater inflater, ViewGroup parent) {
-            super(inflater.inflate(R.layout.list_item_task, parent, false));
-            itemView.setOnClickListener(this);
-            mTvTaskTitle = itemView.findViewById(R.id.tv_task_title);
-            mTvTaskNotes = itemView.findViewById(R.id.tv_task_notes);
-            mCbTaskChecked = itemView.findViewById(R.id.cb_task_checked);
-        }
-
-        public void bind(Task task) {
-            mTask = task;
-            mCategory = mCategoryLab.getCategory(mTask.getCategory());
-            mCbTaskChecked.setButtonTintList(new ColorStateList(
-                    new int[][]{
-                            new int[]{}
-                    },
-                    new int[]{
-                            Color.parseColor(mCategory.getColor()),
-                    }
-            ));
-            mTvTaskTitle.setText(mTask.getTitle());
-            mTvTaskNotes.setText(mTask.getNotes());
-        }
-
-        @Override
-        public void onClick(View v) {
-            Intent intent = TaskActivity.newIntent(getActivity(), mTask.getId());
-            startActivity(intent);
-        }
-    }
-
     private class TaskAdapter extends RecyclerView.Adapter<TaskHolder> {
         private List<Task> mTasks;
 
@@ -209,7 +129,7 @@ public class TodayFragment extends Fragment {
         @Override
         public TaskHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
-            return new TaskHolder(layoutInflater, parent);
+            return new TaskHolder(layoutInflater, parent, getActivity());
         }
 
         @Override
