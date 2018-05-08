@@ -22,6 +22,7 @@ import com.termproject.misaka.timesecretary.module.Event;
 import com.termproject.misaka.timesecretary.module.EventLab;
 import com.termproject.misaka.timesecretary.module.Task;
 import com.termproject.misaka.timesecretary.module.TaskLab;
+import com.termproject.misaka.timesecretary.part.DateDividerItemDecoration;
 import com.termproject.misaka.timesecretary.utils.TimeUtils;
 
 import java.util.ArrayList;
@@ -31,12 +32,16 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import static com.termproject.misaka.timesecretary.utils.TimeUtils.cal2dateString;
+
 public class UpcomingFragment extends Fragment {
 
     private static final String TAG = "UpcomingFragment";
     private EventTaskAdapter mAdapter;
     private RecyclerView mRvUpcoming;
     private CategoryLab mCategoryLab;
+    private List<Object> mObjects;
+    private MainActivity mActivity;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -49,6 +54,12 @@ public class UpcomingFragment extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        Log.i(TAG, "onStart");
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         Log.i(TAG, "onResume");
@@ -56,8 +67,22 @@ public class UpcomingFragment extends Fragment {
     }
 
     private void initView(View v) {
+        mActivity = (MainActivity) getActivity();
         mRvUpcoming = v.findViewById(R.id.rv_upcoming);
         mRvUpcoming.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mRvUpcoming.addItemDecoration(new DateDividerItemDecoration(getActivity(), new DateDividerItemDecoration.ItemDecorationCallback() {
+            @Override
+            public String getGroupName(int position) {
+                Object o = mObjects.get(position);
+                if (o instanceof Event) {
+                    return cal2dateString(((Event) o).getStartTime());
+                } else if (o instanceof Task) {
+                    return cal2dateString(((Task) o).getDeferUntil());
+                } else {
+                    return null;
+                }
+            }
+        }));
     }
 
     private void updateUI() {
@@ -78,15 +103,19 @@ public class UpcomingFragment extends Fragment {
         for (Task t : tasks) {
             days.add(t.getDeferUntil().get(Calendar.DAY_OF_YEAR));
         }
-        List<Object> objects = new ArrayList<>();
+        mObjects = new ArrayList<>();
         for (Integer day : days) {
-            objects.addAll(eventLab.getEventsByDayOfYear(day));
-            objects.addAll(taskLab.getTasksByDayOfYear(day));
+            List<Event> dayEvents = eventLab.getEventsByDayOfYear(day);
+            Collections.sort(dayEvents);
+            List<Task> dayTasks = taskLab.getTasksByDayOfYear(day);
+            Collections.sort(dayTasks);
+            mObjects.addAll(dayEvents);
+            mObjects.addAll(dayTasks);
         }
         if (mAdapter == null) {
-            mAdapter = new EventTaskAdapter(objects);
+            mAdapter = new EventTaskAdapter(mObjects);
         } else {
-            mAdapter.setObjects(objects);
+            mAdapter.setObjects(mObjects);
             mAdapter.notifyDataSetChanged();
         }
         mRvUpcoming.setAdapter(mAdapter);

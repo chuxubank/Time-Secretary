@@ -18,6 +18,12 @@ public class ColorLab {
         mContext = context.getApplicationContext();
         mCategoryLab = CategoryLab.get(context);
         mColors = new TreeSet<>();
+        mColors.add("#F44336");
+        mColors.add("#FFEB3B");
+        mColors.add("#4CAF50");
+        mColors.add("#2196F3");
+        mColors.add("#9C27B0");
+        mColors.add("#795548");
         updateColor();
     }
 

@@ -11,16 +11,16 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_margin="3dp"
         android:layout_weight="1"
-        android:layout_margin="8dp"
         android:gravity="center">
 
         <CheckBox
             android:id="@+id/cb_task_checked"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:buttonTint="@color/test_color"
             android:text=""
+            tools:buttonTint="@color/test_color"
             tools:targetApi="lollipop" />
 
     </LinearLayout>
@@ -28,10 +28,9 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_margin="3dp"
         android:layout_weight="5"
-        android:layout_margin="8dp"
-        android:orientation="vertical"
-        tools:targetApi="o">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/tv_task_title"
@@ -45,9 +44,9 @@
             android:id="@+id/tv_task_notes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/secondary_text"
             android:ellipsize="marquee"
             android:singleLine="true"
+            android:textColor="@color/secondary_text"
             tools:text="Task Notes" />
 
     </LinearLayout>

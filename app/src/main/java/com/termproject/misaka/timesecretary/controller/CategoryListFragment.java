@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,29 +24,40 @@ public class CategoryListFragment extends Fragment {
     private static final String TAG = "CategoryListFragment";
     private RecyclerView mRvCategory;
     private CategoryAdapter mCategoryAdapter;
+    private MainActivity mActivity;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_category_list, container, false);
+        Log.i(TAG, "onCreateView");
         initView(v);
         updateUI();
         return v;
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        Log.i(TAG, "onStart");
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
+        Log.i(TAG, "onResume");
         updateUI();
     }
 
     private void initView(View v) {
+        mActivity = (MainActivity) getActivity();
         mRvCategory = v.findViewById(R.id.rv_category);
         mRvCategory.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
     private void updateUI() {
         CategoryLab categoryLab = CategoryLab.get(getActivity());
+        categoryLab.clearNoTitle();
         List<Category> categories = categoryLab.getCategories();
         if (mCategoryAdapter == null) {
             mCategoryAdapter = new CategoryAdapter(categories);

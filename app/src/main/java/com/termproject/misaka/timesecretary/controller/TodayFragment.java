@@ -37,6 +37,7 @@ public class TodayFragment extends Fragment {
     private EventAdapter mEventAdapter;
     private TaskAdapter mTaskAdapter;
     private CategoryLab mCategoryLab;
+    private MainActivity mActivity;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -49,6 +50,12 @@ public class TodayFragment extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        Log.i(TAG, "onStart");
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         Log.i(TAG, "onResume");
@@ -56,6 +63,7 @@ public class TodayFragment extends Fragment {
     }
 
     private void initView(View v) {
+        mActivity = (MainActivity) getActivity();
         mRvEvent = v.findViewById(R.id.rv_event);
         mRvEvent.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRvTask = v.findViewById(R.id.rv_task);

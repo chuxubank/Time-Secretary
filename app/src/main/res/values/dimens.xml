@@ -12,4 +12,5 @@
     <dimen name="circle_in_size">12dp</dimen>
     <dimen name="circle_in_padding">4dp</dimen>
     <dimen name="item_primary_text_size">18sp</dimen>
+    <dimen name="date_divider_item_decoration_height">32dp</dimen>
 </resources>

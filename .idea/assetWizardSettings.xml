@@ -18,7 +18,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/private/var/folders/yb/071g6bcs0hx_7ff6_443cmfh0000gn/T/AppTranslocation/DFAE5497-1EA7-44A8-91C5-FDE707BCE90C/d/Android%20Studio.app/Contents/plugins/android/lib/android.jar!/images/material_design_icons/action/ic_delete_black_24dp.xml" />
+                                      <entry key="url" value="jar:file:/private/var/folders/yb/071g6bcs0hx_7ff6_443cmfh0000gn/T/AppTranslocation/AF75E588-C8AA-492B-B092-8E021A91B408/d/Android%20Studio.app/Contents/plugins/android/lib/android.jar!/images/material_design_icons/notification/ic_event_note_black_24dp.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -28,8 +28,7 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="color" value="ffffff" />
-                            <entry key="outputName" value="ic_delete" />
+                            <entry key="outputName" value="ic_upcoming" />
                             <entry key="sourceFile" value="$USER_HOME$" />
                           </map>
                         </option>
