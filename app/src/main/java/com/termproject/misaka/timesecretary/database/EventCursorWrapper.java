@@ -8,7 +8,7 @@ import com.termproject.misaka.timesecretary.module.Event;
 
 import java.util.UUID;
 
-import static com.termproject.misaka.timesecretary.utils.TimeUtils.long2Calendar;
+import static com.termproject.misaka.timesecretary.utils.TimeUtils.long2calendar;
 
 public class EventCursorWrapper extends CursorWrapper {
     /**
@@ -32,8 +32,8 @@ public class EventCursorWrapper extends CursorWrapper {
         event.setCategory(UUID.fromString(uuidCategory));
         event.setTitle(title);
         event.setNotes(notes);
-        event.setStartTime(long2Calendar(startTime));
-        event.setEndTime(long2Calendar(endTime));
+        event.setStartTime(long2calendar(startTime));
+        event.setEndTime(long2calendar(endTime));
         return event;
     }
 }

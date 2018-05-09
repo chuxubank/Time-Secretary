@@ -18,10 +18,14 @@ public final class TimeUtils {
         return DEFAULT_TIME_FORMAT.format(cal.getTime());
     }
 
-    public static Calendar long2Calendar(final long time) {
+    public static Calendar long2calendar(final long time) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(time);
         return calendar;
+    }
+
+    public static long cal2long(final Calendar cal) {
+        return cal.getTimeInMillis();
     }
 
     public static int cal2day(final Calendar cal) {

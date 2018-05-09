@@ -1,5 +1,6 @@
 package com.termproject.misaka.timesecretary.controller;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -25,12 +26,11 @@ import java.util.List;
 public class TodayFragment extends Fragment {
 
     private static final String TAG = "TodayFragment";
+    private static final int REQUEST_TAKE_TIME = -1;
     private RecyclerView mRvEvent;
     private RecyclerView mRvTask;
     private EventAdapter mEventAdapter;
     private TaskAdapter mTaskAdapter;
-    private CategoryLab mCategoryLab;
-    private MainActivity mActivity;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -56,7 +56,6 @@ public class TodayFragment extends Fragment {
     }
 
     private void initView(View v) {
-        mActivity = (MainActivity) getActivity();
         mRvEvent = v.findViewById(R.id.rv_event);
         mRvEvent.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRvTask = v.findViewById(R.id.rv_task);
@@ -64,8 +63,8 @@ public class TodayFragment extends Fragment {
     }
 
     private void updateUI() {
-        mCategoryLab = CategoryLab.get(getActivity());
-        mCategoryLab.clearNoTitle();
+        CategoryLab categoryLab = CategoryLab.get(getActivity());
+        categoryLab.clearNoTitle();
         EventLab eventLab = EventLab.get(getActivity());
         eventLab.clearNoTitle();
         List<Event> events = eventLab.getEvents();
@@ -86,6 +85,18 @@ public class TodayFragment extends Fragment {
             mTaskAdapter.notifyDataSetChanged();
         }
         mRvTask.setAdapter(mTaskAdapter);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        updateAllCachedFragment();
+    }
+
+    private void updateAllCachedFragment() {
+        List<Fragment> fragments = getFragmentManager().getFragments();
+        for (Fragment f : fragments) {
+            f.onResume();
+        }
     }
 
     private class EventAdapter extends RecyclerView.Adapter<EventHolder> {
@@ -129,7 +140,7 @@ public class TodayFragment extends Fragment {
         @Override
         public TaskHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
-            return new TaskHolder(layoutInflater, parent, getActivity());
+            return new TaskHolder(layoutInflater, parent, getActivity(), TodayFragment.this, getFragmentManager());
         }
 
         @Override

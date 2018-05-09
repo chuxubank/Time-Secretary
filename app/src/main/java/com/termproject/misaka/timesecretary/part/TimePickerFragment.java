@@ -47,7 +47,6 @@ public class TimePickerFragment extends AppCompatDialogFragment {
         mTimePicker.setHour(hour);
         mTimePicker.setMinute(minute);
 
-
         return new AlertDialog.Builder(getActivity())
                 .setView(v)
                 .setNegativeButton(android.R.string.cancel, null)

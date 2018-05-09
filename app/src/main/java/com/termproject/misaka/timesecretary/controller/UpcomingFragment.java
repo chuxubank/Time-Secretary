@@ -39,6 +39,7 @@ public class UpcomingFragment extends Fragment {
 
     private static final String TAG = "UpcomingFragment";
     private static final String DIALOG_DATE = "DialogDate";
+    private static final int REQUEST_TAKE_TIME = -1;
     private static final int REQUEST_SELECTED_DATE = 0;
     private EventTaskAdapter mAdapter;
     private RecyclerView mRvUpcoming;
@@ -67,10 +68,8 @@ public class UpcomingFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode != Activity.RESULT_OK) {
-            return;
-        }
-        if (requestCode == REQUEST_SELECTED_DATE) {
+
+        if (requestCode == REQUEST_SELECTED_DATE && resultCode == Activity.RESULT_OK) {
             Calendar calendar = (Calendar) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
             mSelectedDay = cal2day(calendar);
             List<Integer> days = new ArrayList<>();
@@ -90,6 +89,15 @@ public class UpcomingFragment extends Fragment {
                 Snackbar.make(getView(), getString(R.string.error_no_event_task), Snackbar.LENGTH_SHORT).show();
             }
             ((LinearLayoutManager) mRvUpcoming.getLayoutManager()).scrollToPositionWithOffset(pos, 0);
+        } else {
+            updateAllCachedFragment();
+        }
+    }
+
+    private void updateAllCachedFragment() {
+        List<Fragment> fragments = getFragmentManager().getFragments();
+        for (Fragment f : fragments) {
+            f.onResume();
         }
     }
 
@@ -219,7 +227,7 @@ public class UpcomingFragment extends Fragment {
                     viewHolder = new EventHolder(layoutInflater, parent, getActivity());
                     break;
                 case VIEW_TYPE_TASK:
-                    viewHolder = new TaskHolder(layoutInflater, parent, getActivity());
+                    viewHolder = new TaskHolder(layoutInflater, parent, getActivity(), UpcomingFragment.this, getFragmentManager());
                     break;
                 default:
                     break;

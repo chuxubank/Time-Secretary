@@ -5,6 +5,8 @@ import android.support.annotation.NonNull;
 import java.util.Calendar;
 import java.util.UUID;
 
+import static com.termproject.misaka.timesecretary.utils.TimeUtils.long2calendar;
+
 /**
  * @author misaka
  */
@@ -25,8 +27,8 @@ public class Task implements Comparable<Task> {
 
     public Task(UUID id) {
         mId = id;
-        mStartTime = Calendar.getInstance();
-        mEndTime = Calendar.getInstance();
+        mStartTime = long2calendar(0);
+        mEndTime = long2calendar(0);
         mDeferUntil = Calendar.getInstance();
         mDeadline = Calendar.getInstance();
     }

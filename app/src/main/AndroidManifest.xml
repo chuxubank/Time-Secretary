@@ -45,12 +45,11 @@
             android:name=".controller.SettingsActivityBase"
             android:label="@string/title_activity_settings"
             android:parentActivityName=".controller.MainActivity" />
-
         <provider
             android:name=".DatabaseProvider"
             android:authorities="com.termproject.misaka.timesecretary.provider"
             android:enabled="true"
-            android:exported="true" />
+            android:exported="false" />
     </application>
 
 </manifest>

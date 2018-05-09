@@ -8,7 +8,7 @@ import com.termproject.misaka.timesecretary.module.Task;
 
 import java.util.UUID;
 
-import static com.termproject.misaka.timesecretary.utils.TimeUtils.long2Calendar;
+import static com.termproject.misaka.timesecretary.utils.TimeUtils.long2calendar;
 
 public class TaskCursorWrapper extends CursorWrapper {
     /**
@@ -35,10 +35,10 @@ public class TaskCursorWrapper extends CursorWrapper {
         task.setCategory(UUID.fromString(uuidCategory));
         task.setTitle(title);
         task.setNotes(notes);
-        task.setStartTime(long2Calendar(startTime));
-        task.setEndTime(long2Calendar(endTime));
-        task.setDeferUntil(long2Calendar(deferUntil));
-        task.setDeadline(long2Calendar(deadline));
+        task.setStartTime(long2calendar(startTime));
+        task.setEndTime(long2calendar(endTime));
+        task.setDeferUntil(long2calendar(deferUntil));
+        task.setDeadline(long2calendar(deadline));
         task.setChecked(checked);
         return task;
     }
