@@ -216,5 +216,13 @@
     <string name="item_title_upcoming">Upcoming</string>
     <string name="prompt_select_date">Select Date</string>
     <string name="error_no_event_task">There is no event and no task on this day!</string>
+    <string name="title_activity_analysis">Analysis</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="title_day">Day</string>
+    <string name="title_week">Week</string>
+    <string name="title_month">Month</string>
+    <string name="item_title_analysis">Analysis</string>
 
 </resources>

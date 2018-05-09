@@ -193,8 +193,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.nav_categories) {
             getSupportActionBar().setTitle(item.getTitle());
             mViewPager.setCurrentItem(2);
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_analysis) {
             getSupportActionBar().setTitle(item.getTitle());
+            Intent intent = new Intent(MainActivity.this, AnalysisActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_login) {
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);

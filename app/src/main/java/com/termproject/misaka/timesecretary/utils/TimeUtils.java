@@ -14,6 +14,10 @@ public final class TimeUtils {
         return DEFAULT_DATE_FORMAT.format(cal.getTime());
     }
 
+    public static String cal2longDateString(final Calendar cal) {
+        return DateFormat.getDateInstance(DateFormat.FULL).format(cal.getTime());
+    }
+
     public static String cal2timeString(final Calendar cal) {
         return DEFAULT_TIME_FORMAT.format(cal.getTime());
     }

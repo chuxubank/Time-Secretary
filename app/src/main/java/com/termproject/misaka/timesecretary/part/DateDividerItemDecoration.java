@@ -33,7 +33,7 @@ public class DateDividerItemDecoration extends RecyclerView.ItemDecoration {
         mPaint.setAlpha(100);
         mGap = context.getResources().getDimensionPixelSize(R.dimen.date_divider_item_decoration_height);
         mTextBottom = 24;
-        mTextLeft = mTextBottom / 2;
+        mTextLeft = mTextBottom;
         mTextPaint = new TextPaint();
         mTextPaint.setTypeface(Typeface.DEFAULT_BOLD);
         mTextPaint.setAntiAlias(true);
@@ -73,6 +73,7 @@ public class DateDividerItemDecoration extends RecyclerView.ItemDecoration {
                 continue;
             }
             String textLine = mCallback.getGroupName(position).toUpperCase();
+//            textLine = textLine.substring(0, textLine.length() - 6);
             if (TextUtils.isEmpty(textLine)) {
                 continue;
             }

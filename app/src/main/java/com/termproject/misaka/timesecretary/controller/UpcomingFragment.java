@@ -32,8 +32,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import static com.termproject.misaka.timesecretary.utils.TimeUtils.cal2dateString;
 import static com.termproject.misaka.timesecretary.utils.TimeUtils.cal2day;
+import static com.termproject.misaka.timesecretary.utils.TimeUtils.cal2longDateString;
 
 public class UpcomingFragment extends Fragment {
 
@@ -87,8 +87,9 @@ public class UpcomingFragment extends Fragment {
             Log.d(TAG, "pos:" + pos);
             if (pos < 0) {
                 Snackbar.make(getView(), getString(R.string.error_no_event_task), Snackbar.LENGTH_SHORT).show();
+            } else {
+                ((LinearLayoutManager) mRvUpcoming.getLayoutManager()).scrollToPositionWithOffset(pos, 0);
             }
-            ((LinearLayoutManager) mRvUpcoming.getLayoutManager()).scrollToPositionWithOffset(pos, 0);
         } else {
             updateAllCachedFragment();
         }
@@ -151,9 +152,9 @@ public class UpcomingFragment extends Fragment {
             public String getGroupName(int position) {
                 Object o = mObjects.get(position);
                 if (o instanceof Event) {
-                    return cal2dateString(((Event) o).getStartTime());
+                    return cal2longDateString(((Event) o).getStartTime());
                 } else if (o instanceof Task) {
-                    return cal2dateString(((Task) o).getDeferUntil());
+                    return cal2longDateString(((Task) o).getDeferUntil());
                 } else {
                     return null;
                 }

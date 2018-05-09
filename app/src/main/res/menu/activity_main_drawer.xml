@@ -21,9 +21,9 @@
             android:title="@string/item_title_categories" />
 
         <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" />
+            android:id="@+id/nav_analysis"
+            android:icon="@drawable/ic_analysis"
+            android:title="@string/item_title_analysis" />
     </group>
 
     <item android:title="User">
