@@ -25,7 +25,10 @@ import com.termproject.misaka.timesecretary.module.TaskLab;
 import com.termproject.misaka.timesecretary.part.NoScrollViewPager;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+
+import static com.termproject.misaka.timesecretary.utils.TimeUtils.cal2dateCalendar;
 
 /**
  * @author misaka
@@ -183,19 +186,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
-
+        getSupportActionBar().setTitle(item.getTitle());
         if (id == R.id.nav_today) {
-            getSupportActionBar().setTitle(item.getTitle());
             mViewPager.setCurrentItem(0);
         } else if (id == R.id.nav_upcoming) {
-            getSupportActionBar().setTitle(item.getTitle());
             mViewPager.setCurrentItem(1);
         } else if (id == R.id.nav_categories) {
-            getSupportActionBar().setTitle(item.getTitle());
             mViewPager.setCurrentItem(2);
         } else if (id == R.id.nav_analysis) {
-            getSupportActionBar().setTitle(item.getTitle());
-            Intent intent = new Intent(MainActivity.this, AnalysisActivity.class);
+            Calendar startDate = cal2dateCalendar(Calendar.getInstance());
+            Calendar endDate = cal2dateCalendar(Calendar.getInstance());
+            endDate.add(Calendar.DATE, 1);
+            Intent intent = AnalysisActivity.newIntent(this, startDate, endDate);
             startActivity(intent);
         } else if (id == R.id.nav_login) {
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);

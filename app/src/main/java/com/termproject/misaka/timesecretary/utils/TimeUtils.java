@@ -2,6 +2,7 @@ package com.termproject.misaka.timesecretary.utils;
 
 import java.text.DateFormat;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 /**
  * @author misaka
@@ -26,6 +27,14 @@ public final class TimeUtils {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(time);
         return calendar;
+    }
+
+    public static Calendar cal2dateCalendar(final Calendar cal) {
+        return new GregorianCalendar(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
+    }
+
+    public static Calendar cal2dateTimeCalendar(final Calendar cal) {
+        return new GregorianCalendar(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.HOUR), cal.get(Calendar.MINUTE));
     }
 
     public static long cal2long(final Calendar cal) {

@@ -33,11 +33,13 @@ import com.termproject.misaka.timesecretary.module.Event;
 import com.termproject.misaka.timesecretary.module.EventLab;
 import com.termproject.misaka.timesecretary.part.DatePickerFragment;
 import com.termproject.misaka.timesecretary.part.TimePickerFragment;
-import com.termproject.misaka.timesecretary.utils.TimeUtils;
 
 import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
+
+import static com.termproject.misaka.timesecretary.utils.TimeUtils.cal2dateString;
+import static com.termproject.misaka.timesecretary.utils.TimeUtils.cal2timeString;
 
 /**
  * @author misaka
@@ -159,7 +161,7 @@ public class EventFragment extends Fragment implements View.OnClickListener {
         mSpnCategory.setAdapter(mCategoryAdapter);
         for (int i = 0; i < mCategoryAdapter.getCount(); i++) {
             Category category = (Category) mCategoryAdapter.getItem(i);
-            if (category.getId() == mEvent.getCategory()) {
+            if (category.getId().equals(mEvent.getCategory())) {
                 mSpnCategory.setSelection(i, true);
                 break;
             }
@@ -288,14 +290,14 @@ public class EventFragment extends Fragment implements View.OnClickListener {
     }
 
     private boolean isValidDateTime() {
-        return !mEvent.getEndTime().before(mEvent.getStartTime());
+        return mEvent.getStartTime().before(mEvent.getEndTime());
     }
 
     private void updateUI() {
-        mEtStartDate.setText(TimeUtils.cal2dateString(mEvent.getStartTime()));
-        mEtStartTime.setText(TimeUtils.cal2timeString(mEvent.getStartTime()));
-        mEtEndDate.setText(TimeUtils.cal2dateString(mEvent.getEndTime()));
-        mEtEndTime.setText(TimeUtils.cal2timeString(mEvent.getEndTime()));
+        mEtStartDate.setText(cal2dateString(mEvent.getStartTime()));
+        mEtStartTime.setText(cal2timeString(mEvent.getStartTime()));
+        mEtEndDate.setText(cal2dateString(mEvent.getEndTime()));
+        mEtEndTime.setText(cal2timeString(mEvent.getEndTime()));
     }
 
     private static class CategoryAdapter extends BaseAdapter {
@@ -339,7 +341,6 @@ public class EventFragment extends Fragment implements View.OnClickListener {
 
         static class ViewHolder {
             View view;
-            Category mCategory;
             View mCategoryColor;
             TextView mCategoryName;
 

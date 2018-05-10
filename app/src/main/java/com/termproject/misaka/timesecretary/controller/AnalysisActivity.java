@@ -1,48 +1,29 @@
 package com.termproject.misaka.timesecretary.controller;
 
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
-import android.support.v7.app.AppCompatActivity;
-import android.view.MenuItem;
-import android.widget.TextView;
+import android.content.Context;
+import android.content.Intent;
+import android.support.v4.app.Fragment;
 
-import com.termproject.misaka.timesecretary.R;
+import com.termproject.misaka.timesecretary.base.BaseSingleFragmentActivity;
 
-public class AnalysisActivity extends AppCompatActivity {
+import java.util.Calendar;
 
-    private TextView mTextMessage;
+public class AnalysisActivity extends BaseSingleFragmentActivity {
 
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
+    private static final String EXTRA_START_DATE = "com.termproject.misaka.timesecretary.start_date";
+    private static final String EXTRA_END_DATE = "com.termproject.misaka.timesecretary.end_date";
 
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.navigation_day:
-                    mTextMessage.setText(R.string.title_home);
-                    return true;
-                case R.id.navigation_week:
-                    mTextMessage.setText(R.string.title_dashboard);
-                    return true;
-                case R.id.navigation_month:
-                    mTextMessage.setText(R.string.title_notifications);
-                    return true;
-                default:
-                    break;
-            }
-            return false;
-        }
-    };
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_analysis);
-
-        mTextMessage = findViewById(R.id.message);
-        BottomNavigationView navigation = findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+    public static Intent newIntent(Context packageContext, Calendar startDate, Calendar endDate) {
+        Intent intent = new Intent(packageContext, AnalysisActivity.class);
+        intent.putExtra(EXTRA_START_DATE, startDate);
+        intent.putExtra(EXTRA_END_DATE, endDate);
+        return intent;
     }
 
+    @Override
+    public Fragment createFragment() {
+        Calendar startDate = (Calendar) getIntent().getSerializableExtra(EXTRA_START_DATE);
+        Calendar endDate = (Calendar) getIntent().getSerializableExtra(EXTRA_END_DATE);
+        return AnalysisFragment.newInstance(startDate, endDate);
+    }
 }

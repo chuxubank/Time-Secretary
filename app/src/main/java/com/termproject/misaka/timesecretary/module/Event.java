@@ -5,6 +5,8 @@ import android.support.annotation.NonNull;
 import java.util.Calendar;
 import java.util.UUID;
 
+import static com.termproject.misaka.timesecretary.utils.TimeUtils.cal2dateTimeCalendar;
+
 /**
  * @author misaka
  */
@@ -22,14 +24,16 @@ public class Event implements Comparable<Event> {
 
     public Event(UUID id) {
         mId = id;
-        mStartTime = Calendar.getInstance();
-        mStartTime.set(Calendar.MINUTE, 0);
-        mStartTime.set(Calendar.SECOND, 0);
-        mStartTime.add(Calendar.HOUR, 1);
-        mEndTime = Calendar.getInstance();
-        mEndTime.set(Calendar.MINUTE, 0);
-        mEndTime.set(Calendar.SECOND, 0);
-        mEndTime.add(Calendar.HOUR, 2);
+        mStartTime = cal2dateTimeCalendar(Calendar.getInstance());
+        mEndTime = cal2dateTimeCalendar(Calendar.getInstance());
+        if (Calendar.getInstance().get(Calendar.MINUTE) != 0) {
+            mStartTime.set(Calendar.MINUTE, 0);
+            mEndTime.set(Calendar.MINUTE, 0);
+            mStartTime.add(Calendar.HOUR, 1);
+            mEndTime.add(Calendar.HOUR, 2);
+        } else {
+            mEndTime.add(Calendar.HOUR, 1);
+        }
     }
 
     public UUID getId() {
@@ -83,5 +87,9 @@ public class Event implements Comparable<Event> {
         } else {
             return mStartTime.before(o.mStartTime) ? -1 : 1;
         }
+    }
+
+    public long getDuration() {
+        return mEndTime.getTimeInMillis() - mStartTime.getTimeInMillis();
     }
 }

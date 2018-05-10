@@ -24,6 +24,7 @@ import com.termproject.misaka.timesecretary.part.TaskTimeFragment;
 import java.util.Calendar;
 import java.util.List;
 
+import static com.termproject.misaka.timesecretary.utils.TimeUtils.cal2dateTimeCalendar;
 import static com.termproject.misaka.timesecretary.utils.TimeUtils.cal2long;
 import static com.termproject.misaka.timesecretary.utils.TimeUtils.long2calendar;
 
@@ -68,11 +69,10 @@ public class TaskHolder extends RecyclerView.ViewHolder implements View.OnClickL
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-                mTask.setChecked(isChecked);
                 if (isChecked) {
-                    Calendar startTime = Calendar.getInstance();
-                    Calendar endTime = Calendar.getInstance();
-                    endTime.add(Calendar.MINUTE, 30);
+                    Calendar startTime = cal2dateTimeCalendar(Calendar.getInstance());
+                    Calendar endTime = cal2dateTimeCalendar(Calendar.getInstance());
+                    startTime.add(Calendar.MINUTE, -30);
                     if (cal2long(mTask.getStartTime()) == 0 && cal2long(mTask.getEndTime()) == 0) {
                         mTask.setStartTime(startTime);
                         mTask.setEndTime(endTime);
@@ -82,6 +82,7 @@ public class TaskHolder extends RecyclerView.ViewHolder implements View.OnClickL
                     taskTime.setTargetFragment(mFragment, REQUEST_TAKE_TIME);
                     taskTime.show(mFragmentManager, DIALOG_TASK_TIME);
                 } else {
+                    mTask.setChecked(false);
                     mTask.setStartTime(long2calendar(0));
                     mTask.setEndTime(long2calendar(0));
                     TaskLab.get(mContext).updateTask(mTask);

@@ -34,11 +34,12 @@ import com.termproject.misaka.timesecretary.module.CategoryLab;
 import com.termproject.misaka.timesecretary.module.Task;
 import com.termproject.misaka.timesecretary.module.TaskLab;
 import com.termproject.misaka.timesecretary.part.DatePickerFragment;
-import com.termproject.misaka.timesecretary.utils.TimeUtils;
 
 import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
+
+import static com.termproject.misaka.timesecretary.utils.TimeUtils.cal2dateString;
 
 /**
  * @author misaka
@@ -154,7 +155,7 @@ public class TaskFragment extends Fragment implements View.OnClickListener {
         mSpnCategory.setAdapter(mCategoryAdapter);
         for (int i = 0; i < mCategoryAdapter.getCount(); i++) {
             Category category = (Category) mCategoryAdapter.getItem(i);
-            if (category.getId() == mTask.getCategory()) {
+            if (category.getId().equals(mTask.getCategory())) {
                 mSpnCategory.setSelection(i, true);
                 break;
             }
@@ -167,6 +168,10 @@ public class TaskFragment extends Fragment implements View.OnClickListener {
         mEtDeadline.setOnClickListener(this);
     }
 
+    private void updateUI() {
+        mEtDeferUntil.setText(cal2dateString(mTask.getDeferUntil()));
+        mEtDeadline.setText(cal2dateString(mTask.getDeadline()));
+    }
 
     @Override
     public void onClick(View v) {
@@ -197,9 +202,15 @@ public class TaskFragment extends Fragment implements View.OnClickListener {
         if (requestCode == REQUEST_DEFER_UNTIL) {
             Calendar calendar = (Calendar) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
             mTask.setDeferUntil(calendar);
+            if (!isValidDate()) {
+                mTask.getDeadline().setTime(mTask.getDeferUntil().getTime());
+            }
         } else if (requestCode == REQUEST_DEADLINE) {
             Calendar calendar = (Calendar) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
             mTask.setDeadline(calendar);
+            if (!isValidDate()) {
+                mTask.getDeferUntil().setTime(mTask.getDeadline().getTime());
+            }
         }
         updateUI();
     }
@@ -217,7 +228,7 @@ public class TaskFragment extends Fragment implements View.OnClickListener {
             cancel = true;
         }
 
-        if (!checkDateTime()) {
+        if (!isValidDate()) {
             focusView = mEtDeadline;
             cancel = true;
         }
@@ -234,18 +245,8 @@ public class TaskFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private boolean checkDateTime() {
-        if (mTask.getDeadline().before(mTask.getDeferUntil())) {
-            mTask.getDeadline().setTime(mTask.getDeferUntil().getTime());
-            return false;
-        }
-        return true;
-    }
-
-    private void updateUI() {
-        checkDateTime();
-        mEtDeferUntil.setText(TimeUtils.cal2dateString(mTask.getDeferUntil()));
-        mEtDeadline.setText(TimeUtils.cal2dateString(mTask.getDeadline()));
+    private boolean isValidDate() {
+        return !mTask.getDeferUntil().after(mTask.getDeadline());
     }
 
     private static class CategoryAdapter extends BaseAdapter {

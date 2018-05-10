@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import java.util.Calendar;
 import java.util.UUID;
 
+import static com.termproject.misaka.timesecretary.utils.TimeUtils.cal2dateCalendar;
 import static com.termproject.misaka.timesecretary.utils.TimeUtils.long2calendar;
 
 /**
@@ -29,8 +30,8 @@ public class Task implements Comparable<Task> {
         mId = id;
         mStartTime = long2calendar(0);
         mEndTime = long2calendar(0);
-        mDeferUntil = Calendar.getInstance();
-        mDeadline = Calendar.getInstance();
+        mDeferUntil = cal2dateCalendar(Calendar.getInstance());
+        mDeadline = cal2dateCalendar(Calendar.getInstance());
     }
 
 
@@ -109,5 +110,9 @@ public class Task implements Comparable<Task> {
         } else {
             return mDeferUntil.before(o.mDeferUntil) ? -1 : 1;
         }
+    }
+
+    public long getDuration() {
+        return mEndTime.getTimeInMillis() - mStartTime.getTimeInMillis();
     }
 }

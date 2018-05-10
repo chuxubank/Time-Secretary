@@ -64,9 +64,7 @@ public class TaskTimeFragment extends AppCompatDialogFragment {
                 .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        mTask.setChecked(false);
-                        TaskLab.get(getActivity()).updateTask(mTask);
-                        sendResult(Activity.RESULT_CANCELED, mTask.getId());
+                        sendResult(Activity.RESULT_CANCELED, null);
                     }
                 })
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {

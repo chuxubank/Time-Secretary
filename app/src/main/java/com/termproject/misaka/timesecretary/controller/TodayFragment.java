@@ -19,6 +19,7 @@ import com.termproject.misaka.timesecretary.module.Task;
 import com.termproject.misaka.timesecretary.module.TaskLab;
 
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 
 import static com.termproject.misaka.timesecretary.utils.TimeUtils.cal2day;
@@ -71,6 +72,7 @@ public class TodayFragment extends Fragment {
         EventLab eventLab = EventLab.get(getActivity());
         eventLab.clearNoTitle();
         List<Event> events = eventLab.getEventsByDay(cal2day(Calendar.getInstance()));
+        Collections.sort(events);
         if (mEventAdapter == null) {
             mEventAdapter = new EventAdapter(events);
         } else {
@@ -81,6 +83,7 @@ public class TodayFragment extends Fragment {
         TaskLab taskLab = TaskLab.get(getActivity());
         taskLab.clearNoTitle();
         List<Task> tasks = taskLab.getTasksByDay(cal2day(Calendar.getInstance()));
+        Collections.sort(tasks);
         if (mTaskAdapter == null) {
             mTaskAdapter = new TaskAdapter(tasks);
         } else {
