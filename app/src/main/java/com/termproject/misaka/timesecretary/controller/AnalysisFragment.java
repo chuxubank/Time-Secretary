@@ -47,28 +47,6 @@ public class AnalysisFragment extends Fragment implements View.OnClickListener {
     private Calendar mEndDate;
     private TextInputEditText mEtStartDate;
     private TextInputEditText mEtEndDate;
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
-
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.navigation_day:
-                    mStartDate = cal2dateCalendar(Calendar.getInstance());
-                    mEndDate = cal2dateCalendar(Calendar.getInstance());
-                    mEndDate.add(Calendar.DATE, 1);
-                    updateUI();
-                    return true;
-                case R.id.navigation_week:
-                    return true;
-                case R.id.navigation_month:
-                    return true;
-                default:
-                    break;
-            }
-            return false;
-        }
-    };
 
     public static AnalysisFragment newInstance(Calendar startDate, Calendar endDate) {
         Bundle args = new Bundle();
@@ -95,6 +73,41 @@ public class AnalysisFragment extends Fragment implements View.OnClickListener {
         return v;
     }
 
+    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+            = new BottomNavigationView.OnNavigationItemSelectedListener() {
+
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.navigation_day:
+                    mStartDate = cal2dateCalendar(Calendar.getInstance());
+                    mEndDate = cal2dateCalendar(Calendar.getInstance());
+                    mEndDate.add(Calendar.DATE, 1);
+                    updateUI();
+                    return true;
+                case R.id.navigation_week:
+                    mStartDate = cal2dateCalendar(Calendar.getInstance());
+                    mStartDate.add(Calendar.DATE, mStartDate.getFirstDayOfWeek() - mStartDate.get(Calendar.DAY_OF_WEEK));
+                    mEndDate = cal2dateCalendar(Calendar.getInstance());
+                    mEndDate.add(Calendar.DATE, mEndDate.getFirstDayOfWeek() - mEndDate.get(Calendar.DAY_OF_WEEK) + 7);
+                    mEndDate.add(Calendar.DATE, 1);
+                    updateUI();
+                    return true;
+                case R.id.navigation_month:
+                    mStartDate = cal2dateCalendar(Calendar.getInstance());
+                    mStartDate.set(Calendar.DAY_OF_MONTH, mEndDate.getActualMinimum(Calendar.DAY_OF_MONTH));
+                    mEndDate = cal2dateCalendar(Calendar.getInstance());
+                    mEndDate.set(Calendar.DAY_OF_MONTH, mEndDate.getActualMaximum(Calendar.DAY_OF_MONTH));
+                    mEndDate.add(Calendar.DATE, 1);
+                    updateUI();
+                    return true;
+                default:
+                    break;
+            }
+            return false;
+        }
+    };
+
     private void initView(View v) {
         mCategoryLab = CategoryLab.get(getActivity());
         mNavigation = v.findViewById(R.id.navigation);
@@ -104,28 +117,9 @@ public class AnalysisFragment extends Fragment implements View.OnClickListener {
         mEtStartDate.setOnClickListener(this);
         mEtEndDate = v.findViewById(R.id.et_end_date);
         mEtEndDate.setOnClickListener(this);
-    }
 
-    private void updateUI() {
-        mCategories = CategoryLab.get(getActivity()).getCategories();
-
-        mEtStartDate.setText(cal2dateString(mStartDate));
-        mEtEndDate.setText(cal2dateString(mEndDate));
-
-        List<Integer> colors = new ArrayList<>();
-        List<PieEntry> entries = new ArrayList<>();
-        for (Category c : mCategories) {
-            entries.add(new PieEntry(mCategoryLab.getDuration(c.getId(), mStartDate, mEndDate), c.getTitle()));
-            colors.add(Color.parseColor(c.getColor()));
-        }
-        PieDataSet dataSet = new PieDataSet(entries, "");
-        dataSet.setColors(colors);
-        PieData data = new PieData(dataSet);
-        data.setValueFormatter(new PercentFormatter());
-        data.setValueTextSize(14f);
-        mChart.setData(data);
-        mChart.setUsePercentValues(true);
         mChart.getDescription().setEnabled(false);
+        mChart.setUsePercentValues(true);
         mChart.setExtraOffsets(5, 10, 5, 5);
         Legend l = mChart.getLegend();
         l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
@@ -135,7 +129,6 @@ public class AnalysisFragment extends Fragment implements View.OnClickListener {
         l.setXEntrySpace(7f);
         l.setYEntrySpace(0f);
         l.setYOffset(0f);
-        mChart.invalidate();
     }
 
     @Override
@@ -180,6 +173,27 @@ public class AnalysisFragment extends Fragment implements View.OnClickListener {
                 break;
         }
         updateUI();
+    }
+
+    private void updateUI() {
+        mCategories = CategoryLab.get(getActivity()).getCategories();
+
+        mEtStartDate.setText(cal2dateString(mStartDate));
+        mEtEndDate.setText(cal2dateString(mEndDate));
+
+        List<Integer> colors = new ArrayList<>();
+        List<PieEntry> entries = new ArrayList<>();
+        for (Category c : mCategories) {
+            entries.add(new PieEntry(mCategoryLab.getDuration(c.getId(), mStartDate, mEndDate), c.getTitle()));
+            colors.add(Color.parseColor(c.getColor()));
+        }
+        PieDataSet dataSet = new PieDataSet(entries, null);
+        dataSet.setColors(colors);
+        PieData data = new PieData(dataSet);
+        data.setValueFormatter(new PercentFormatter());
+        data.setValueTextSize(14f);
+        mChart.setData(data);
+        mChart.invalidate();
     }
 
     private boolean isValidDate() {
