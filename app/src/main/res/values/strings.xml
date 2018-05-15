@@ -213,7 +213,7 @@
     <string name="pref_title_vibrate">Vibrate</string>
     <string name="error_delete_category">At least one category is needed!</string>
     <string name="item_title_categories">Categories</string>
-    <string name="item_title_upcoming">Upcoming</string>
+    <string name="item_title_list">List</string>
     <string name="prompt_select_date">Select Date</string>
     <string name="error_no_event_task">There is no event and no task on this day!</string>
     <string name="title_activity_analysis">Analysis</string>
@@ -224,5 +224,7 @@
     <string name="title_week">Week</string>
     <string name="title_month">Month</string>
     <string name="item_title_analysis">Analysis</string>
+    <string name="sync_account_type">test</string>
+    <string name="content_authority">test</string>
 
 </resources>

@@ -47,7 +47,7 @@
             android:parentActivityName=".controller.MainActivity" />
 
         <provider
-            android:name=".DatabaseProvider"
+            android:name=".sync.DatabaseProvider"
             android:authorities="com.termproject.misaka.timesecretary.provider"
             android:enabled="true"
             android:exported="false" />
@@ -60,6 +60,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.termproject.misaka.timesecretary.controller.MainActivity" />
         </activity>
+
+        <service android:name="com.termproject.misaka.timesecretary.sync.AuthenticatorService">
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/authenticator" />
+        </service>
     </application>
 
 </manifest>

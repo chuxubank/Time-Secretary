@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         mFragments = new ArrayList<>();
         mFragments.add(new TodayFragment());
-        mFragments.add(new UpcomingFragment());
+        mFragments.add(new ListFragment());
         mFragments.add(new CategoryListFragment());
 
         mFragmentPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {

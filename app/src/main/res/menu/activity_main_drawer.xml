@@ -12,7 +12,7 @@
         <item
             android:id="@+id/nav_upcoming"
             android:icon="@drawable/ic_upcoming"
-            android:title="@string/item_title_upcoming" />
+            android:title="@string/item_title_list" />
 
         <item
             android:id="@+id/nav_categories"

@@ -35,9 +35,9 @@ import java.util.TreeSet;
 import static com.termproject.misaka.timesecretary.utils.TimeUtils.cal2day;
 import static com.termproject.misaka.timesecretary.utils.TimeUtils.cal2longDateString;
 
-public class UpcomingFragment extends Fragment {
+public class ListFragment extends Fragment {
 
-    private static final String TAG = "UpcomingFragment";
+    private static final String TAG = "ListFragment";
     private static final String DIALOG_DATE = "DialogDate";
     private static final int REQUEST_TAKE_TIME = -1;
     private static final int REQUEST_SELECTED_DATE = 0;
@@ -58,7 +58,7 @@ public class UpcomingFragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.action_select_date:
                 DatePickerFragment startDate = DatePickerFragment.newInstance(Calendar.getInstance());
-                startDate.setTargetFragment(UpcomingFragment.this, REQUEST_SELECTED_DATE);
+                startDate.setTargetFragment(ListFragment.this, REQUEST_SELECTED_DATE);
                 startDate.show(getFragmentManager(), DIALOG_DATE);
                 return true;
             default:
@@ -228,7 +228,7 @@ public class UpcomingFragment extends Fragment {
                     viewHolder = new EventHolder(layoutInflater, parent, getActivity());
                     break;
                 case VIEW_TYPE_TASK:
-                    viewHolder = new TaskHolder(layoutInflater, parent, getActivity(), UpcomingFragment.this, getFragmentManager());
+                    viewHolder = new TaskHolder(layoutInflater, parent, getActivity(), ListFragment.this, getFragmentManager());
                     break;
                 default:
                     break;

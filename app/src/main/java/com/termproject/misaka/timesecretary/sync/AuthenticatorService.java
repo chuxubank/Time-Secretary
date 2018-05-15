@@ -1,4 +1,4 @@
-package com.termproject.misaka.timesecretary;
+package com.termproject.misaka.timesecretary.sync;
 
 import android.app.Service;
 import android.content.Intent;
