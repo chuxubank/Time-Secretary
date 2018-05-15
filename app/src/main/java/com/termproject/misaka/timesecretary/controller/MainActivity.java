@@ -186,14 +186,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
-        getSupportActionBar().setTitle(item.getTitle());
         if (id == R.id.nav_today) {
+            getSupportActionBar().setTitle(item.getTitle());
             mViewPager.setCurrentItem(0);
         } else if (id == R.id.nav_upcoming) {
+            getSupportActionBar().setTitle(item.getTitle());
             mViewPager.setCurrentItem(1);
         } else if (id == R.id.nav_categories) {
+            getSupportActionBar().setTitle(item.getTitle());
             mViewPager.setCurrentItem(2);
         } else if (id == R.id.nav_analysis) {
+            getSupportActionBar().setTitle(item.getTitle());
             Calendar startDate = cal2dateCalendar(Calendar.getInstance());
             Calendar endDate = cal2dateCalendar(Calendar.getInstance());
             endDate.add(Calendar.DATE, 1);
@@ -206,7 +209,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Intent intent = new Intent(MainActivity.this, SettingsActivityBase.class);
             startActivity(intent);
         }
-
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
