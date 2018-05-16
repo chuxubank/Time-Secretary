@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 
 import com.termproject.misaka.timesecretary.R;
+import com.termproject.misaka.timesecretary.controller.activity.EventActivity;
 import com.termproject.misaka.timesecretary.module.Event;
 import com.termproject.misaka.timesecretary.module.EventLab;
 

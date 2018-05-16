@@ -1,4 +1,4 @@
-package com.termproject.misaka.timesecretary.controller;
+package com.termproject.misaka.timesecretary.controller.activity;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;

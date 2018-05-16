@@ -1,4 +1,4 @@
-package com.termproject.misaka.timesecretary.controller;
+package com.termproject.misaka.timesecretary.controller.fragment;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -14,6 +14,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.termproject.misaka.timesecretary.R;
+import com.termproject.misaka.timesecretary.controller.activity.CategoryActivity;
+import com.termproject.misaka.timesecretary.controller.activity.MainActivity;
 import com.termproject.misaka.timesecretary.module.Category;
 import com.termproject.misaka.timesecretary.module.CategoryLab;
 

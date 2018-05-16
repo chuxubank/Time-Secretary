@@ -1,4 +1,4 @@
-package com.termproject.misaka.timesecretary.controller;
+package com.termproject.misaka.timesecretary.controller.holder;
 
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +16,7 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.termproject.misaka.timesecretary.R;
+import com.termproject.misaka.timesecretary.controller.activity.TaskActivity;
 import com.termproject.misaka.timesecretary.module.Category;
 import com.termproject.misaka.timesecretary.module.CategoryLab;
 import com.termproject.misaka.timesecretary.module.Task;
@@ -45,7 +46,7 @@ public class TaskHolder extends RecyclerView.ViewHolder implements View.OnClickL
     private Fragment mFragment;
     private FragmentManager mFragmentManager;
 
-    TaskHolder(LayoutInflater inflater, ViewGroup parent, Context context, Fragment fragment, FragmentManager fragmentManager) {
+    public TaskHolder(LayoutInflater inflater, ViewGroup parent, Context context, Fragment fragment, FragmentManager fragmentManager) {
         super(inflater.inflate(R.layout.list_item_task, parent, false));
         itemView.setOnClickListener(this);
         mContext = context;

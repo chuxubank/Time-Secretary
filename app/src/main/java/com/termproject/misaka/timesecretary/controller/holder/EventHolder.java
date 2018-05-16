@@ -1,4 +1,4 @@
-package com.termproject.misaka.timesecretary.controller;
+package com.termproject.misaka.timesecretary.controller.holder;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.termproject.misaka.timesecretary.R;
+import com.termproject.misaka.timesecretary.controller.activity.EventActivity;
 import com.termproject.misaka.timesecretary.module.Category;
 import com.termproject.misaka.timesecretary.module.CategoryLab;
 import com.termproject.misaka.timesecretary.module.Event;
@@ -25,7 +26,7 @@ public class EventHolder extends RecyclerView.ViewHolder implements View.OnClick
     private CategoryLab mCategoryLab;
     private Context mContext;
 
-    EventHolder(LayoutInflater inflater, ViewGroup parent, Context context) {
+    public EventHolder(LayoutInflater inflater, ViewGroup parent, Context context) {
         super(inflater.inflate(R.layout.list_item_event, parent, false));
         itemView.setOnClickListener(this);
         mContext = context;

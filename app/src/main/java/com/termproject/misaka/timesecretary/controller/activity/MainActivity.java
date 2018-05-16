@@ -1,4 +1,4 @@
-package com.termproject.misaka.timesecretary.controller;
+package com.termproject.misaka.timesecretary.controller.activity;
 
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
@@ -21,6 +21,10 @@ import android.view.View;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.termproject.misaka.timesecretary.R;
+import com.termproject.misaka.timesecretary.controller.NotificationService;
+import com.termproject.misaka.timesecretary.controller.fragment.CategoryListFragment;
+import com.termproject.misaka.timesecretary.controller.fragment.ListFragment;
+import com.termproject.misaka.timesecretary.controller.fragment.TodayFragment;
 import com.termproject.misaka.timesecretary.module.Category;
 import com.termproject.misaka.timesecretary.module.CategoryLab;
 import com.termproject.misaka.timesecretary.module.Event;

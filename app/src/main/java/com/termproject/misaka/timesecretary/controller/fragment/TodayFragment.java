@@ -1,4 +1,4 @@
-package com.termproject.misaka.timesecretary.controller;
+package com.termproject.misaka.timesecretary.controller.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.termproject.misaka.timesecretary.R;
+import com.termproject.misaka.timesecretary.controller.holder.EventHolder;
+import com.termproject.misaka.timesecretary.controller.holder.TaskHolder;
 import com.termproject.misaka.timesecretary.module.CategoryLab;
 import com.termproject.misaka.timesecretary.module.Event;
 import com.termproject.misaka.timesecretary.module.EventLab;

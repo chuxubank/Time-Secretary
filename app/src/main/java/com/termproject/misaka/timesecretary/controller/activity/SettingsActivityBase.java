@@ -1,4 +1,4 @@
-package com.termproject.misaka.timesecretary.controller;
+package com.termproject.misaka.timesecretary.controller.activity;
 
 import android.annotation.TargetApi;
 import android.content.Context;

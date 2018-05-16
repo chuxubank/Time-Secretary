@@ -18,7 +18,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".controller.MainActivity"
+            android:name=".controller.activity.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar.TransparentStatusBar">
             <intent-filter>
@@ -28,25 +28,25 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".controller.EventActivity"
+            android:name=".controller.activity.EventActivity"
             android:label="@string/title_event"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".controller.TaskActivity"
+            android:name=".controller.activity.TaskActivity"
             android:label="@string/title_task"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".controller.CategoryActivity"
+            android:name=".controller.activity.CategoryActivity"
             android:label="@string/title_category"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".controller.LoginActivity"
+            android:name=".controller.activity.LoginActivity"
             android:label="@string/title_activity_login"
-            android:parentActivityName=".controller.MainActivity" />
+            android:parentActivityName=".controller.activity.MainActivity" />
         <activity
-            android:name=".controller.SettingsActivityBase"
+            android:name=".controller.activity.SettingsActivityBase"
             android:label="@string/title_activity_settings"
-            android:parentActivityName=".controller.MainActivity" />
+            android:parentActivityName=".controller.activity.MainActivity" />
 
         <provider
             android:name=".sync.DatabaseProvider"
@@ -55,12 +55,12 @@
             android:exported="false" />
 
         <activity
-            android:name=".controller.AnalysisActivity"
+            android:name=".controller.activity.AnalysisActivity"
             android:label="@string/title_activity_analysis"
-            android:parentActivityName=".controller.MainActivity">
+            android:parentActivityName=".controller.activity.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.termproject.misaka.timesecretary.controller.MainActivity" />
+                android:value="com.termproject.misaka.timesecretary.controller.activity.MainActivity" />
         </activity>
 
         <service android:name="com.termproject.misaka.timesecretary.sync.AuthenticatorService">

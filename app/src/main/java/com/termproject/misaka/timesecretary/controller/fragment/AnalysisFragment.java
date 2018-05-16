@@ -1,4 +1,4 @@
-package com.termproject.misaka.timesecretary.controller;
+package com.termproject.misaka.timesecretary.controller.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -47,32 +47,6 @@ public class AnalysisFragment extends Fragment implements View.OnClickListener {
     private Calendar mEndDate;
     private TextInputEditText mEtStartDate;
     private TextInputEditText mEtEndDate;
-
-    public static AnalysisFragment newInstance(Calendar startDate, Calendar endDate) {
-        Bundle args = new Bundle();
-        args.putSerializable(ARG_START_DATE, startDate);
-        args.putSerializable(ARG_END_DATE, endDate);
-        AnalysisFragment fragment = new AnalysisFragment();
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mStartDate = (Calendar) getArguments().getSerializable(ARG_START_DATE);
-        mEndDate = (Calendar) getArguments().getSerializable(ARG_END_DATE);
-        setHasOptionsMenu(true);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_analysis, container, false);
-        initView(v);
-        updateUI();
-        return v;
-    }
-
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -107,6 +81,31 @@ public class AnalysisFragment extends Fragment implements View.OnClickListener {
             return false;
         }
     };
+
+    public static AnalysisFragment newInstance(Calendar startDate, Calendar endDate) {
+        Bundle args = new Bundle();
+        args.putSerializable(ARG_START_DATE, startDate);
+        args.putSerializable(ARG_END_DATE, endDate);
+        AnalysisFragment fragment = new AnalysisFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mStartDate = (Calendar) getArguments().getSerializable(ARG_START_DATE);
+        mEndDate = (Calendar) getArguments().getSerializable(ARG_END_DATE);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.fragment_analysis, container, false);
+        initView(v);
+        updateUI();
+        return v;
+    }
 
     private void initView(View v) {
         mCategoryLab = CategoryLab.get(getActivity());

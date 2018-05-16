@@ -1,4 +1,4 @@
-package com.termproject.misaka.timesecretary.controller;
+package com.termproject.misaka.timesecretary.controller.fragment;
 
 import android.content.DialogInterface;
 import android.graphics.Color;
