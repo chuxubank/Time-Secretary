@@ -226,5 +226,6 @@
     <string name="item_title_analysis">Analysis</string>
     <string name="sync_account_type">test</string>
     <string name="content_authority">test</string>
+    <string name="prompt_sync">Sync</string>
 
 </resources>

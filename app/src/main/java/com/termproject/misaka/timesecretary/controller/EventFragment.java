@@ -205,7 +205,7 @@ public class EventFragment extends Fragment implements View.OnClickListener {
                 endTime.show(getFragmentManager(), DIALOG_TIME);
                 break;
             case R.id.fab_confirm:
-                attemptAdd();
+                attemptUpdate();
                 break;
         }
     }
@@ -259,7 +259,7 @@ public class EventFragment extends Fragment implements View.OnClickListener {
         updateUI();
     }
 
-    private void attemptAdd() {
+    private void attemptUpdate() {
         mEtTitle.setError(null);
         String title = mEtTitle.getEditText().getText().toString();
 

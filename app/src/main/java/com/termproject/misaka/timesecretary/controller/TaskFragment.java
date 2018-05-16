@@ -189,7 +189,7 @@ public class TaskFragment extends Fragment implements View.OnClickListener {
                 endDate.show(getFragmentManager(), DIALOG_DATE);
                 break;
             case R.id.fab_confirm:
-                attemptAdd();
+                attemptUpdate();
                 break;
         }
     }
@@ -215,7 +215,7 @@ public class TaskFragment extends Fragment implements View.OnClickListener {
         updateUI();
     }
 
-    private void attemptAdd() {
+    private void attemptUpdate() {
         mEtTitle.setError(null);
         String title = mEtTitle.getEditText().getText().toString();
 

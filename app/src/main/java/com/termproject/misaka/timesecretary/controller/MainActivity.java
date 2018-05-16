@@ -1,5 +1,9 @@
 package com.termproject.misaka.timesecretary.controller;
 
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -10,6 +14,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -36,6 +41,7 @@ import static com.termproject.misaka.timesecretary.utils.TimeUtils.cal2dateCalen
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = "MainActivity";
+    private static final int NOTIFICATION_JOB_ID = 1;
     private FloatingActionsMenu mFamAdd;
     private FloatingActionButton mAddEvent;
     private FloatingActionButton mAddTask;
@@ -52,6 +58,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
+        cancelAllJobs();
+        scheduleNotificationJob();
     }
 
     private void initView() {
@@ -164,6 +172,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
     }
 
+    public void cancelAllJobs() {
+        JobScheduler tm = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        tm.cancelAll();
+    }
+
+    private void scheduleNotificationJob() {
+        JobScheduler scheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        JobInfo jobInfo = new JobInfo.Builder(NOTIFICATION_JOB_ID, new ComponentName(this, NotificationService.class))
+                .setPeriodic(1000 * 60)
+//                .setMinimumLatency(500)
+//                .setOverrideDeadline(1000)
+                .setPersisted(true)
+                .build();
+        scheduler.schedule(jobInfo);
+    }
+
     @Override
 
     public void onBackPressed() {
@@ -176,10 +200,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
 
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Fragment fragment = mFragmentPagerAdapter.getItem(mPosition);
-        return fragment.onOptionsItemSelected(item);
+        switch (item.getItemId()) {
+            case R.id.action_sync:
+                //TODO: Complete Sync Logic.
+                return true;
+            default:
+                Fragment fragment = mFragmentPagerAdapter.getItem(mPosition);
+                return fragment.onOptionsItemSelected(item);
+        }
     }
 
     @Override

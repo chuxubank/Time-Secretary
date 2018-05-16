@@ -11,6 +11,7 @@ import com.termproject.misaka.timesecretary.database.LocalDbHelper;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
@@ -89,6 +90,17 @@ public class EventLab {
             }
         }
         return events;
+    }
+
+    public Event getUpcomingEvent() {
+        List<Event> events = getUpcomingEvents();
+        Collections.sort(events);
+        Event e = events.get(0);
+        if (e.getEndTime().before(Calendar.getInstance())) {
+            return null;
+        } else {
+            return e;
+        }
     }
 
     public Event getEvent(UUID id) {
