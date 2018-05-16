@@ -43,9 +43,7 @@ public class ListFragment extends Fragment {
     private static final int REQUEST_SELECTED_DATE = 0;
     private EventTaskAdapter mAdapter;
     private RecyclerView mRvUpcoming;
-    private CategoryLab mCategoryLab;
     private List<Object> mObjects;
-    private int mSelectedDay;
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -71,7 +69,7 @@ public class ListFragment extends Fragment {
 
         if (requestCode == REQUEST_SELECTED_DATE && resultCode == Activity.RESULT_OK) {
             Calendar calendar = (Calendar) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
-            mSelectedDay = cal2day(calendar);
+            int selectedDay = cal2day(calendar);
             List<Integer> days = new ArrayList<>();
             for (Object o : mObjects) {
                 Calendar cal;
@@ -83,7 +81,7 @@ public class ListFragment extends Fragment {
                 days.add(cal2day(cal));
             }
             Collections.sort(days);
-            int pos = bound(days, mSelectedDay, true);
+            int pos = bound(days, selectedDay, true);
             Log.d(TAG, "pos:" + pos);
             if (pos < 0) {
                 Snackbar.make(getView(), getString(R.string.error_no_event_task), Snackbar.LENGTH_SHORT).show();
@@ -163,8 +161,8 @@ public class ListFragment extends Fragment {
     }
 
     private void updateUI() {
-        mCategoryLab = CategoryLab.get(getActivity());
-        mCategoryLab.clearNoTitle();
+        CategoryLab categoryLab = CategoryLab.get(getActivity());
+        categoryLab.clearNoTitle();
         EventLab eventLab = EventLab.get(getActivity());
         eventLab.clearNoTitle();
         List<Event> events = eventLab.getEvents();

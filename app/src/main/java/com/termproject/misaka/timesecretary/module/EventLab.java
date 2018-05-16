@@ -10,6 +10,8 @@ import com.termproject.misaka.timesecretary.database.EventDbSchema.EventTable;
 import com.termproject.misaka.timesecretary.database.LocalDbHelper;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
@@ -73,6 +75,18 @@ public class EventLab {
             }
         } finally {
             cursor.close();
+        }
+        return events;
+    }
+
+    public List<Event> getUpcomingEvents() {
+        List<Event> events = getEvents();
+        Iterator<Event> iterator = events.iterator();
+        while (iterator.hasNext()) {
+            Event e = iterator.next();
+            if (e.getStartTime().after(Calendar.getInstance())) {
+                iterator.remove();
+            }
         }
         return events;
     }

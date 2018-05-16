@@ -10,9 +10,12 @@ import com.termproject.misaka.timesecretary.database.TaskCursorWrapper;
 import com.termproject.misaka.timesecretary.database.TaskDbSchema.TaskTable;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
+import static com.termproject.misaka.timesecretary.utils.TimeUtils.cal2dateCalendar;
 import static com.termproject.misaka.timesecretary.utils.TimeUtils.cal2day;
 
 /**
@@ -59,13 +62,26 @@ public class TaskLab {
 
     public List<Task> getTasksByDay(int dayOfYear) {
         List<Task> tasks = getTasks();
-        List<Task> ans = new ArrayList<>();
-        for (Task t : tasks) {
-            if (cal2day(t.getDeferUntil()) == dayOfYear) {
-                ans.add(t);
+        Iterator<Task> iterator = tasks.iterator();
+        while (iterator.hasNext()) {
+            Task t = iterator.next();
+            if (cal2day(t.getDeferUntil()) != dayOfYear) {
+                iterator.remove();
             }
         }
-        return ans;
+        return tasks;
+    }
+
+    public List<Task> getTodayTasks() {
+        List<Task> tasks = getTasks();
+        Iterator<Task> iterator = tasks.iterator();
+        while (iterator.hasNext()) {
+            Task t = iterator.next();
+            if (t.isChecked() || t.getDeferUntil().after(cal2dateCalendar(Calendar.getInstance()))) {
+                iterator.remove();
+            }
+        }
+        return tasks;
     }
 
     public List<Task> getTasks() {

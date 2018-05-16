@@ -82,13 +82,7 @@ public class TodayFragment extends Fragment {
         mRvEvent.setAdapter(mEventAdapter);
         TaskLab taskLab = TaskLab.get(getActivity());
         taskLab.clearNoTitle();
-        List<Task> tasks = taskLab.getTasksByDay(cal2day(Calendar.getInstance()));
-        for (int i = 0; i < tasks.size(); i++) {
-            if (tasks.get(i).isChecked()) {
-                tasks.remove(i);
-                i--;
-            }
-        }
+        List<Task> tasks = taskLab.getTodayTasks();
         Collections.sort(tasks);
         if (mTaskAdapter == null) {
             mTaskAdapter = new TaskAdapter(tasks);

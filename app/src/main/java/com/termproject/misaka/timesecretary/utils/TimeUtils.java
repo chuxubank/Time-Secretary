@@ -44,4 +44,15 @@ public final class TimeUtils {
     public static int cal2day(final Calendar cal) {
         return cal.get(Calendar.YEAR) * 1000 + cal.get(Calendar.DAY_OF_YEAR);
     }
+
+    public static String diffOfDay(final Calendar cal) {
+        int today = cal2day(Calendar.getInstance());
+        int c = cal2day(cal);
+        int diff = c - today;
+        if (diff >= 0) {
+            return diff > 1 ? diff + " days left" : diff + " day left";
+        } else {
+            return diff < -1 ? -diff + " days ago" : -diff + " day ago";
+        }
+    }
 }

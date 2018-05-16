@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="1dp"
     android:background="?android:attr/selectableItemBackground"
     android:orientation="horizontal">
 
@@ -19,7 +18,6 @@
             android:id="@+id/cb_task_checked"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text=""
             tools:buttonTint="@color/test_color"
             tools:targetApi="lollipop" />
 
@@ -50,5 +48,13 @@
             tools:text="Task Notes" />
 
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_deadline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginEnd="8dp"
+        tools:text="Deadline" />
 
 </LinearLayout>

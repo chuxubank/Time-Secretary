@@ -6,6 +6,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,8 +25,10 @@ import com.termproject.misaka.timesecretary.part.TaskTimeFragment;
 import java.util.Calendar;
 import java.util.List;
 
+import static com.termproject.misaka.timesecretary.utils.TimeUtils.cal2dateCalendar;
 import static com.termproject.misaka.timesecretary.utils.TimeUtils.cal2dateTimeCalendar;
 import static com.termproject.misaka.timesecretary.utils.TimeUtils.cal2long;
+import static com.termproject.misaka.timesecretary.utils.TimeUtils.diffOfDay;
 import static com.termproject.misaka.timesecretary.utils.TimeUtils.long2calendar;
 
 public class TaskHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -35,6 +38,7 @@ public class TaskHolder extends RecyclerView.ViewHolder implements View.OnClickL
     private Task mTask;
     private TextView mTvTaskTitle;
     private TextView mTvTaskNotes;
+    private TextView mTvDeadline;
     private CheckBox mCbTaskChecked;
     private CategoryLab mCategoryLab;
     private Context mContext;
@@ -50,6 +54,7 @@ public class TaskHolder extends RecyclerView.ViewHolder implements View.OnClickL
         mCategoryLab = CategoryLab.get(mContext);
         mTvTaskTitle = itemView.findViewById(R.id.tv_task_title);
         mTvTaskNotes = itemView.findViewById(R.id.tv_task_notes);
+        mTvDeadline = itemView.findViewById(R.id.tv_deadline);
         mCbTaskChecked = itemView.findViewById(R.id.cb_task_checked);
     }
 
@@ -95,6 +100,10 @@ public class TaskHolder extends RecyclerView.ViewHolder implements View.OnClickL
         });
         mTvTaskTitle.setText(mTask.getTitle());
         mTvTaskNotes.setText(mTask.getNotes());
+        mTvDeadline.setText(diffOfDay(mTask.getDeadline()));
+        if (!mTask.getDeadline().after(cal2dateCalendar(Calendar.getInstance()))) {
+            mTvDeadline.setTextColor(ContextCompat.getColor(mContext, R.color.accent));
+        }
     }
 
     @Override

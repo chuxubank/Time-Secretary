@@ -17,7 +17,6 @@ import com.termproject.misaka.timesecretary.utils.TimeUtils;
 
 public class EventHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
     private Event mEvent;
-    private Category mCategory;
     private View mVDivider;
     private TextView mTvEventStartTime;
     private TextView mTvEventEndTime;
@@ -40,10 +39,10 @@ public class EventHolder extends RecyclerView.ViewHolder implements View.OnClick
 
     public void bind(Event event) {
         mEvent = event;
-        mCategory = mCategoryLab.getCategory(mEvent.getCategory());
+        Category category = mCategoryLab.getCategory(mEvent.getCategory());
         mTvEventStartTime.setText(TimeUtils.cal2timeString(mEvent.getStartTime()));
         mTvEventEndTime.setText(TimeUtils.cal2timeString(mEvent.getEndTime()));
-        mVDivider.setBackgroundColor(Color.parseColor(mCategory.getColor()));
+        mVDivider.setBackgroundColor(Color.parseColor(category.getColor()));
         mTvEventTitle.setText(mEvent.getTitle());
         mTvEventNotes.setText(mEvent.getNotes());
     }
