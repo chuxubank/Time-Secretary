@@ -1,9 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_search"
+        android:icon="@drawable/ic_search"
+        android:orderInCategory="98"
+        android:title="@string/prompt_search"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:showAsAction="ifRoom|collapseActionView" />
+
     <item
         android:id="@+id/action_select_date"
         android:icon="@drawable/ic_select_date"
+        android:orderInCategory="99"
         android:title="@string/prompt_select_date"
         app:showAsAction="ifRoom|withText" />
 </menu>

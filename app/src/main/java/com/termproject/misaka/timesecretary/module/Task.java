@@ -11,15 +11,10 @@ import static com.termproject.misaka.timesecretary.utils.TimeUtils.long2calendar
 /**
  * @author misaka
  */
-public class Task implements Comparable<Task> {
-    private UUID mId;
-    private String mTitle;
-    private String mNotes;
-    private Calendar mStartTime;
-    private Calendar mEndTime;
+public class Task extends Entity implements Comparable<Task> {
+
     private Calendar mDeferUntil;
     private Calendar mDeadline;
-    private UUID mCategory;
     private boolean mChecked;
 
     public Task() {
@@ -27,48 +22,11 @@ public class Task implements Comparable<Task> {
     }
 
     public Task(UUID id) {
-        mId = id;
-        mStartTime = long2calendar(0);
-        mEndTime = long2calendar(0);
+        super(id);
+        setStartTime(long2calendar(0));
+        setEndTime(long2calendar(0));
         mDeferUntil = cal2dateCalendar(Calendar.getInstance());
         mDeadline = cal2dateCalendar(Calendar.getInstance());
-    }
-
-
-    public UUID getId() {
-        return mId;
-    }
-
-    public String getTitle() {
-        return mTitle;
-    }
-
-    public void setTitle(String title) {
-        mTitle = title;
-    }
-
-    public String getNotes() {
-        return mNotes;
-    }
-
-    public void setNotes(String notes) {
-        mNotes = notes;
-    }
-
-    public Calendar getStartTime() {
-        return mStartTime;
-    }
-
-    public void setStartTime(Calendar startTime) {
-        mStartTime = startTime;
-    }
-
-    public Calendar getEndTime() {
-        return mEndTime;
-    }
-
-    public void setEndTime(Calendar endTime) {
-        mEndTime = endTime;
     }
 
     public Calendar getDeferUntil() {
@@ -87,14 +45,6 @@ public class Task implements Comparable<Task> {
         mDeadline = deadline;
     }
 
-    public UUID getCategory() {
-        return mCategory;
-    }
-
-    public void setCategory(UUID category) {
-        mCategory = category;
-    }
-
     public boolean isChecked() {
         return mChecked;
     }
@@ -110,9 +60,5 @@ public class Task implements Comparable<Task> {
         } else {
             return mDeferUntil.before(o.mDeferUntil) ? -1 : 1;
         }
-    }
-
-    public long getDuration() {
-        return mEndTime.getTimeInMillis() - mStartTime.getTimeInMillis();
     }
 }

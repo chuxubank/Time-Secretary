@@ -1,6 +1,8 @@
 package com.termproject.misaka.timesecretary.controller.fragment;
 
 import android.app.Activity;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -8,6 +10,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,6 +23,7 @@ import com.termproject.misaka.timesecretary.R;
 import com.termproject.misaka.timesecretary.controller.holder.EventHolder;
 import com.termproject.misaka.timesecretary.controller.holder.TaskHolder;
 import com.termproject.misaka.timesecretary.module.CategoryLab;
+import com.termproject.misaka.timesecretary.module.Entity;
 import com.termproject.misaka.timesecretary.module.Event;
 import com.termproject.misaka.timesecretary.module.EventLab;
 import com.termproject.misaka.timesecretary.module.Task;
@@ -43,14 +47,42 @@ public class ListFragment extends Fragment {
     private static final String DIALOG_DATE = "DialogDate";
     private static final int REQUEST_TAKE_TIME = -1;
     private static final int REQUEST_SELECTED_DATE = 0;
-    private EventTaskAdapter mAdapter;
+    private EntityAdapter mAdapter;
     private RecyclerView mRvUpcoming;
-    private List<Object> mObjects;
+    private List<Entity> mEntities;
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.fragment_upcoming_menu, menu);
+        inflater.inflate(R.menu.fragment_list_menu, menu);
+        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+        searchView.setQueryHint(getString(R.string.search_hint));
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                queryEntities(newText);
+                return false;
+            }
+        });
+    }
+
+    private void queryEntities(String query) {
+        List<Entity> queryEntities = getSortedEntities(
+                EventLab.get(getActivity()).queryEvents(query),
+                TaskLab.get(getActivity()).queryTasks(query));
+        if (mAdapter == null) {
+            mAdapter = new EntityAdapter(queryEntities);
+        } else {
+            mAdapter.setEntities(queryEntities);
+            mAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override
@@ -73,12 +105,12 @@ public class ListFragment extends Fragment {
             Calendar calendar = (Calendar) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
             int selectedDay = cal2day(calendar);
             List<Integer> days = new ArrayList<>();
-            for (Object o : mObjects) {
+            for (Entity entity : mEntities) {
                 Calendar cal;
-                if (o instanceof Event) {
-                    cal = ((Event) o).getStartTime();
+                if (entity instanceof Event) {
+                    cal = entity.getStartTime();
                 } else {
-                    cal = ((Task) o).getDeferUntil();
+                    cal = ((Task) entity).getDeferUntil();
                 }
                 days.add(cal2day(cal));
             }
@@ -91,14 +123,7 @@ public class ListFragment extends Fragment {
                 ((LinearLayoutManager) mRvUpcoming.getLayoutManager()).scrollToPositionWithOffset(pos, 0);
             }
         } else {
-            updateAllCachedFragment();
-        }
-    }
-
-    private void updateAllCachedFragment() {
-        List<Fragment> fragments = getFragmentManager().getFragments();
-        for (Fragment f : fragments) {
-            f.onResume();
+            updateUI();
         }
     }
 
@@ -129,7 +154,7 @@ public class ListFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_upcoming, container, false);
+        View v = inflater.inflate(R.layout.fragment_list, container, false);
         Log.i(TAG, "onCreateView");
         initView(v);
         updateUI();
@@ -145,16 +170,16 @@ public class ListFragment extends Fragment {
 
     private void initView(View v) {
         setHasOptionsMenu(true);
-        mRvUpcoming = v.findViewById(R.id.rv_upcoming);
+        mRvUpcoming = v.findViewById(R.id.rv_list);
         mRvUpcoming.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRvUpcoming.addItemDecoration(new DateDividerItemDecoration(getActivity(), new DateDividerItemDecoration.ItemDecorationCallback() {
             @Override
             public String getGroupName(int position) {
-                Object o = mObjects.get(position);
-                if (o instanceof Event) {
-                    return cal2longDateString(((Event) o).getStartTime());
-                } else if (o instanceof Task) {
-                    return cal2longDateString(((Task) o).getDeferUntil());
+                Entity entity = mEntities.get(position);
+                if (entity instanceof Event) {
+                    return cal2longDateString(entity.getStartTime());
+                } else if (entity instanceof Task) {
+                    return cal2longDateString(((Task) entity).getDeferUntil());
                 } else {
                     return null;
                 }
@@ -167,12 +192,20 @@ public class ListFragment extends Fragment {
         categoryLab.clearNoTitle();
         EventLab eventLab = EventLab.get(getActivity());
         eventLab.clearNoTitle();
-        List<Event> events = eventLab.getEvents();
         TaskLab taskLab = TaskLab.get(getActivity());
         taskLab.clearNoTitle();
-        List<Task> tasks = taskLab.getTasks();
-        Collections.sort(events);
-        Collections.sort(tasks);
+        mEntities = getSortedEntities(eventLab.getEvents(), taskLab.getTasks());
+        if (mAdapter == null) {
+            mAdapter = new EntityAdapter(mEntities);
+        } else {
+            mAdapter.setEntities(mEntities);
+            mAdapter.notifyDataSetChanged();
+        }
+        mRvUpcoming.setAdapter(mAdapter);
+    }
+
+    private List<Entity> getSortedEntities(List<Event> events, List<Task> tasks) {
+        List<Entity> entities = new ArrayList<>();
         Set<Integer> days = new TreeSet<>();
         for (Event e : events) {
             days.add(cal2day(e.getStartTime()));
@@ -180,38 +213,37 @@ public class ListFragment extends Fragment {
         for (Task t : tasks) {
             days.add(cal2day(t.getDeferUntil()));
         }
-        mObjects = new ArrayList<>();
+        Collections.sort(events);
+        Collections.sort(tasks);
         for (Integer day : days) {
-            List<Event> dayEvents = eventLab.getEventsByDay(day);
-            List<Task> dayTasks = taskLab.getTasksByDay(day);
-            Collections.sort(dayEvents);
-            Collections.sort(dayTasks);
-            mObjects.addAll(dayEvents);
-            mObjects.addAll(dayTasks);
+            for (Event e : events) {
+                if (cal2day(e.getStartTime()) == day) {
+                    entities.add(e);
+                }
+            }
+            for (Task t : tasks) {
+                if (cal2day(t.getDeferUntil()) == day) {
+                    entities.add(t);
+                }
+            }
         }
-        if (mAdapter == null) {
-            mAdapter = new EventTaskAdapter(mObjects);
-        } else {
-            mAdapter.setObjects(mObjects);
-            mAdapter.notifyDataSetChanged();
-        }
-        mRvUpcoming.setAdapter(mAdapter);
+        return entities;
     }
 
-    private class EventTaskAdapter extends RecyclerView.Adapter {
+    private class EntityAdapter extends RecyclerView.Adapter {
 
         private static final int VIEW_TYPE_EVENT = 0;
         private static final int VIEW_TYPE_TASK = 1;
-        private List<Object> mObjects;
+        private List<Entity> mEntities;
 
-        private EventTaskAdapter(List<Object> objects) {
-            mObjects = objects;
+        private EntityAdapter(List<Entity> entities) {
+            mEntities = entities;
         }
 
         @Override
         public int getItemViewType(int position) {
-            Object object = mObjects.get(position);
-            if (object instanceof Event) {
+            Entity entity = mEntities.get(position);
+            if (entity instanceof Event) {
                 return VIEW_TYPE_EVENT;
             } else {
                 return VIEW_TYPE_TASK;
@@ -239,19 +271,19 @@ public class ListFragment extends Fragment {
         @Override
         public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
             if (holder instanceof EventHolder) {
-                ((EventHolder) holder).bind((Event) mObjects.get(position));
+                ((EventHolder) holder).bind((Event) mEntities.get(position));
             } else {
-                ((TaskHolder) holder).bind((Task) mObjects.get(position));
+                ((TaskHolder) holder).bind((Task) mEntities.get(position));
             }
         }
 
         @Override
         public int getItemCount() {
-            return mObjects.size();
+            return mEntities.size();
         }
 
-        private void setObjects(List<Object> objects) {
-            mObjects = objects;
+        private void setEntities(List<Entity> entities) {
+            mEntities = entities;
         }
     }
 }

@@ -2,8 +2,10 @@ package com.termproject.misaka.timesecretary.controller.holder;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
@@ -24,7 +26,6 @@ import com.termproject.misaka.timesecretary.module.TaskLab;
 import com.termproject.misaka.timesecretary.part.TaskTimeFragment;
 
 import java.util.Calendar;
-import java.util.List;
 
 import static com.termproject.misaka.timesecretary.utils.TimeUtils.cal2dateCalendar;
 import static com.termproject.misaka.timesecretary.utils.TimeUtils.cal2dateTimeCalendar;
@@ -76,26 +77,29 @@ public class TaskHolder extends RecyclerView.ViewHolder implements View.OnClickL
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
                 if (isChecked) {
-                    Calendar startTime = cal2dateTimeCalendar(Calendar.getInstance());
-                    Calendar endTime = cal2dateTimeCalendar(Calendar.getInstance());
-                    startTime.add(Calendar.MINUTE, -30);
-                    if (cal2long(mTask.getStartTime()) == 0 && cal2long(mTask.getEndTime()) == 0) {
-                        mTask.setStartTime(startTime);
-                        mTask.setEndTime(endTime);
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+                    int taskTime = Integer.parseInt(preferences.getString("default_task_time", "15"));
+                    if (taskTime != 0) {
+                        Calendar startTime = cal2dateTimeCalendar(Calendar.getInstance());
+                        Calendar endTime = cal2dateTimeCalendar(Calendar.getInstance());
+                        startTime.add(Calendar.MINUTE, -taskTime);
+                        if (cal2long(mTask.getStartTime()) == 0 && cal2long(mTask.getEndTime()) == 0) {
+                            mTask.setStartTime(startTime);
+                            mTask.setEndTime(endTime);
+                            TaskLab.get(mContext).updateTask(mTask);
+                        }
+                        TaskTimeFragment taskTimeFragment = TaskTimeFragment.newInstance(mTask.getId());
+                        taskTimeFragment.setTargetFragment(mFragment, REQUEST_TAKE_TIME);
+                        taskTimeFragment.show(mFragmentManager, DIALOG_TASK_TIME);
+                    } else {
+                        mTask.setChecked(true);
                         TaskLab.get(mContext).updateTask(mTask);
                     }
-                    TaskTimeFragment taskTime = TaskTimeFragment.newInstance(mTask.getId());
-                    taskTime.setTargetFragment(mFragment, REQUEST_TAKE_TIME);
-                    taskTime.show(mFragmentManager, DIALOG_TASK_TIME);
                 } else {
                     mTask.setChecked(false);
                     mTask.setStartTime(long2calendar(0));
                     mTask.setEndTime(long2calendar(0));
                     TaskLab.get(mContext).updateTask(mTask);
-                    List<Fragment> fragments = mFragmentManager.getFragments();
-                    for (Fragment f : fragments) {
-                        f.onResume();
-                    }
                 }
             }
         });

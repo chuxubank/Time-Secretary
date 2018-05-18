@@ -73,7 +73,6 @@ public class DateDividerItemDecoration extends RecyclerView.ItemDecoration {
                 continue;
             }
             String textLine = mCallback.getGroupName(position).toUpperCase();
-//            textLine = textLine.substring(0, textLine.length() - 6);
             if (TextUtils.isEmpty(textLine)) {
                 continue;
             }

@@ -97,14 +97,7 @@ public class TodayFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        updateAllCachedFragment();
-    }
-
-    private void updateAllCachedFragment() {
-        List<Fragment> fragments = getFragmentManager().getFragments();
-        for (Fragment f : fragments) {
-            f.onResume();
-        }
+        updateUI();
     }
 
     private class EventAdapter extends RecyclerView.Adapter<EventHolder> {

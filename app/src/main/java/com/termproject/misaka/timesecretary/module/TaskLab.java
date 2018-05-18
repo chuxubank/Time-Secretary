@@ -99,6 +99,23 @@ public class TaskLab {
         return tasks;
     }
 
+    public List<Task> queryTasks(String query) {
+        List<Task> tasks = new ArrayList<>();
+        TaskCursorWrapper cursor = queryTasks(
+                TaskTable.Cols.TITLE + " like ? or " + TaskTable.Cols.NOTES + " like ?",
+                new String[]{'%' + query + '%', '%' + query + '%'});
+        try {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                tasks.add(cursor.getTask());
+                cursor.moveToNext();
+            }
+        } finally {
+            cursor.close();
+        }
+        return tasks;
+    }
+
     public Task getTask(UUID id) {
         TaskCursorWrapper cursor = queryTasks(
                 TaskTable.Cols.UUID + " = ?",

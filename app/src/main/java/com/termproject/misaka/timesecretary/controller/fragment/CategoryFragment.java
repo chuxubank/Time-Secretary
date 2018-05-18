@@ -29,7 +29,14 @@ import com.termproject.misaka.timesecretary.R;
 import com.termproject.misaka.timesecretary.module.Category;
 import com.termproject.misaka.timesecretary.module.CategoryLab;
 import com.termproject.misaka.timesecretary.module.ColorLab;
+import com.termproject.misaka.timesecretary.module.Entity;
+import com.termproject.misaka.timesecretary.module.Event;
+import com.termproject.misaka.timesecretary.module.EventLab;
+import com.termproject.misaka.timesecretary.module.Task;
+import com.termproject.misaka.timesecretary.module.TaskLab;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -90,7 +97,7 @@ public class CategoryFragment extends Fragment {
                                     if (CategoryLab.get(getActivity()).getCategories().size() == 1) {
                                         Snackbar.make(getView(), R.string.error_delete_category, Snackbar.LENGTH_SHORT).show();
                                     } else {
-                                        CategoryLab.get(getActivity()).deleteCategory(mCategory);
+                                        deleteCategory(mCategory);
                                         getActivity().finish();
                                     }
                                 }
@@ -104,6 +111,24 @@ public class CategoryFragment extends Fragment {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void deleteCategory(Category category) {
+        List<Entity> entities = new ArrayList<>();
+        entities.addAll(EventLab.get(getActivity()).getEvents());
+        entities.addAll(TaskLab.get(getActivity()).getTasks());
+        Iterator<Entity> iterator = entities.iterator();
+        while (iterator.hasNext()) {
+            Entity entity = iterator.next();
+            if (entity.getCategory().equals(category.getId())) {
+                if (entity instanceof Event) {
+                    EventLab.get(getActivity()).deleteEvent((Event) entity);
+                } else {
+                    TaskLab.get(getActivity()).deleteTask((Task) entity);
+                }
+            }
+        }
+        CategoryLab.get(getActivity()).deleteCategory(category);
     }
 
     private void initView(View v) {

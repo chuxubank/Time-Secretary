@@ -5,7 +5,9 @@ import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -17,6 +19,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
@@ -46,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private static final String TAG = "MainActivity";
     private static final int NOTIFICATION_JOB_ID = 1;
+    private NavigationView mNavigationView;
     private FloatingActionsMenu mFamAdd;
     private FloatingActionButton mAddEvent;
     private FloatingActionButton mAddTask;
@@ -66,6 +70,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         scheduleNotificationJob();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateUI();
+    }
+
+    private void updateUI() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        View headerView = mNavigationView.getHeaderView(0);
+        TextView tvNickname = headerView.findViewById(R.id.tv_nickname);
+        tvNickname.setText(preferences.getString("nickname", getString(R.string.pref_default_display_name)));
+    }
+
     private void initView() {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -78,10 +95,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-        navigationView.setCheckedItem(R.id.nav_today);
-
+        mNavigationView = findViewById(R.id.nav_view);
+        mNavigationView.setNavigationItemSelectedListener(this);
+        mNavigationView.setCheckedItem(R.id.nav_today);
 
         mFamAdd = findViewById(R.id.fam_add);
         mFamAdd.setOnFloatingActionsMenuUpdateListener(new FloatingActionsMenu.OnFloatingActionsMenuUpdateListener() {
@@ -215,6 +231,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.action_sync:
                 //TODO: Complete Sync Logic.
                 return true;
+
             default:
                 Fragment fragment = mFragmentPagerAdapter.getItem(mPosition);
                 return fragment.onOptionsItemSelected(item);
@@ -250,6 +267,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+        updateAllFragment();
         return true;
+    }
+
+    private void updateAllFragment() {
+        List<Fragment> fragments = getSupportFragmentManager().getFragments();
+        for (Fragment f : fragments) {
+            f.onResume();
+        }
     }
 }

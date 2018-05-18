@@ -103,6 +103,23 @@ public class EventLab {
         }
     }
 
+    public List<Event> queryEvents(String query) {
+        List<Event> events = new ArrayList<>();
+        EventCursorWrapper cursor = queryEvents(
+                EventTable.Cols.TITLE + " like ? or " + EventTable.Cols.NOTES + " like ?",
+                new String[]{'%' + query + '%', '%' + query + '%'});
+        try {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                events.add(cursor.getEvent());
+                cursor.moveToNext();
+            }
+        } finally {
+            cursor.close();
+        }
+        return events;
+    }
+
     public Event getEvent(UUID id) {
         EventCursorWrapper cursor = queryEvents(
                 EventTable.Cols.UUID + " = ?",
