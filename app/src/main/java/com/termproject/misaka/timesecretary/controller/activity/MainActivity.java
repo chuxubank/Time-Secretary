@@ -245,7 +245,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (id == R.id.nav_today) {
             getSupportActionBar().setTitle(item.getTitle());
             mViewPager.setCurrentItem(0);
-        } else if (id == R.id.nav_upcoming) {
+        } else if (id == R.id.nav_list) {
             getSupportActionBar().setTitle(item.getTitle());
             mViewPager.setCurrentItem(1);
         } else if (id == R.id.nav_categories) {

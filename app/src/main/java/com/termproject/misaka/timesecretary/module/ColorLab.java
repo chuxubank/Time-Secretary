@@ -34,7 +34,7 @@ public class ColorLab {
         return sColorLab;
     }
 
-    public void updateColor() {
+    private void updateColor() {
         mCategories = mCategoryLab.getCategories();
         for (Category c : mCategories) {
             if (c.getColor() != null) {

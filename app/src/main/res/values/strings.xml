@@ -233,5 +233,6 @@
     <string name="prompt_sync">Sync</string>
     <string name="prompt_search">Search</string>
     <string name="search_hint">Search title or notes</string>
+    <string name="error_field_duplicated">This field is duplicated</string>
 
 </resources>

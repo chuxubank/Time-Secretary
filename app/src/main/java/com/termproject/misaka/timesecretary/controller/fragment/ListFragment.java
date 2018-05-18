@@ -20,8 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.termproject.misaka.timesecretary.R;
-import com.termproject.misaka.timesecretary.controller.holder.EventHolder;
-import com.termproject.misaka.timesecretary.controller.holder.TaskHolder;
+import com.termproject.misaka.timesecretary.controller.adapter.EntityAdapter;
 import com.termproject.misaka.timesecretary.module.CategoryLab;
 import com.termproject.misaka.timesecretary.module.Entity;
 import com.termproject.misaka.timesecretary.module.Event;
@@ -78,7 +77,7 @@ public class ListFragment extends Fragment {
                 EventLab.get(getActivity()).queryEvents(query),
                 TaskLab.get(getActivity()).queryTasks(query));
         if (mAdapter == null) {
-            mAdapter = new EntityAdapter(queryEntities);
+            mAdapter = new EntityAdapter(queryEntities, getActivity(), this, getFragmentManager());
         } else {
             mAdapter.setEntities(queryEntities);
             mAdapter.notifyDataSetChanged();
@@ -196,7 +195,7 @@ public class ListFragment extends Fragment {
         taskLab.clearNoTitle();
         mEntities = getSortedEntities(eventLab.getEvents(), taskLab.getTasks());
         if (mAdapter == null) {
-            mAdapter = new EntityAdapter(mEntities);
+            mAdapter = new EntityAdapter(mEntities, getActivity(), this, getFragmentManager());
         } else {
             mAdapter.setEntities(mEntities);
             mAdapter.notifyDataSetChanged();
@@ -228,62 +227,5 @@ public class ListFragment extends Fragment {
             }
         }
         return entities;
-    }
-
-    private class EntityAdapter extends RecyclerView.Adapter {
-
-        private static final int VIEW_TYPE_EVENT = 0;
-        private static final int VIEW_TYPE_TASK = 1;
-        private List<Entity> mEntities;
-
-        private EntityAdapter(List<Entity> entities) {
-            mEntities = entities;
-        }
-
-        @Override
-        public int getItemViewType(int position) {
-            Entity entity = mEntities.get(position);
-            if (entity instanceof Event) {
-                return VIEW_TYPE_EVENT;
-            } else {
-                return VIEW_TYPE_TASK;
-            }
-        }
-
-        @NonNull
-        @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            RecyclerView.ViewHolder viewHolder = null;
-            LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
-            switch (viewType) {
-                case VIEW_TYPE_EVENT:
-                    viewHolder = new EventHolder(layoutInflater, parent, getActivity());
-                    break;
-                case VIEW_TYPE_TASK:
-                    viewHolder = new TaskHolder(layoutInflater, parent, getActivity(), ListFragment.this, getFragmentManager());
-                    break;
-                default:
-                    break;
-            }
-            return viewHolder;
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-            if (holder instanceof EventHolder) {
-                ((EventHolder) holder).bind((Event) mEntities.get(position));
-            } else {
-                ((TaskHolder) holder).bind((Task) mEntities.get(position));
-            }
-        }
-
-        @Override
-        public int getItemCount() {
-            return mEntities.size();
-        }
-
-        private void setEntities(List<Entity> entities) {
-            mEntities = entities;
-        }
     }
 }

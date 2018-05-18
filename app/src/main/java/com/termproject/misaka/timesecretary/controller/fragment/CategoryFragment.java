@@ -211,6 +211,10 @@ public class CategoryFragment extends Fragment {
             mEtTitle.setError(getString(R.string.error_field_required));
             focusView = mEtTitle;
             cancel = true;
+        } else if (hasSameTitle(title)) {
+            mEtTitle.setError(getString(R.string.error_field_duplicated));
+            focusView = mEtTitle;
+            cancel = true;
         }
 
         if (TextUtils.isEmpty(color)) {
@@ -219,6 +223,10 @@ public class CategoryFragment extends Fragment {
             cancel = true;
         } else if (!isColorValid(color)) {
             mEtColor.setError(getString(R.string.error_invalid_color));
+            focusView = mEtColor;
+            cancel = true;
+        } else if (hasSameColor(color)) {
+            mEtColor.setError(getString(R.string.error_field_duplicated));
             focusView = mEtColor;
             cancel = true;
         }
@@ -231,6 +239,26 @@ public class CategoryFragment extends Fragment {
             CategoryLab.get(getActivity()).updateCategory(mCategory);
             getActivity().finish();
         }
+    }
+
+    private boolean hasSameColor(String color) {
+        List<Category> categories = CategoryLab.get(getActivity()).getCategories();
+        for (Category c : categories) {
+            if (!c.getId().equals(mCategory.getId()) && c.getColor().equals(color)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean hasSameTitle(String title) {
+        List<Category> categories = CategoryLab.get(getActivity()).getCategories();
+        for (Category c : categories) {
+            if (!c.getId().equals(mCategory.getId()) && c.getTitle().equals(title)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean isColorValid(String color) {
@@ -254,7 +282,7 @@ public class CategoryFragment extends Fragment {
         private View mVColor;
         private TextView mTvColorCode;
 
-        public ColorHolder(LayoutInflater inflater, ViewGroup parent) {
+        private ColorHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.list_item_color, parent, false));
             itemView.setOnClickListener(this);
             mVColor = itemView.findViewById(R.id.v_color);
@@ -276,7 +304,7 @@ public class CategoryFragment extends Fragment {
     private class ColorAdapter extends RecyclerView.Adapter<ColorHolder> {
         private List<String> mColors;
 
-        public ColorAdapter(List<String> colors) {
+        private ColorAdapter(List<String> colors) {
             mColors = colors;
         }
 

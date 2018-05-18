@@ -12,8 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.termproject.misaka.timesecretary.R;
-import com.termproject.misaka.timesecretary.controller.holder.EventHolder;
-import com.termproject.misaka.timesecretary.controller.holder.TaskHolder;
+import com.termproject.misaka.timesecretary.controller.adapter.EventAdapter;
+import com.termproject.misaka.timesecretary.controller.adapter.TaskAdapter;
 import com.termproject.misaka.timesecretary.module.CategoryLab;
 import com.termproject.misaka.timesecretary.module.Event;
 import com.termproject.misaka.timesecretary.module.EventLab;
@@ -76,7 +76,7 @@ public class TodayFragment extends Fragment {
         List<Event> events = eventLab.getEventsByDay(cal2day(Calendar.getInstance()));
         Collections.sort(events);
         if (mEventAdapter == null) {
-            mEventAdapter = new EventAdapter(events);
+            mEventAdapter = new EventAdapter(events, getActivity());
         } else {
             mEventAdapter.setEvents(events);
             mEventAdapter.notifyDataSetChanged();
@@ -87,7 +87,7 @@ public class TodayFragment extends Fragment {
         List<Task> tasks = taskLab.getTodayTasks();
         Collections.sort(tasks);
         if (mTaskAdapter == null) {
-            mTaskAdapter = new TaskAdapter(tasks);
+            mTaskAdapter = new TaskAdapter(tasks, getActivity(), this, getFragmentManager());
         } else {
             mTaskAdapter.setTasks(tasks);
             mTaskAdapter.notifyDataSetChanged();
@@ -99,65 +99,4 @@ public class TodayFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         updateUI();
     }
-
-    private class EventAdapter extends RecyclerView.Adapter<EventHolder> {
-        private List<Event> mEvents;
-
-        private EventAdapter(List<Event> events) {
-            mEvents = events;
-        }
-
-        @NonNull
-        @Override
-        public EventHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
-            return new EventHolder(layoutInflater, parent, getActivity());
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull EventHolder holder, int position) {
-            Event event = mEvents.get(position);
-            holder.bind(event);
-        }
-
-        @Override
-        public int getItemCount() {
-            return mEvents.size();
-        }
-
-        private void setEvents(List<Event> events) {
-            mEvents = events;
-        }
-    }
-
-    private class TaskAdapter extends RecyclerView.Adapter<TaskHolder> {
-        private List<Task> mTasks;
-
-        private TaskAdapter(List<Task> tasks) {
-            mTasks = tasks;
-        }
-
-        @NonNull
-        @Override
-        public TaskHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
-            return new TaskHolder(layoutInflater, parent, getActivity(), TodayFragment.this, getFragmentManager());
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull TaskHolder holder, int position) {
-            Task task = mTasks.get(position);
-            holder.bind(task);
-        }
-
-        @Override
-        public int getItemCount() {
-            return mTasks.size();
-        }
-
-        private void setTasks(List<Task> tasks) {
-            mTasks = tasks;
-        }
-    }
-
 }
