@@ -65,18 +65,14 @@ public class TaskHolder extends RecyclerView.ViewHolder implements View.OnClickL
         Category category = mCategoryLab.getCategory(mTask.getCategory());
         mCbTaskChecked.setChecked(mTask.isChecked());
         mCbTaskChecked.setButtonTintList(new ColorStateList(
-                new int[][]{
-                        new int[]{}
-                },
-                new int[]{
-                        Color.parseColor(category.getColor()),
-                }
+                new int[][]{new int[]{}},
+                new int[]{Color.parseColor(category.getColor()),}
         ));
         mCbTaskChecked.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-                if (isChecked) {
+                if (isChecked && !mTask.isChecked()) {
                     SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
                     int taskTime = Integer.parseInt(preferences.getString("default_task_time", "15"));
                     if (taskTime != 0) {
@@ -95,7 +91,7 @@ public class TaskHolder extends RecyclerView.ViewHolder implements View.OnClickL
                         mTask.setChecked(true);
                         TaskLab.get(mContext).updateTask(mTask);
                     }
-                } else {
+                } else if (!isChecked && mTask.isChecked()) {
                     mTask.setChecked(false);
                     mTask.setStartTime(long2calendar(0));
                     mTask.setEndTime(long2calendar(0));
@@ -104,7 +100,11 @@ public class TaskHolder extends RecyclerView.ViewHolder implements View.OnClickL
             }
         });
         mTvTaskTitle.setText(mTask.getTitle());
-        mTvTaskNotes.setText(mTask.getNotes());
+        if (mTask.getNotes().isEmpty()) {
+            mTvTaskNotes.setVisibility(View.GONE);
+        } else {
+            mTvTaskNotes.setText(mTask.getNotes());
+        }
         mTvDeadline.setText(diffOfDay(mTask.getDeadline()));
         if (!mTask.getDeadline().after(cal2dateCalendar(Calendar.getInstance()))) {
             mTvDeadline.setTextColor(ContextCompat.getColor(mContext, R.color.accent));

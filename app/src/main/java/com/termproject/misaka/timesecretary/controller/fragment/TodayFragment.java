@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.termproject.misaka.timesecretary.R;
 import com.termproject.misaka.timesecretary.controller.adapter.EventAdapter;
@@ -37,6 +38,8 @@ public class TodayFragment extends Fragment {
     private RecyclerView mRvTask;
     private EventAdapter mEventAdapter;
     private TaskAdapter mTaskAdapter;
+    private TextView mTvEvents;
+    private TextView mTvTasks;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -66,6 +69,8 @@ public class TodayFragment extends Fragment {
         mRvEvent.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRvTask = v.findViewById(R.id.rv_task);
         mRvTask.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mTvEvents = v.findViewById(R.id.tv_events);
+        mTvTasks = v.findViewById(R.id.tv_tasks);
     }
 
     private void updateUI() {
@@ -82,6 +87,7 @@ public class TodayFragment extends Fragment {
             mEventAdapter.notifyDataSetChanged();
         }
         mRvEvent.setAdapter(mEventAdapter);
+        mTvEvents.setText(String.format(getString(R.string.prompt_events), events.size()));
         TaskLab taskLab = TaskLab.get(getActivity());
         taskLab.clearNoTitle();
         List<Task> tasks = taskLab.getTodayTasks();
@@ -93,6 +99,7 @@ public class TodayFragment extends Fragment {
             mTaskAdapter.notifyDataSetChanged();
         }
         mRvTask.setAdapter(mTaskAdapter);
+        mTvTasks.setText(String.format(getString(R.string.prompt_tasks), tasks.size()));
     }
 
     @Override

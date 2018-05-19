@@ -65,6 +65,24 @@ public class EventLab {
         return ans;
     }
 
+
+    public List<Event> getEventsByCategory(UUID categoryId) {
+        List<Event> events = new ArrayList<>();
+        EventCursorWrapper cursor = queryEvents(
+                EventTable.Cols.CATEGORY + " = ?",
+                new String[]{categoryId.toString()});
+        try {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                events.add(cursor.getEvent());
+                cursor.moveToNext();
+            }
+        } finally {
+            cursor.close();
+        }
+        return events;
+    }
+
     public List<Event> getEvents() {
         List<Event> events = new ArrayList<>();
         EventCursorWrapper cursor = queryEvents(null, null);
@@ -94,12 +112,11 @@ public class EventLab {
 
     public Event getUpcomingEvent() {
         List<Event> events = getUpcomingEvents();
-        Collections.sort(events);
-        Event e = events.get(0);
-        if (e.getEndTime().before(Calendar.getInstance())) {
+        if (events.isEmpty() || events.get(0).getEndTime().before(Calendar.getInstance())) {
             return null;
         } else {
-            return e;
+            Collections.sort(events);
+            return events.get(0);
         }
     }
 

@@ -18,6 +18,8 @@ import com.termproject.misaka.timesecretary.controller.activity.CategoryActivity
 import com.termproject.misaka.timesecretary.controller.activity.MainActivity;
 import com.termproject.misaka.timesecretary.module.Category;
 import com.termproject.misaka.timesecretary.module.CategoryLab;
+import com.termproject.misaka.timesecretary.module.EventLab;
+import com.termproject.misaka.timesecretary.module.TaskLab;
 
 import java.util.List;
 
@@ -74,18 +76,30 @@ public class CategoryListFragment extends Fragment {
         private Category mCategory;
         private View mVColor;
         private TextView mTvCategoryTitle;
+        private TextView mTvUndoneTaskNum;
+        private TextView mTvDoneTaskNum;
+        private TextView mTvEventNum;
 
         public CategoryHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.list_item_category, parent, false));
             itemView.setOnClickListener(this);
             mVColor = itemView.findViewById(R.id.v_color);
             mTvCategoryTitle = itemView.findViewById(R.id.tv_category_title);
+            mTvUndoneTaskNum = itemView.findViewById(R.id.tv_undone_task_number);
+            mTvDoneTaskNum = itemView.findViewById(R.id.tv_done_task_number);
+            mTvEventNum = itemView.findViewById(R.id.tv_event_number);
         }
 
         public void bind(Category category) {
             mCategory = category;
             mVColor.getBackground().setTint(Color.parseColor(mCategory.getColor()));
             mTvCategoryTitle.setText(mCategory.getTitle());
+            int undoneTaskNum = TaskLab.get(getActivity()).getTasksByCategory(false, mCategory.getId()).size();
+            int doneTaskNum = TaskLab.get(getActivity()).getTasksByCategory(true, mCategory.getId()).size();
+            int eventNum = EventLab.get(getActivity()).getEventsByCategory(mCategory.getId()).size();
+            mTvUndoneTaskNum.setText(String.valueOf(undoneTaskNum));
+            mTvDoneTaskNum.setText(String.valueOf(doneTaskNum));
+            mTvEventNum.setText(String.valueOf(eventNum));
         }
 
         @Override

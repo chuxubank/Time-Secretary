@@ -14,23 +14,24 @@ import android.view.View;
 
 import com.termproject.misaka.timesecretary.R;
 
-public class DateDividerItemDecoration extends RecyclerView.ItemDecoration {
+import static com.termproject.misaka.timesecretary.part.DateDividerItemDecoration.getDateDividerGap;
 
-    private static final String TAG = "DateDivider";
-    private static int mGap;
+public class EntityDividerItemDecoration extends RecyclerView.ItemDecoration {
+
+    private static final String TAG = "EntityDivider";
+    private EntityDividerCallback mCallback;
     private TextPaint mTextPaint;
     private Paint mPaint;
-    private final Rect mBounds = new Rect();
+    private int mGap;
     private int mTextBottom;
     private int mTextLeft;
-    private DateDividerCallback mCallback;
 
-    public DateDividerItemDecoration(Context context, DateDividerCallback dateDividerCallback) {
-        mCallback = dateDividerCallback;
+    public EntityDividerItemDecoration(Context context, EntityDividerCallback callback) {
+        mCallback = callback;
         mPaint = new Paint();
         mPaint.setColor(ContextCompat.getColor(context, R.color.white));
-        mPaint.setAlpha(180);
-        mGap = context.getResources().getDimensionPixelSize(R.dimen.date_divider_item_decoration_height);
+        mPaint.setAlpha(100);
+        mGap = context.getResources().getDimensionPixelSize(R.dimen.entity_divider_item_decoration_height);
         mTextBottom = 24;
         mTextLeft = mTextBottom;
         mTextPaint = new TextPaint();
@@ -41,15 +42,11 @@ public class DateDividerItemDecoration extends RecyclerView.ItemDecoration {
         mTextPaint.setTextAlign(Paint.Align.LEFT);
     }
 
-    public static int getDateDividerGap() {
-        return mGap;
-    }
-
     @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
         super.getItemOffsets(outRect, view, parent, state);
         int pos = parent.getChildAdapterPosition(view);
-        String groupName = mCallback.getDateString(pos);
+        String groupName = mCallback.getEntityName(pos);
         if (groupName == null) {
             return;
         }
@@ -65,34 +62,32 @@ public class DateDividerItemDecoration extends RecyclerView.ItemDecoration {
         final int childCount = parent.getChildCount();
         final int left = parent.getPaddingLeft();
         final int right = parent.getWidth() - parent.getPaddingRight();
+        String preEntityName, currentEntityName = null;
         String preDateString, currentDateString = null;
         for (int i = 0; i < childCount; i++) {
             View child = parent.getChildAt(i);
-            parent.getDecoratedBoundsWithMargins(child, mBounds);
             int position = parent.getChildAdapterPosition(child);
-            int oldGap = child.getTop() - mBounds.top;
-            if (isFirstInGroup(position)) {
-                oldGap -= mGap;
-            }
+            preEntityName = currentEntityName;
+            currentEntityName = mCallback.getEntityName(position);
             preDateString = currentDateString;
             currentDateString = mCallback.getDateString(position);
-            if (currentDateString == null || currentDateString.equals(preDateString)) {
+            if (currentEntityName == null || (currentEntityName.equals(preEntityName) && currentDateString.equals(preDateString))) {
                 continue;
             }
-            String textLine = mCallback.getDateString(position).toUpperCase();
+            String textLine = mCallback.getEntityName(position);
             if (TextUtils.isEmpty(textLine)) {
                 continue;
             }
             int childBottom = child.getBottom();
-            float bottom = Math.max(mGap + oldGap, child.getTop());
+            float bottom = Math.max(mGap + getDateDividerGap(), child.getTop());
             if (position + 1 < itemCount) {
-                String nextGroupName = mCallback.getDateString(position + 1);
-                if (!nextGroupName.equals(currentDateString) && childBottom < bottom) {
+                String nextEntityName = mCallback.getEntityName(position + 1);
+                if (!nextEntityName.equals(currentEntityName) && childBottom < bottom) {
                     bottom = childBottom;
                 }
             }
-            c.drawRect(left, bottom - mGap - oldGap, right, bottom - oldGap, mPaint);
-            c.drawText(textLine, left + mTextLeft, bottom - mTextBottom - oldGap, mTextPaint);
+            c.drawRect(left, bottom - mGap, right, bottom, mPaint);
+            c.drawText(textLine, left + mTextLeft, bottom - mTextBottom, mTextPaint);
         }
     }
 
@@ -100,13 +95,17 @@ public class DateDividerItemDecoration extends RecyclerView.ItemDecoration {
         if (pos == 0) {
             return true;
         } else {
-            String prevGroupName = mCallback.getDateString(pos - 1);
-            String nowGroupName = mCallback.getDateString(pos);
-            return !prevGroupName.equals(nowGroupName);
+            String prevEntityName = mCallback.getEntityName(pos - 1);
+            String nowEntityName = mCallback.getEntityName(pos);
+            String preDateString = mCallback.getDateString(pos - 1);
+            String nowDateString = mCallback.getDateString(pos);
+            return !(prevEntityName.equals(nowEntityName) && preDateString.equals(nowDateString));
         }
     }
 
-    public interface DateDividerCallback {
+    public interface EntityDividerCallback {
+        String getEntityName(int position);
+
         String getDateString(int position);
     }
 }

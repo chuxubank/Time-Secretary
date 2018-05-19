@@ -25,7 +25,7 @@ public class TaskCursorWrapper extends CursorWrapper {
         String uuidCategory = getString(getColumnIndex(Cols.CATEGORY));
         String title = getString(getColumnIndex(Cols.TITLE));
         String notes = getString(getColumnIndex(Cols.NOTES));
-        boolean checked = getInt(getColumnIndex(Cols.CHECKED)) == 1;
+        boolean checked = Boolean.parseBoolean(getString(getColumnIndex(Cols.CHECKED)));
         long startTime = getLong(getColumnIndex(Cols.START_TIME));
         long endTime = getLong(getColumnIndex(Cols.END_TIME));
         long deferUntil = getLong(getColumnIndex(Cols.DEFER_UNTIL));

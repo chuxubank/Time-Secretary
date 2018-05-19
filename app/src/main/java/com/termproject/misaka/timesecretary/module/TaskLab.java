@@ -50,7 +50,7 @@ public class TaskLab {
         values.put(TaskTable.Cols.END_TIME, task.getEndTime().getTime().getTime());
         values.put(TaskTable.Cols.DEFER_UNTIL, task.getDeferUntil().getTime().getTime());
         values.put(TaskTable.Cols.DEADLINE, task.getDeadline().getTime().getTime());
-        values.put(TaskTable.Cols.CHECKED, task.isChecked());
+        values.put(TaskTable.Cols.CHECKED, String.valueOf(task.isChecked()));
         return values;
     }
 
@@ -86,49 +86,54 @@ public class TaskLab {
 
     public List<Task> getTasks() {
         List<Task> tasks = new ArrayList<>();
-        TaskCursorWrapper cursor = queryTasks(null, null);
-        try {
+        try (TaskCursorWrapper cursor = queryTasks(null, null)) {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
                 tasks.add(cursor.getTask());
                 cursor.moveToNext();
             }
-        } finally {
-            cursor.close();
+        }
+        return tasks;
+    }
+
+    public List<Task> getTasksByCategory(boolean isChecked, UUID categoryId) {
+        List<Task> tasks = new ArrayList<>();
+        try (TaskCursorWrapper cursor = queryTasks(
+                TaskTable.Cols.CHECKED + " = ? and " + TaskTable.Cols.CATEGORY + " = ?",
+                new String[]{String.valueOf(isChecked), categoryId.toString()})) {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                tasks.add(cursor.getTask());
+                cursor.moveToNext();
+            }
         }
         return tasks;
     }
 
     public List<Task> queryTasks(String query) {
         List<Task> tasks = new ArrayList<>();
-        TaskCursorWrapper cursor = queryTasks(
+        try (TaskCursorWrapper cursor = queryTasks(
                 TaskTable.Cols.TITLE + " like ? or " + TaskTable.Cols.NOTES + " like ?",
-                new String[]{'%' + query + '%', '%' + query + '%'});
-        try {
+                new String[]{'%' + query + '%', '%' + query + '%'})) {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
                 tasks.add(cursor.getTask());
                 cursor.moveToNext();
             }
-        } finally {
-            cursor.close();
         }
         return tasks;
     }
 
     public Task getTask(UUID id) {
-        TaskCursorWrapper cursor = queryTasks(
+        try (TaskCursorWrapper cursor = queryTasks(
                 TaskTable.Cols.UUID + " = ?",
                 new String[]{id.toString()}
-        );
-        try {
+        )) {
             if (cursor.getCount() == 0) {
                 return null;
             }
             cursor.moveToFirst();
             return cursor.getTask();
-        } finally {
-            cursor.close();
         }
     }
 

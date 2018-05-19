@@ -47,21 +47,20 @@ public class CategoryAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.mCategoryColor.getBackground().setTint(Color.parseColor(mCategories.get(position).getColor()));
-        holder.mCategoryName.setText(mCategories.get(position).getTitle());
+        holder.mVColor.getBackground().setTint(Color.parseColor(mCategories.get(position).getColor()));
+        holder.mTvCategoryTitle.setText(mCategories.get(position).getTitle());
         return convertView;
     }
 
     static class ViewHolder {
         View view;
-        Category mCategory;
-        View mCategoryColor;
-        TextView mCategoryName;
+        View mVColor;
+        TextView mTvCategoryTitle;
 
         ViewHolder(View view) {
             this.view = view;
-            this.mCategoryColor = view.findViewById(R.id.v_color);
-            this.mCategoryName = view.findViewById(R.id.tv_category_title);
+            this.mVColor = view.findViewById(R.id.v_color);
+            this.mTvCategoryTitle = view.findViewById(R.id.tv_category_title);
         }
     }
 }

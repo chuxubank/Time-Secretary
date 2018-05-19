@@ -11,10 +11,10 @@
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/tv_events"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:text="@string/prompt_events"
             android:textColor="@color/secondary_text"
             android:textSize="16sp"
             android:textStyle="bold" />
@@ -36,10 +36,10 @@
             tools:targetApi="o" />
 
         <TextView
+            android:id="@+id/tv_tasks"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
-            android:text="@string/prompt_tasks"
             android:textColor="@color/secondary_text"
             android:textSize="16sp"
             android:textStyle="bold"

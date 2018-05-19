@@ -45,7 +45,11 @@ public class EventHolder extends RecyclerView.ViewHolder implements View.OnClick
         mTvEventEndTime.setText(TimeUtils.cal2timeString(mEvent.getEndTime()));
         mVDivider.setBackgroundColor(Color.parseColor(category.getColor()));
         mTvEventTitle.setText(mEvent.getTitle());
-        mTvEventNotes.setText(mEvent.getNotes());
+        if (mEvent.getNotes().isEmpty()) {
+            mTvEventNotes.setVisibility(View.GONE);
+        } else {
+            mTvEventNotes.setText(mEvent.getNotes());
+        }
     }
 
     @Override

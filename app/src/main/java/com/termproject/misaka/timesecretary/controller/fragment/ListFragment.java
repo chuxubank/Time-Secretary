@@ -29,6 +29,7 @@ import com.termproject.misaka.timesecretary.module.Task;
 import com.termproject.misaka.timesecretary.module.TaskLab;
 import com.termproject.misaka.timesecretary.part.DateDividerItemDecoration;
 import com.termproject.misaka.timesecretary.part.DatePickerFragment;
+import com.termproject.misaka.timesecretary.part.EntityDividerItemDecoration;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -49,6 +50,7 @@ public class ListFragment extends Fragment {
     private EntityAdapter mAdapter;
     private RecyclerView mRvUpcoming;
     private List<Entity> mEntities;
+    private String queryText;
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -66,22 +68,19 @@ public class ListFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                queryEntities(newText);
-                return false;
+                queryText = newText;
+                queryEntities(queryText);
+                return true;
             }
         });
     }
 
     private void queryEntities(String query) {
-        List<Entity> queryEntities = getSortedEntities(
+        mEntities = getSortedEntities(
                 EventLab.get(getActivity()).queryEvents(query),
                 TaskLab.get(getActivity()).queryTasks(query));
-        if (mAdapter == null) {
-            mAdapter = new EntityAdapter(queryEntities, getActivity(), this, getFragmentManager());
-        } else {
-            mAdapter.setEntities(queryEntities);
-            mAdapter.notifyDataSetChanged();
-        }
+        mAdapter.setEntities(mEntities);
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -154,7 +153,6 @@ public class ListFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_list, container, false);
-        Log.i(TAG, "onCreateView");
         initView(v);
         updateUI();
         return v;
@@ -163,7 +161,6 @@ public class ListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Log.i(TAG, "onResume");
         updateUI();
     }
 
@@ -171,9 +168,34 @@ public class ListFragment extends Fragment {
         setHasOptionsMenu(true);
         mRvUpcoming = v.findViewById(R.id.rv_list);
         mRvUpcoming.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRvUpcoming.addItemDecoration(new DateDividerItemDecoration(getActivity(), new DateDividerItemDecoration.ItemDecorationCallback() {
+        mRvUpcoming.addItemDecoration(new EntityDividerItemDecoration(getActivity(), new EntityDividerItemDecoration.EntityDividerCallback() {
             @Override
-            public String getGroupName(int position) {
+            public String getEntityName(int position) {
+                Entity entity = mEntities.get(position);
+                if (entity instanceof Event) {
+                    return "Event";
+                } else if (entity instanceof Task) {
+                    return "Task";
+                } else {
+                    return null;
+                }
+            }
+
+            @Override
+            public String getDateString(int position) {
+                Entity entity = mEntities.get(position);
+                if (entity instanceof Event) {
+                    return cal2longDateString(entity.getStartTime());
+                } else if (entity instanceof Task) {
+                    return cal2longDateString(((Task) entity).getDeferUntil());
+                } else {
+                    return null;
+                }
+            }
+        }));
+        mRvUpcoming.addItemDecoration(new DateDividerItemDecoration(getActivity(), new DateDividerItemDecoration.DateDividerCallback() {
+            @Override
+            public String getDateString(int position) {
                 Entity entity = mEntities.get(position);
                 if (entity instanceof Event) {
                     return cal2longDateString(entity.getStartTime());
@@ -193,7 +215,13 @@ public class ListFragment extends Fragment {
         eventLab.clearNoTitle();
         TaskLab taskLab = TaskLab.get(getActivity());
         taskLab.clearNoTitle();
-        mEntities = getSortedEntities(eventLab.getEvents(), taskLab.getTasks());
+        if (queryText == null || queryText.isEmpty()) {
+            mEntities = getSortedEntities(eventLab.getEvents(), taskLab.getTasks());
+        } else {
+            mEntities = getSortedEntities(
+                    EventLab.get(getActivity()).queryEvents(queryText),
+                    TaskLab.get(getActivity()).queryTasks(queryText));
+        }
         if (mAdapter == null) {
             mAdapter = new EntityAdapter(mEntities, getActivity(), this, getFragmentManager());
         } else {

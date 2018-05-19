@@ -27,6 +27,7 @@ public class Task extends Entity implements Comparable<Task> {
         setEndTime(long2calendar(0));
         mDeferUntil = cal2dateCalendar(Calendar.getInstance());
         mDeadline = cal2dateCalendar(Calendar.getInstance());
+        mChecked = false;
     }
 
     public Calendar getDeferUntil() {

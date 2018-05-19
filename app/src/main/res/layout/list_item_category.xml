@@ -13,12 +13,11 @@
         android:layout_gravity="center_vertical"
         android:layout_margin="@dimen/text_margin"
         android:background="@drawable/ic_circle"
-        tools:backgroundTint="@color/test_color"
-        tools:targetApi="lollipop" />
+        tools:backgroundTint="@color/test_color" />
 
     <TextView
         android:id="@+id/tv_category_title"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/text_margin"
         android:ellipsize="marquee"
@@ -26,5 +25,42 @@
         android:textColor="@color/primary_text"
         android:textSize="@dimen/item_primary_text_size"
         tools:text="Category" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginEnd="8dp"
+        android:gravity="end">
+
+        <TextView
+            android:id="@+id/tv_undone_task_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:textColor="@color/accent"
+            android:textSize="16sp"
+            tools:text="5" />
+
+        <TextView
+            android:id="@+id/tv_done_task_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:textColor="@color/primary"
+            android:textSize="16sp"
+            tools:text="2" />
+
+        <TextView
+            android:id="@+id/tv_event_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:textColor="@color/primary_dark"
+            android:textSize="16sp"
+            tools:text="2" />
+
+    </LinearLayout>
+
 
 </LinearLayout>
