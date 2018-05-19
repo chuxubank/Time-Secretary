@@ -5,19 +5,7 @@
     android:layout_height="match_parent"
     tools:context=".controller.fragment.CategoryFragment">
 
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/app_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:theme="@style/AppTheme.AppBarOverlay">
-
-        <include layout="@layout/common_toolbar" />
-
-        <include layout="@layout/content_input_head" />
-
-    </android.support.design.widget.AppBarLayout>
+    <include layout="@layout/common_app_bar" />
 
     <include layout="@layout/content_category" />
 

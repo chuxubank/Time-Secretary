@@ -69,18 +69,10 @@ public class ListFragment extends Fragment {
             @Override
             public boolean onQueryTextChange(String newText) {
                 queryText = newText;
-                queryEntities(queryText);
+                updateUI();
                 return true;
             }
         });
-    }
-
-    private void queryEntities(String query) {
-        mEntities = getSortedEntities(
-                EventLab.get(getActivity()).queryEvents(query),
-                TaskLab.get(getActivity()).queryTasks(query));
-        mAdapter.setEntities(mEntities);
-        mAdapter.notifyDataSetChanged();
     }
 
     @Override
