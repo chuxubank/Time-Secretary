@@ -5,9 +5,14 @@ import android.content.Intent;
 import android.os.IBinder;
 
 public class SyncService extends Service {
+    // Object to use as a thread-safe lock
     private static final Object sSyncAdapterLock = new Object();
+    // Storage for an instance of the sync adapter
     private static SyncAdapter sSyncAdapter = null;
 
+    /*
+     * Instantiate the sync adapter object.
+     */
     @Override
     public void onCreate() {
         /*
@@ -21,10 +26,10 @@ public class SyncService extends Service {
             }
         }
     }
-
     /**
      * Return an object that allows the system to invoke
      * the sync adapter.
+     *
      */
     @Override
     public IBinder onBind(Intent intent) {

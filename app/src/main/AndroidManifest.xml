@@ -3,11 +3,17 @@
     package="com.termproject.misaka.timesecretary">
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
+
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.READ_CALENDAR" />
+    <uses-permission android:name="android.permission.WRITE_CALENDAR" />
     <uses-permission android:name="android.permission.INTERNET" />
-
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
+    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
@@ -49,16 +55,17 @@
             android:label="@string/title_activity_settings"
             android:parentActivityName=".controller.activity.MainActivity" />
 
-        <provider
-            android:name=".sync.DatabaseProvider"
-            android:authorities="com.termproject.misaka.timesecretary.provider"
-            android:enabled="true"
-            android:exported="false" />
-
         <activity
             android:name=".controller.activity.AnalysisActivity"
             android:label="@string/title_activity_analysis"
             android:parentActivityName=".controller.activity.MainActivity" />
+
+        <provider
+            android:name=".sync.DatabaseProvider"
+            android:authorities="com.termproject.misaka.timesecretary.provider"
+            android:enabled="true"
+            android:exported="false"
+            android:syncable="true" />
 
         <service android:name="com.termproject.misaka.timesecretary.sync.AuthenticatorService">
             <intent-filter>
@@ -67,6 +74,18 @@
             <meta-data
                 android:name="android.accounts.AccountAuthenticator"
                 android:resource="@xml/authenticator" />
+        </service>
+
+        <service
+            android:name="com.termproject.misaka.timesecretary.sync.SyncService"
+            android:exported="true"
+            android:process=":sync">
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter" />
+            </intent-filter>
+            <meta-data
+                android:name="android.content.SyncAdapter"
+                android:resource="@xml/syncadapter" />
         </service>
 
         <service

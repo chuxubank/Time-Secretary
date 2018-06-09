@@ -16,6 +16,14 @@ public class Event extends Entity implements Comparable<Event> {
         this(UUID.randomUUID());
     }
 
+    public Event(String title, String notes, Calendar startTime, Calendar endTime) {
+        super(UUID.randomUUID());
+        setTitle(title);
+        setNotes(notes);
+        setStartTime(startTime);
+        setEndTime(endTime);
+    }
+
     public Event(UUID id) {
         super(id);
         Calendar mStartTime = cal2dateTimeCalendar(Calendar.getInstance());

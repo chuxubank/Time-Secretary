@@ -1,14 +1,23 @@
 package com.termproject.misaka.timesecretary.controller.activity;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
+import android.annotation.TargetApi;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.CalendarContract.Calendars;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.GravityCompat;
@@ -40,6 +49,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import static android.Manifest.permission.READ_CALENDAR;
+import static android.Manifest.permission.WRITE_CALENDAR;
 import static com.termproject.misaka.timesecretary.utils.TimeUtils.cal2dateCalendar;
 
 /**
@@ -49,6 +60,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private static final String TAG = "MainActivity";
     private static final int NOTIFICATION_JOB_ID = 1;
+
+    // Constants
+    // The authority for the sync adapter's content provider
+    public static final String AUTHORITY = "com.termproject.misaka.timesecretary.provider";
+    // An account type, in the form of a domain name
+    public static final String ACCOUNT_TYPE = "com.termproject.misaka.timesecretary";
+    // The account name
+    public static final String ACCOUNT = "default_account";
+    // Projection array. Creating indices for this array instead of doing
+    // dynamic lookups improves performance.
+    public static final String[] EVENT_PROJECTION = new String[]{
+            Calendars._ID,                           // 0
+            Calendars.ACCOUNT_NAME,                  // 1
+            Calendars.CALENDAR_DISPLAY_NAME,         // 2
+            Calendars.OWNER_ACCOUNT,                 // 3
+            Calendars.NAME                           // 4
+    };
+    private static final String CALENDAR_ACCOUNT = "chuxubank@gmail.com";
+    private static final int REQUEST_CALENDAR = 1;
     private NavigationView mNavigationView;
     private FloatingActionsMenu mFamAdd;
     private FloatingActionButton mAddEvent;
@@ -59,12 +89,43 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private List<Fragment> mFragments;
     private View mVCover;
     private int mPosition;
+    // The indices for the projection array above.
+    private static final int PROJECTION_ID_INDEX = 0;
+    private static final int PROJECTION_ACCOUNT_NAME_INDEX = 1;
+    private static final int PROJECTION_DISPLAY_NAME_INDEX = 2;
+    private static final int PROJECTION_OWNER_ACCOUNT_INDEX = 3;
+    private static final int PROJECTION_NAME = 4;
+    // Instance fields
+    Account mAccount;
+
+    /**
+     * Create a new dummy account for the sync adapter
+     *
+     * @param context The application context
+     */
+    public static Account CreateSyncAccount(Context context) {
+        // Create the account type and default account
+        Account newAccount = new Account(ACCOUNT, ACCOUNT_TYPE);
+        // Get an instance of the Android account manager
+        AccountManager accountManager = (AccountManager) context.getSystemService(ACCOUNT_SERVICE);
+        /*
+         * Add the account and account type, no password or user data
+         * If successful, return the Account object, otherwise report an error.
+         */
+        if (accountManager.addAccountExplicitly(newAccount, null, null)) {
+            return newAccount;
+        } else {
+            return null;
+        }
+    }
 
     @Override
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        // Create the dummy account
+        mAccount = CreateSyncAccount(this);
         initView();
         cancelAllJobs();
         scheduleNotificationJob();
@@ -229,7 +290,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_sync:
-                //TODO: Complete Sync Logic.
+                syncEventsOnDemand();
                 return true;
 
             default:
@@ -239,7 +300,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_CALENDAR) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                syncEventsOnDemand();
+            }
+        }
+    }
 
+    @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         Intent intent;
         switch (item.getItemId()) {
@@ -278,6 +348,85 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.closeDrawer(GravityCompat.START);
         updateAllFragment();
         return true;
+    }
+
+    private boolean mayRequestCalendar() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return true;
+        }
+        if (checkSelfPermission(READ_CALENDAR) == PackageManager.PERMISSION_GRANTED && checkSelfPermission(WRITE_CALENDAR) == PackageManager.PERMISSION_GRANTED) {
+            return true;
+        }
+        if (shouldShowRequestPermissionRationale(READ_CALENDAR) || shouldShowRequestPermissionRationale(WRITE_CALENDAR)) {
+            Snackbar.make(mNavigationView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
+                    .setAction(android.R.string.ok, new View.OnClickListener() {
+                        @Override
+                        @TargetApi(Build.VERSION_CODES.M)
+                        public void onClick(View v) {
+                            requestPermissions(new String[]{READ_CALENDAR, WRITE_CALENDAR}, REQUEST_CALENDAR);
+                        }
+                    });
+        } else {
+            requestPermissions(new String[]{READ_CALENDAR, WRITE_CALENDAR}, REQUEST_CALENDAR);
+        }
+        return false;
+    }
+
+//    private void addAppCalendar() {
+//        if (!mayRequestCalendar()) {
+//            return;
+//        }
+//        // Run query
+//        Cursor cur = null;
+//        ContentResolver cr = getContentResolver();
+//        Uri uri = Calendars.CONTENT_URI;
+//        String selection = "((" + Calendars.ACCOUNT_NAME + " = ?) AND ("
+//                + Calendars.ACCOUNT_TYPE + " = ?) AND ("
+//                + Calendars.OWNER_ACCOUNT + " = ?))";
+//        String[] selectionArgs = new String[]{CALENDAR_ACCOUNT, "com.termproject.misaka.timesecretary", CALENDAR_ACCOUNT};
+//        // Submit the query and get a Cursor object back.
+//
+//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
+//            return;
+//        }
+//        cur = cr.query(uri, EVENT_PROJECTION, selection, selectionArgs, null);
+//        boolean appCalendarExists = false;
+//        // Use the cursor to step through the returned records
+//        while (cur.moveToNext()) {
+//            long calID = 0;
+//            String name = null;
+//            calID = cur.getLong(PROJECTION_ID_INDEX);
+//            name = cur.getString(PROJECTION_NAME);
+//            String displayName = cur.getString(PROJECTION_DISPLAY_NAME_INDEX);
+//            Log.i(TAG, displayName + " " + calID + " " + name);
+//            if (name.equals(getString(R.string.app_name))) {
+//                appCalendarExists = true;
+//            }
+//        }
+//        cur.close();
+//        if (!appCalendarExists) {
+//            // Pass the settings flags by inserting them in a bundle
+//            Bundle settingsBundle = new Bundle();
+//            settingsBundle.putBoolean(
+//                    ContentResolver.SYNC_EXTRAS_MANUAL, true);
+//            settingsBundle.putBoolean(
+//                    ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+//            /*
+//             * Request the sync for the default account, authority, and
+//             * manual sync settings
+//             */
+//            ContentResolver.requestSync(mAccount, AUTHORITY, settingsBundle);
+//        }
+//    }
+
+    private void syncEventsOnDemand() {
+        if (!mayRequestCalendar()) {
+            return;
+        }
+        Bundle settingsBundle = new Bundle();
+        settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
+        settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+        ContentResolver.requestSync(mAccount, AUTHORITY, settingsBundle);
     }
 
     private void updateAllFragment() {
