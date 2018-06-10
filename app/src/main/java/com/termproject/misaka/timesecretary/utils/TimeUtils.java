@@ -1,5 +1,7 @@
 package com.termproject.misaka.timesecretary.utils;
 
+import com.termproject.misaka.timesecretary.module.Entity;
+
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -59,5 +61,17 @@ public final class TimeUtils {
 
     public static long diffOfTime(final Calendar cal) {
         return cal2long(cal) - cal2long(Calendar.getInstance());
+    }
+
+    public static long getDuration(final Entity e, final Calendar start, final Calendar end) {
+        return min(end.getTimeInMillis(), e.getEndTime().getTimeInMillis()) - max(start.getTimeInMillis(), e.getStartTime().getTimeInMillis());
+    }
+
+    public static long max(final long a, final long b) {
+        return a > b ? a : b;
+    }
+
+    public static long min(final long a, final long b) {
+        return a < b ? a : b;
     }
 }

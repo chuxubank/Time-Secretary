@@ -98,6 +98,25 @@ public class EventLab {
         return events;
     }
 
+    public List<Event> getEvents(Calendar startDate, Calendar endDate) {
+        List<Event> events = new ArrayList<>();
+        EventCursorWrapper cursor = queryEvents(null, null);
+        try {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                Event e = cursor.getEvent();
+                if ((!e.getStartTime().before(startDate) && e.getStartTime().before(endDate))
+                        || e.getEndTime().after(startDate) && !e.getEndTime().after(endDate)) {
+                    events.add(e);
+                }
+                cursor.moveToNext();
+            }
+        } finally {
+            cursor.close();
+        }
+        return events;
+    }
+
     public List<Event> getUpcomingEvents() {
         List<Event> events = getEvents();
         Iterator<Event> iterator = events.iterator();

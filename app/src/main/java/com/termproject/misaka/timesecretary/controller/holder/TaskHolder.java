@@ -96,6 +96,7 @@ public class TaskHolder extends RecyclerView.ViewHolder implements View.OnClickL
                     mTask.setStartTime(long2calendar(0));
                     mTask.setEndTime(long2calendar(0));
                     TaskLab.get(mContext).updateTask(mTask);
+                    mFragment.onResume();
                 }
             }
         });
@@ -105,7 +106,9 @@ public class TaskHolder extends RecyclerView.ViewHolder implements View.OnClickL
         } else {
             mTvTaskNotes.setText(mTask.getNotes());
         }
-        mTvDeadline.setText(diffOfDay(mTask.getDeadline()));
+        if (!mTask.isChecked()) {
+            mTvDeadline.setText(diffOfDay(mTask.getDeadline()));
+        }
         if (!mTask.getDeadline().after(cal2dateCalendar(Calendar.getInstance()))) {
             mTvDeadline.setTextColor(ContextCompat.getColor(mContext, R.color.accent));
         }

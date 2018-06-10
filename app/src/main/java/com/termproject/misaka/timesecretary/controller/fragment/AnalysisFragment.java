@@ -9,10 +9,11 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
@@ -24,6 +25,7 @@ import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.termproject.misaka.timesecretary.R;
+import com.termproject.misaka.timesecretary.controller.activity.AnalysisDetailsActivity;
 import com.termproject.misaka.timesecretary.module.Category;
 import com.termproject.misaka.timesecretary.module.CategoryLab;
 import com.termproject.misaka.timesecretary.part.DatePickerFragment;
@@ -96,6 +98,24 @@ public class AnalysisFragment extends Fragment implements View.OnClickListener {
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.fragment_analysis_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_show_details:
+                Intent intent = AnalysisDetailsActivity.newIntent(getActivity(), mStartDate, mEndDate, null);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mStartDate = (Calendar) getArguments().getSerializable(ARG_START_DATE);
@@ -112,6 +132,7 @@ public class AnalysisFragment extends Fragment implements View.OnClickListener {
     }
 
     private void initView(View v) {
+        setHasOptionsMenu(true);
         mCategoryLab = CategoryLab.get(getActivity());
         mNavigation = v.findViewById(R.id.navigation);
         mNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -127,7 +148,8 @@ public class AnalysisFragment extends Fragment implements View.OnClickListener {
         mChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
             @Override
             public void onValueSelected(Entry e, Highlight h) {
-                Toast.makeText(getContext(), "Select a value " + e.toString() + " " + h.toString(), Toast.LENGTH_LONG).show();
+                Intent intent = AnalysisDetailsActivity.newIntent(getActivity(), mStartDate, mEndDate, mCategories.get((int) h.getX()).getId());
+                startActivity(intent);
             }
 
             @Override
@@ -199,8 +221,11 @@ public class AnalysisFragment extends Fragment implements View.OnClickListener {
         List<Integer> colors = new ArrayList<>();
         List<PieEntry> entries = new ArrayList<>();
         for (Category c : mCategories) {
-            entries.add(new PieEntry(mCategoryLab.getDuration(c.getId(), mStartDate, mEndDate), c.getTitle()));
-            colors.add(Color.parseColor(c.getColor()));
+            long sumDuration = mCategoryLab.getSumDuration(c.getId(), mStartDate, mEndDate);
+            if (sumDuration > 0) {
+                entries.add(new PieEntry(sumDuration, c.getTitle()));
+                colors.add(Color.parseColor(c.getColor()));
+            }
         }
         PieDataSet dataSet = new PieDataSet(entries, null);
         dataSet.setColors(colors);

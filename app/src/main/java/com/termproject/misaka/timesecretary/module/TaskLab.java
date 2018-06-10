@@ -96,6 +96,25 @@ public class TaskLab {
         return tasks;
     }
 
+    public List<Task> getTasks(Calendar startDate, Calendar endDate) {
+        List<Task> tasks = new ArrayList<>();
+        TaskCursorWrapper cursor = queryTasks(null, null);
+        try {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                Task t = cursor.getTask();
+                if ((!t.getStartTime().before(startDate) && t.getStartTime().before(endDate))
+                        || t.getEndTime().after(startDate) && !t.getEndTime().after(endDate)) {
+                    tasks.add(t);
+                }
+                cursor.moveToNext();
+            }
+        } finally {
+            cursor.close();
+        }
+        return tasks;
+    }
+
     public List<Task> getTasksByCategory(boolean isChecked, UUID categoryId) {
         List<Task> tasks = new ArrayList<>();
         try (TaskCursorWrapper cursor = queryTasks(
