@@ -145,5 +145,6 @@
 
     <string name="pref_title_vibrate">Vibrate</string>
     <string name="prompt_show_details">Show Details</string>
+    <string name="prompt_sort_by_duration">Sort By Duration</string>
 
 </resources>

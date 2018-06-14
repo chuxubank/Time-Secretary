@@ -4,6 +4,9 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -28,6 +31,8 @@ import com.termproject.misaka.timesecretary.module.TaskLab;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -42,6 +47,7 @@ public class AnalysisDetailsFragment extends Fragment {
     private static final String ARG_START_DATE = "start_date";
     private static final String ARG_END_DATE = "end_date";
     private static final String ARG_CATEGORY_ID = "category_id";
+    private static final String ARG_SORT_BY_DURATION = "sort_by_duration";
     private HorizontalBarChart mChart;
     private List<Entity> mEntities;
     private Calendar mStartDate;
@@ -59,6 +65,23 @@ public class AnalysisDetailsFragment extends Fragment {
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.fragment_analysis_details_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_sort_by_duration:
+                updateUI(ARG_SORT_BY_DURATION);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mStartDate = (Calendar) getArguments().getSerializable(ARG_START_DATE);
@@ -71,11 +94,12 @@ public class AnalysisDetailsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_analysis_details, container, false);
         initView(v);
-        updateUI();
+        updateUI(null);
         return v;
     }
 
     private void initView(View v) {
+        setHasOptionsMenu(true);
         mChart = v.findViewById(R.id.chart);
         mChart.setDrawBarShadow(false);
         mChart.setDrawValueAboveBar(true);
@@ -126,7 +150,7 @@ public class AnalysisDetailsFragment extends Fragment {
         l.setXEntrySpace(4f);
     }
 
-    private void updateUI() {
+    private void updateUI(String sortOrder) {
         List<BarEntry> entries = new ArrayList<>();
         List<Integer> colors = new ArrayList<>();
         List<LegendEntry> legendEntries = new ArrayList<>();
@@ -140,6 +164,18 @@ public class AnalysisDetailsFragment extends Fragment {
             Entity e = iterator.next();
             if (mCategoryId != null && !e.getCategory().equals(mCategoryId)) {
                 iterator.remove();
+            }
+        }
+        if (sortOrder != null) {
+            switch (sortOrder) {
+                case ARG_SORT_BY_DURATION:
+                    Collections.sort(mEntities, new Comparator<Entity>() {
+                        @Override
+                        public int compare(Entity o1, Entity o2) {
+                            return (int) (o1.getDuration() - o2.getDuration());
+                        }
+                    });
+                    break;
             }
         }
         titles = new String[mEntities.size()];
@@ -177,6 +213,7 @@ public class AnalysisDetailsFragment extends Fragment {
         mChart.getXAxis().setValueFormatter(new MyXAxisValueFormatter(titles));
         mChart.getLegend().setCustom(legendEntries);
         mChart.invalidate();
+        mChart.animateY(1000);
     }
 
     private class myLegend {
